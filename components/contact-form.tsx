@@ -9,13 +9,14 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { Loader2, CheckCircle2 } from "lucide-react"
+import { useLanguage } from "@/lib/i18n/language-context"
 
 export function ContactForm() {
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    subject: "",
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -46,7 +47,6 @@ export function ContactForm() {
         name: "",
         email: "",
         phone: "",
-        subject: "",
         message: "",
       })
     }, 3000)
@@ -57,10 +57,7 @@ export function ContactForm() {
       <Card className="overflow-hidden rounded-3xl border-2 bg-gradient-to-br from-primary/10 to-accent/10">
         <CardContent className="flex flex-col items-center justify-center p-12 text-center">
           <CheckCircle2 className="mb-4 h-16 w-16 text-primary" />
-          <h3 className="mb-2 text-2xl font-bold text-foreground">Thank You!</h3>
-          <p className="leading-relaxed text-muted-foreground">
-            We've received your message and will get back to you soon.
-          </p>
+          <h3 className="mb-2 text-2xl font-bold text-foreground">{t.contact.form.success}</h3>
         </CardContent>
       </Card>
     )
@@ -71,7 +68,7 @@ export function ContactForm() {
       <CardContent className="p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name *</Label>
+            <Label htmlFor="name">{t.contact.form.name} *</Label>
             <Input
               id="name"
               name="name"
@@ -85,7 +82,7 @@ export function ContactForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address *</Label>
+            <Label htmlFor="email">{t.contact.form.email} *</Label>
             <Input
               id="email"
               name="email"
@@ -99,7 +96,7 @@ export function ContactForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="phone">{t.contact.form.phone}</Label>
             <Input
               id="phone"
               name="phone"
@@ -112,21 +109,7 @@ export function ContactForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="subject">Subject *</Label>
-            <Input
-              id="subject"
-              name="subject"
-              type="text"
-              placeholder="Enrollment Inquiry"
-              value={formData.subject}
-              onChange={handleChange}
-              required
-              className="rounded-xl"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="message">Message *</Label>
+            <Label htmlFor="message">{t.contact.form.message} *</Label>
             <Textarea
               id="message"
               name="message"
@@ -143,10 +126,10 @@ export function ContactForm() {
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Sending...
+                {t.contact.form.sending}
               </>
             ) : (
-              "Send Message"
+              t.contact.form.submit
             )}
           </Button>
         </form>

@@ -1,124 +1,126 @@
+"use client"
+
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { BookOpen, Palette, Music, Globe, Calculator, Users, Leaf, Heart } from "lucide-react"
+import { useLanguage } from "@/lib/i18n/language-context"
 
 export default function CurriculumPage() {
+  const { t } = useLanguage()
+
   const subjects = [
     {
       icon: BookOpen,
-      title: "Language & Literacy",
-      description:
-        "Building vocabulary, phonics, reading readiness, and communication skills through stories, songs, and conversations.",
+      title: t.curriculum.learningAreas.language.title,
+      description: t.curriculum.learningAreas.language.description,
       color: "bg-chart-1",
     },
     {
       icon: Calculator,
-      title: "Math & Logic",
-      description: "Exploring numbers, patterns, shapes, and problem-solving through hands-on activities and games.",
+      title: t.curriculum.learningAreas.math.title,
+      description: t.curriculum.learningAreas.math.description,
       color: "bg-chart-2",
     },
     {
       icon: Globe,
-      title: "Science & Discovery",
-      description: "Encouraging curiosity about the natural world through experiments, observations, and exploration.",
+      title: t.curriculum.learningAreas.science.title,
+      description: t.curriculum.learningAreas.science.description,
       color: "bg-chart-3",
     },
     {
       icon: Palette,
-      title: "Creative Arts",
-      description: "Fostering creativity and self-expression through painting, drawing, crafts, and imaginative play.",
+      title: t.curriculum.learningAreas.arts.title,
+      description: t.curriculum.learningAreas.arts.description,
       color: "bg-chart-4",
     },
     {
       icon: Music,
-      title: "Music & Movement",
-      description: "Developing rhythm, coordination, and musical appreciation through songs, dance, and instruments.",
+      title: t.curriculum.learningAreas.music.title,
+      description: t.curriculum.learningAreas.music.description,
       color: "bg-chart-5",
     },
     {
       icon: Users,
-      title: "Social Skills",
-      description: "Learning cooperation, sharing, empathy, and conflict resolution through group activities and play.",
+      title: t.curriculum.learningAreas.social.title,
+      description: t.curriculum.learningAreas.social.description,
       color: "bg-chart-1",
     },
     {
       icon: Heart,
-      title: "Emotional Development",
-      description: "Building self-awareness, confidence, and emotional regulation in a supportive environment.",
+      title: t.curriculum.learningAreas.emotional.title,
+      description: t.curriculum.learningAreas.emotional.description,
       color: "bg-chart-2",
     },
     {
       icon: Leaf,
-      title: "Nature & Environment",
-      description: "Connecting with nature through gardening, outdoor exploration, and environmental awareness.",
+      title: t.curriculum.learningAreas.nature.title,
+      description: t.curriculum.learningAreas.nature.description,
       color: "bg-chart-3",
     },
   ]
 
   const ageGroups = [
     {
-      title: "Toddlers (18 months - 3 years)",
-      focus: "Sensory Exploration & Basic Skills",
-      activities: [
-        "Sensory play with various textures and materials",
-        "Simple songs, rhymes, and finger plays",
-        "Basic motor skills development",
-        "Social interaction and parallel play",
-        "Toilet training support",
-        "Introduction to colors, shapes, and numbers",
-      ],
+      title: t.curriculum.ageGroups.toddlers.title,
+      focus: t.curriculum.ageGroups.toddlers.focus,
+      activities: t.curriculum.ageGroups.toddlers.activities,
     },
     {
-      title: "Preschool (3 - 4 years)",
-      focus: "Independence & Social Learning",
-      activities: [
-        "Pre-reading and pre-writing activities",
-        "Counting, sorting, and pattern recognition",
-        "Dramatic play and role-playing",
-        "Art projects and creative expression",
-        "Group games and cooperative play",
-        "Introduction to science concepts",
-      ],
+      title: t.curriculum.ageGroups.preschool.title,
+      focus: t.curriculum.ageGroups.preschool.focus,
+      activities: t.curriculum.ageGroups.preschool.activities,
     },
     {
-      title: "Pre-K (4 - 5 years)",
-      focus: "School Readiness & Advanced Skills",
-      activities: [
-        "Letter recognition and phonics",
-        "Early reading and writing skills",
-        "Math concepts and problem-solving",
-        "Science experiments and investigations",
-        "Complex art projects and presentations",
-        "Leadership and responsibility skills",
-      ],
+      title: t.curriculum.ageGroups.preK.title,
+      focus: t.curriculum.ageGroups.preK.focus,
+      activities: t.curriculum.ageGroups.preK.activities,
     },
   ]
 
   const dailyActivities = [
     {
-      title: "Circle Time",
-      description: "Group discussions, calendar activities, and sharing time to build community.",
+      title: t.curriculum.dailyActivities.circle.title,
+      description: t.curriculum.dailyActivities.circle.description,
     },
     {
-      title: "Learning Centers",
-      description: "Rotating stations for literacy, math, science, art, and dramatic play.",
+      title: t.curriculum.dailyActivities.centers.title,
+      description: t.curriculum.dailyActivities.centers.description,
     },
     {
-      title: "Outdoor Play",
-      description: "Physical activity, nature exploration, and gross motor skill development.",
+      title: t.curriculum.dailyActivities.outdoor.title,
+      description: t.curriculum.dailyActivities.outdoor.description,
     },
     {
-      title: "Story Time",
-      description: "Reading aloud to develop listening skills and love of books.",
+      title: t.curriculum.dailyActivities.story.title,
+      description: t.curriculum.dailyActivities.story.description,
     },
     {
-      title: "Creative Arts",
-      description: "Hands-on projects using various materials and techniques.",
+      title: t.curriculum.dailyActivities.arts.title,
+      description: t.curriculum.dailyActivities.arts.description,
     },
     {
-      title: "Music & Movement",
-      description: "Songs, dance, and rhythm activities to develop coordination.",
+      title: t.curriculum.dailyActivities.music.title,
+      description: t.curriculum.dailyActivities.music.description,
+    },
+  ]
+
+  const approach = [
+    {
+      title: t.curriculum.approach.playBased.title,
+      description: t.curriculum.approach.playBased.description,
+    },
+    {
+      title: t.curriculum.approach.individualized.title,
+      description: t.curriculum.approach.individualized.description,
+    },
+    {
+      title: t.curriculum.approach.handsOn.title,
+      description: t.curriculum.approach.handsOn.description,
+    },
+    {
+      title: t.curriculum.approach.family.title,
+      description: t.curriculum.approach.family.description,
     },
   ]
 
@@ -130,11 +132,10 @@ export default function CurriculumPage() {
       <section className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-accent/20 px-4 py-20 lg:py-32">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-foreground lg:text-5xl">
-            Our Curriculum
+            {t.curriculum.hero.title}
           </h1>
           <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
-            A comprehensive, play-based curriculum designed to nurture the whole child and prepare them for lifelong
-            learning.
+            {t.curriculum.hero.description}
           </p>
         </div>
       </section>
@@ -143,9 +144,11 @@ export default function CurriculumPage() {
       <section className="px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">Learning Areas</h2>
+            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
+              {t.curriculum.learningAreas.title}
+            </h2>
             <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-              Our curriculum covers all essential areas of early childhood development.
+              {t.curriculum.learningAreas.subtitle}
             </p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -168,9 +171,11 @@ export default function CurriculumPage() {
       <section className="bg-muted/50 px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">Age-Specific Programs</h2>
+            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
+              {t.curriculum.ageGroups.title}
+            </h2>
             <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-              Tailored curriculum for each developmental stage.
+              {t.curriculum.ageGroups.subtitle}
             </p>
           </div>
           <div className="space-y-8">
@@ -200,9 +205,11 @@ export default function CurriculumPage() {
       <section className="px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">Daily Activities</h2>
+            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
+              {t.curriculum.dailyActivities.title}
+            </h2>
             <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-              A balanced mix of structured learning and free exploration.
+              {t.curriculum.dailyActivities.subtitle}
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -222,39 +229,19 @@ export default function CurriculumPage() {
       <section className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-4xl">
           <div className="mb-8 text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">Our Approach</h2>
+            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
+              {t.curriculum.approach.title}
+            </h2>
           </div>
           <Card className="overflow-hidden rounded-3xl border-2 bg-card">
             <CardContent className="p-8">
               <div className="space-y-6">
-                <div>
-                  <h3 className="mb-2 text-xl font-bold text-foreground">Play-Based Learning</h3>
-                  <p className="leading-relaxed text-muted-foreground">
-                    We believe that play is the most effective way for young children to learn. Through play, children
-                    develop cognitive, social, emotional, and physical skills naturally and joyfully.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="mb-2 text-xl font-bold text-foreground">Individualized Attention</h3>
-                  <p className="leading-relaxed text-muted-foreground">
-                    Every child learns at their own pace. Our teachers observe and assess each child's development,
-                    adapting activities to meet individual needs and interests.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="mb-2 text-xl font-bold text-foreground">Hands-On Experiences</h3>
-                  <p className="leading-relaxed text-muted-foreground">
-                    Children learn best by doing. We provide rich, hands-on experiences with real materials that engage
-                    all the senses and encourage exploration and discovery.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="mb-2 text-xl font-bold text-foreground">Family Involvement</h3>
-                  <p className="leading-relaxed text-muted-foreground">
-                    We partner with families to support each child's learning journey. Regular communication, parent
-                    conferences, and family events keep you connected to your child's progress.
-                  </p>
-                </div>
+                {approach.map((item, index) => (
+                  <div key={index}>
+                    <h3 className="mb-2 text-xl font-bold text-foreground">{item.title}</h3>
+                    <p className="leading-relaxed text-muted-foreground">{item.description}</p>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>

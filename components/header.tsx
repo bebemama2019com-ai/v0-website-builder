@@ -4,18 +4,21 @@ import Link from "next/link"
 import { useState } from "react"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { LanguageSelector } from "@/components/language-selector"
+import { useLanguage } from "@/lib/i18n/language-context"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { t } = useLanguage()
 
   const navigation = [
-    { name: "Home", href: "/" },
-    { name: "About Us", href: "/about" },
-    { name: "Our Team", href: "/team" },
-    { name: "Curriculum", href: "/curriculum" },
-    { name: "Gallery", href: "/gallery" },
-    { name: "News & Events", href: "/news" },
-    { name: "Contact", href: "/contact" },
+    { name: t.nav.home, href: "/" },
+    { name: t.nav.about, href: "/about" },
+    { name: t.nav.team, href: "/team" },
+    { name: t.nav.curriculum, href: "/curriculum" },
+    { name: t.nav.gallery, href: "/gallery" },
+    { name: t.nav.news, href: "/news" },
+    { name: t.nav.contact, href: "/contact" },
   ]
 
   return (
@@ -26,7 +29,8 @@ export function Header() {
             <span className="text-2xl font-bold text-primary">Little Sprouts</span>
           </Link>
         </div>
-        <div className="flex lg:hidden">
+        <div className="flex lg:hidden gap-2">
+          <LanguageSelector />
           <button
             type="button"
             className="-m-2.5 inline-flex items-center justify-center rounded-xl p-2.5 text-foreground"
@@ -51,9 +55,10 @@ export function Header() {
             </Link>
           ))}
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-2 lg:items-center">
+          <LanguageSelector />
           <Button asChild className="rounded-full">
-            <Link href="/contact">Enroll Now</Link>
+            <Link href="/contact">{t.nav.enrollNow}</Link>
           </Button>
         </div>
       </nav>
@@ -73,7 +78,7 @@ export function Header() {
             ))}
             <div className="pt-2">
               <Button asChild className="w-full rounded-full">
-                <Link href="/contact">Enroll Now</Link>
+                <Link href="/contact">{t.nav.enrollNow}</Link>
               </Button>
             </div>
           </div>

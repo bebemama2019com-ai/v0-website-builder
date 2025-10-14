@@ -1,23 +1,29 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { getNewsPosts } from "@/lib/sanity-queries"
 import { Calendar, ArrowRight } from "lucide-react"
+import { useLanguage } from "@/lib/i18n/language-context"
 
-export const revalidate = 60 // Revalidate every 60 seconds
+export default function NewsPage() {
+  const { t } = useLanguage()
+  const [newsPosts, setNewsPosts] = useState([])
 
-export default async function NewsPage() {
-  // Fetch news posts from Sanity CMS
-  let newsPosts = []
-  try {
-    newsPosts = await getNewsPosts()
-  } catch (error) {
-    console.error("Error fetching news posts:", error)
-  }
+  useEffect(() => {
+    // Fetch news posts from API
+    fetch("/api/news")
+      .then((res) => res.json())
+      .then((data) => setNewsPosts(data))
+      .catch(() => {
+        // Use fallback data
+        setNewsPosts(fallbackPosts)
+      })
+  }, [])
 
-  // Fallback data if CMS is not set up yet
   const fallbackPosts = [
     {
       _id: "1",
@@ -100,10 +106,10 @@ export default async function NewsPage() {
       <section className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-accent/20 px-4 py-20 lg:py-32">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-foreground lg:text-5xl">
-            News & Events
+            {t.news.hero.title}
           </h1>
           <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
-            Stay updated with the latest happenings, events, and activities at Little Sprouts Kindergarten.
+            {t.news.hero.description}
           </p>
         </div>
       </section>
@@ -114,7 +120,7 @@ export default async function NewsPage() {
           <div className="mx-auto max-w-7xl">
             <div className="mb-6">
               <span className="inline-block rounded-full bg-primary px-4 py-1 text-sm font-semibold text-primary-foreground">
-                Featured
+                {t.news.featured}
               </span>
             </div>
             <Card className="overflow-hidden rounded-3xl border-2">
@@ -149,7 +155,7 @@ export default async function NewsPage() {
                   <div>
                     <Button asChild className="rounded-full">
                       <Link href={`/news/${featuredPost.slug.current}`}>
-                        Read More
+                        {t.news.readMore}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
                     </Button>
@@ -193,7 +199,7 @@ export default async function NewsPage() {
                       {post.excerpt}
                     </p>
                     <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
-                      Read More
+                      {t.news.readMore}
                       <ArrowRight className="h-4 w-4" />
                     </span>
                   </CardContent>

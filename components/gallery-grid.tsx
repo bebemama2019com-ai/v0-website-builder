@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { X } from "lucide-react"
+import { useLanguage } from "@/lib/i18n/language-context"
 
 interface GalleryImage {
   _id: string
@@ -18,6 +19,7 @@ interface GalleryGridProps {
 }
 
 export function GalleryGrid({ images }: GalleryGridProps) {
+  const { t } = useLanguage()
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
 
@@ -26,6 +28,23 @@ export function GalleryGrid({ images }: GalleryGridProps) {
 
   // Filter images based on selected category
   const filteredImages = selectedCategory === "All" ? images : images.filter((img) => img.category === selectedCategory)
+
+  const getCategoryLabel = (category: string) => {
+    switch (category) {
+      case "All":
+        return t.gallery.filters.all
+      case "Classroom":
+        return t.gallery.filters.classroom
+      case "Outdoor Play":
+        return t.gallery.filters.outdoor
+      case "Activities":
+        return t.gallery.filters.activities
+      case "Events":
+        return t.gallery.filters.events
+      default:
+        return category
+    }
+  }
 
   return (
     <>
@@ -38,7 +57,7 @@ export function GalleryGrid({ images }: GalleryGridProps) {
             variant={selectedCategory === category ? "default" : "outline"}
             className="rounded-full"
           >
-            {category}
+            {getCategoryLabel(category)}
           </Button>
         ))}
       </div>
@@ -59,7 +78,7 @@ export function GalleryGrid({ images }: GalleryGridProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
             <div className="absolute bottom-0 left-0 right-0 p-4 text-left opacity-0 transition-opacity group-hover:opacity-100">
               <h3 className="text-lg font-bold text-white">{image.title}</h3>
-              <p className="text-sm text-white/80">{image.category}</p>
+              <p className="text-sm text-white/80">{getCategoryLabel(image.category)}</p>
             </div>
           </button>
         ))}
@@ -85,7 +104,7 @@ export function GalleryGrid({ images }: GalleryGridProps) {
                 <div className="p-6">
                   <h3 className="mb-2 text-2xl font-bold text-foreground">{selectedImage.title}</h3>
                   <p className="text-muted-foreground">
-                    {selectedImage.category} • {new Date(selectedImage.date).toLocaleDateString()}
+                    {getCategoryLabel(selectedImage.category)} • {new Date(selectedImage.date).toLocaleDateString()}
                   </p>
                 </div>
               </div>

@@ -1,7 +1,12 @@
+"use client"
+
 import Link from "next/link"
 import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react"
+import { useLanguage } from "@/lib/i18n/language-context"
 
 export function Footer() {
+  const { t } = useLanguage()
+
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-7xl px-4 py-12 lg:px-8">
@@ -9,33 +14,31 @@ export function Footer() {
           {/* About */}
           <div>
             <h3 className="mb-4 text-lg font-bold text-primary">Little Sprouts</h3>
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              A warm, nurturing environment where children grow, learn, and discover through play-based education.
-            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground">{t.footer.tagline}</p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-foreground">Quick Links</h3>
+            <h3 className="mb-4 text-lg font-semibold text-foreground">{t.footer.quickLinks}</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/about" className="text-muted-foreground hover:text-primary">
-                  About Us
+                  {t.nav.about}
                 </Link>
               </li>
               <li>
                 <Link href="/team" className="text-muted-foreground hover:text-primary">
-                  Our Team
+                  {t.nav.team}
                 </Link>
               </li>
               <li>
                 <Link href="/curriculum" className="text-muted-foreground hover:text-primary">
-                  Curriculum
+                  {t.nav.curriculum}
                 </Link>
               </li>
               <li>
                 <Link href="/gallery" className="text-muted-foreground hover:text-primary">
-                  Gallery
+                  {t.nav.gallery}
                 </Link>
               </li>
             </ul>
@@ -43,7 +46,7 @@ export function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-foreground">Contact Us</h3>
+            <h3 className="mb-4 text-lg font-semibold text-foreground">{t.footer.contact}</h3>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
@@ -62,7 +65,7 @@ export function Footer() {
 
           {/* Social & Hours */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-foreground">Follow Us</h3>
+            <h3 className="mb-4 text-lg font-semibold text-foreground">{t.footer.followUs}</h3>
             <div className="mb-4 flex gap-3">
               <a
                 href="#"
@@ -86,7 +89,9 @@ export function Footer() {
         </div>
 
         <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Little Sprouts Kindergarten. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Little Sprouts Kindergarten. {t.footer.rights}
+          </p>
         </div>
       </div>
     </footer>

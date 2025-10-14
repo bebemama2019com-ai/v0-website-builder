@@ -1,21 +1,27 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
-import { getTeamMembers } from "@/lib/sanity-queries"
 import { Mail } from "lucide-react"
+import { useLanguage } from "@/lib/i18n/language-context"
 
-export const revalidate = 60 // Revalidate every 60 seconds
+export default function TeamPage() {
+  const { t } = useLanguage()
+  const [teamMembers, setTeamMembers] = useState([])
 
-export default async function TeamPage() {
-  // Fetch team members from Sanity CMS
-  let teamMembers = []
-  try {
-    teamMembers = await getTeamMembers()
-  } catch (error) {
-    console.error("Error fetching team members:", error)
-  }
+  useEffect(() => {
+    // Fetch team members from API
+    fetch("/api/team")
+      .then((res) => res.json())
+      .then((data) => setTeamMembers(data))
+      .catch(() => {
+        // Use fallback data
+        setTeamMembers(fallbackTeam)
+      })
+  }, [])
 
-  // Fallback data if CMS is not set up yet
   const fallbackTeam = [
     {
       _id: "1",
@@ -77,11 +83,10 @@ export default async function TeamPage() {
       <section className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-accent/20 px-4 py-20 lg:py-32">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-foreground lg:text-5xl">
-            Meet Our Amazing Team
+            {t.team.hero.title}
           </h1>
           <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
-            Our dedicated educators are passionate about early childhood development and committed to providing the best
-            care and education for your child.
+            {t.team.hero.description}
           </p>
         </div>
       </section>
@@ -113,17 +118,14 @@ export default async function TeamPage() {
       {/* Join Our Team CTA */}
       <section className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="mb-6 text-balance text-3xl font-bold text-foreground lg:text-4xl">Join Our Team</h2>
-          <p className="mb-8 text-pretty text-lg leading-relaxed text-muted-foreground">
-            We're always looking for passionate educators to join our family. If you love working with children and want
-            to make a difference, we'd love to hear from you.
-          </p>
+          <h2 className="mb-6 text-balance text-3xl font-bold text-foreground lg:text-4xl">{t.team.join.title}</h2>
+          <p className="mb-8 text-pretty text-lg leading-relaxed text-muted-foreground">{t.team.join.description}</p>
           <a
-            href="mailto:careers@littlesprouts.com"
+            href={`mailto:${t.team.join.email}`}
             className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3 text-base font-semibold text-primary-foreground transition-transform hover:scale-105"
           >
             <Mail className="h-5 w-5" />
-            careers@littlesprouts.com
+            {t.team.join.email}
           </a>
         </div>
       </section>

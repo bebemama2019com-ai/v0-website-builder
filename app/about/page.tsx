@@ -1,51 +1,71 @@
+"use client"
+
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Target, Eye, Award, Clock } from "lucide-react"
+import { useLanguage } from "@/lib/i18n/language-context"
 
 export default function AboutPage() {
+  const { t } = useLanguage()
+
   const values = [
     {
       icon: Target,
-      title: "Our Mission",
-      description:
-        "To provide a nurturing, stimulating environment where children develop a lifelong love of learning through play-based education and meaningful experiences.",
+      title: t.about.missionVision.mission.title,
+      description: t.about.missionVision.mission.description,
     },
     {
       icon: Eye,
-      title: "Our Vision",
-      description:
-        "To be a leading early childhood education center recognized for excellence in fostering creativity, curiosity, and confidence in every child.",
+      title: t.about.missionVision.vision.title,
+      description: t.about.missionVision.vision.description,
     },
     {
       icon: Award,
-      title: "Our Values",
-      description:
-        "Respect, kindness, creativity, and growth. We believe every child is unique and deserves individualized attention and care.",
+      title: t.about.missionVision.values.title,
+      description: t.about.missionVision.values.description,
     },
   ]
 
   const philosophy = [
     {
-      title: "Child-Centered Learning",
-      description:
-        "We follow each child's interests and developmental pace, creating personalized learning experiences that build confidence and competence.",
+      title: t.about.philosophy.childCentered.title,
+      description: t.about.philosophy.childCentered.description,
     },
     {
-      title: "Play-Based Approach",
-      description:
-        "Play is the foundation of learning. Through structured and free play, children develop social, emotional, cognitive, and physical skills.",
+      title: t.about.philosophy.playBased.title,
+      description: t.about.philosophy.playBased.description,
     },
     {
-      title: "Family Partnership",
-      description:
-        "We believe parents are a child's first teachers. We work closely with families to support each child's growth and development.",
+      title: t.about.philosophy.family.title,
+      description: t.about.philosophy.family.description,
     },
     {
-      title: "Safe & Nurturing",
-      description:
-        "Safety and emotional well-being are our top priorities. We create a warm, welcoming environment where children feel secure and valued.",
+      title: t.about.philosophy.safe.title,
+      description: t.about.philosophy.safe.description,
     },
+  ]
+
+  const schedule = [
+    { time: "7:00 - 8:30 AM", activity: t.about.schedule.times.arrival },
+    { time: "8:30 - 9:00 AM", activity: t.about.schedule.times.circle },
+    { time: "9:00 - 10:00 AM", activity: t.about.schedule.times.centers },
+    { time: "10:00 - 10:30 AM", activity: t.about.schedule.times.snack },
+    { time: "10:30 - 11:30 AM", activity: t.about.schedule.times.outdoor },
+    { time: "11:30 - 12:30 PM", activity: t.about.schedule.times.lunch },
+    { time: "12:30 - 2:00 PM", activity: t.about.schedule.times.rest },
+    { time: "2:00 - 3:00 PM", activity: t.about.schedule.times.arts },
+    { time: "3:00 - 3:30 PM", activity: t.about.schedule.times.afternoon },
+    { time: "3:30 - 6:00 PM", activity: t.about.schedule.times.departure },
+  ]
+
+  const facilities = [
+    { title: t.about.facilities.brightClassrooms, query: "bright colorful kindergarten classroom" },
+    { title: t.about.facilities.outdoorPlayground, query: "safe outdoor playground for children" },
+    { title: t.about.facilities.artStudio, query: "children's art studio with supplies" },
+    { title: t.about.facilities.readingCorner, query: "cozy reading corner with books" },
+    { title: t.about.facilities.musicRoom, query: "music room with instruments for kids" },
+    { title: t.about.facilities.gardenArea, query: "children's garden with plants" },
   ]
 
   return (
@@ -58,17 +78,12 @@ export default function AboutPage() {
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="flex flex-col justify-center">
               <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-foreground lg:text-5xl">
-                About Little Sprouts
+                {t.about.hero.title}
               </h1>
               <p className="mb-6 text-pretty text-lg leading-relaxed text-muted-foreground">
-                Founded in 2010, Little Sprouts Kindergarten has been a cornerstone of early childhood education in our
-                community. We are dedicated to providing a warm, nurturing environment where children can grow, learn,
-                and thrive.
+                {t.about.hero.description1}
               </p>
-              <p className="text-pretty text-lg leading-relaxed text-muted-foreground">
-                Our experienced team of educators is passionate about fostering a love of learning in every child. We
-                believe that the early years are crucial for development, and we are committed to making them magical.
-              </p>
+              <p className="text-pretty text-lg leading-relaxed text-muted-foreground">{t.about.hero.description2}</p>
             </div>
             <div className="relative">
               <div className="aspect-[4/3] overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 to-accent/20">
@@ -88,7 +103,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
-              Our Mission, Vision & Values
+              {t.about.missionVision.title}
             </h2>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
@@ -112,10 +127,10 @@ export default function AboutPage() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
-              Our Educational Philosophy
+              {t.about.philosophy.title}
             </h2>
             <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-              We believe in nurturing the whole child through a holistic, play-based approach to learning.
+              {t.about.philosophy.subtitle}
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2">
@@ -135,27 +150,15 @@ export default function AboutPage() {
       <section className="px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-4xl">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">A Typical Day</h2>
-            <p className="text-pretty text-lg leading-relaxed text-muted-foreground">
-              Our structured yet flexible daily routine provides consistency while allowing for spontaneous learning
-              moments.
-            </p>
+            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
+              {t.about.schedule.title}
+            </h2>
+            <p className="text-pretty text-lg leading-relaxed text-muted-foreground">{t.about.schedule.subtitle}</p>
           </div>
           <Card className="overflow-hidden rounded-3xl border-2">
             <CardContent className="p-8">
               <div className="space-y-6">
-                {[
-                  { time: "7:00 - 8:30 AM", activity: "Arrival & Free Play" },
-                  { time: "8:30 - 9:00 AM", activity: "Morning Circle & Calendar Time" },
-                  { time: "9:00 - 10:00 AM", activity: "Learning Centers & Activities" },
-                  { time: "10:00 - 10:30 AM", activity: "Snack Time & Story Time" },
-                  { time: "10:30 - 11:30 AM", activity: "Outdoor Play & Exploration" },
-                  { time: "11:30 - 12:30 PM", activity: "Lunch & Quiet Time" },
-                  { time: "12:30 - 2:00 PM", activity: "Rest Time / Quiet Activities" },
-                  { time: "2:00 - 3:00 PM", activity: "Creative Arts & Music" },
-                  { time: "3:00 - 3:30 PM", activity: "Afternoon Snack" },
-                  { time: "3:30 - 6:00 PM", activity: "Free Play & Departure" },
-                ].map((item, index) => (
+                {schedule.map((item, index) => (
                   <div key={index} className="flex items-start gap-4">
                     <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
                       <Clock className="h-5 w-5 text-primary" />
@@ -176,20 +179,15 @@ export default function AboutPage() {
       <section className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">Our Facilities</h2>
+            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
+              {t.about.facilities.title}
+            </h2>
             <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-              Bright, spacious classrooms and safe outdoor areas designed for exploration and learning.
+              {t.about.facilities.subtitle}
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              { title: "Bright Classrooms", query: "bright colorful kindergarten classroom" },
-              { title: "Outdoor Playground", query: "safe outdoor playground for children" },
-              { title: "Art Studio", query: "children's art studio with supplies" },
-              { title: "Reading Corner", query: "cozy reading corner with books" },
-              { title: "Music Room", query: "music room with instruments for kids" },
-              { title: "Garden Area", query: "children's garden with plants" },
-            ].map((facility, index) => (
+            {facilities.map((facility, index) => (
               <div key={index} className="group relative aspect-[4/3] overflow-hidden rounded-3xl">
                 <img
                   src={`/.jpg?height=400&width=500&query=${facility.query}`}

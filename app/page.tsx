@@ -1,65 +1,70 @@
+"use client"
+
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Heart, Users, Sparkles, BookOpen, Palette, Music } from "lucide-react"
+import { useLanguage } from "@/lib/i18n/language-context"
 
 export default function HomePage() {
+  const { t } = useLanguage()
+
   const features = [
     {
       icon: Heart,
-      title: "Nurturing Environment",
-      description: "A warm, caring space where every child feels safe, valued, and loved.",
+      title: t.home.features.nurturing.title,
+      description: t.home.features.nurturing.description,
       color: "bg-chart-1",
     },
     {
       icon: Users,
-      title: "Experienced Teachers",
-      description: "Dedicated educators passionate about early childhood development.",
+      title: t.home.features.teachers.title,
+      description: t.home.features.teachers.description,
       color: "bg-chart-2",
     },
     {
       icon: Sparkles,
-      title: "Play-Based Learning",
-      description: "Learning through exploration, creativity, and hands-on activities.",
+      title: t.home.features.playBased.title,
+      description: t.home.features.playBased.description,
       color: "bg-chart-3",
     },
     {
       icon: BookOpen,
-      title: "Rich Curriculum",
-      description: "Age-appropriate programs that foster cognitive and social growth.",
+      title: t.home.features.curriculum.title,
+      description: t.home.features.curriculum.description,
       color: "bg-chart-4",
     },
     {
       icon: Palette,
-      title: "Creative Arts",
-      description: "Music, art, and movement activities that spark imagination.",
+      title: t.home.features.arts.title,
+      description: t.home.features.arts.description,
       color: "bg-chart-5",
     },
     {
       icon: Music,
-      title: "Daily Activities",
-      description: "Structured routines with outdoor play, story time, and more.",
+      title: t.home.features.activities.title,
+      description: t.home.features.activities.description,
       color: "bg-chart-1",
     },
   ]
 
   const ageGroups = [
     {
-      title: "Toddlers",
-      age: "18 months - 3 years",
-      description: "Gentle introduction to social play and early learning concepts.",
+      title: t.home.programs.toddlers.title,
+      age: t.home.programs.toddlers.age,
+      description: t.home.programs.toddlers.description,
     },
     {
-      title: "Preschool",
-      age: "3 - 4 years",
-      description: "Building independence, language skills, and school readiness.",
+      title: t.home.programs.preschool.title,
+      age: t.home.programs.preschool.age,
+      description: t.home.programs.preschool.description,
     },
     {
-      title: "Pre-K",
-      age: "4 - 5 years",
-      description: "Preparing for kindergarten with advanced literacy and math skills.",
+      title: t.home.programs.preK.title,
+      age: t.home.programs.preK.age,
+      description: t.home.programs.preK.description,
     },
   ]
 
@@ -73,18 +78,17 @@ export default function HomePage() {
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="flex flex-col justify-center">
               <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-foreground lg:text-6xl">
-                Where Little Minds Grow Big Dreams
+                {t.home.hero.title}
               </h1>
               <p className="mb-8 text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
-                Welcome to Little Sprouts Kindergarten, a nurturing environment where children discover the joy of
-                learning through play, creativity, and exploration.
+                {t.home.hero.description}
               </p>
               <div className="flex flex-col gap-4 sm:flex-row">
                 <Button asChild size="lg" className="rounded-full text-base">
-                  <Link href="/contact">Schedule a Visit</Link>
+                  <Link href="/contact">{t.home.hero.scheduleVisit}</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="rounded-full text-base bg-transparent">
-                  <Link href="/about">Learn More</Link>
+                  <Link href="/about">{t.home.hero.learnMore}</Link>
                 </Button>
               </div>
             </div>
@@ -109,10 +113,10 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
-              Why Choose Little Sprouts?
+              {t.home.features.title}
             </h2>
             <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-              We provide a holistic approach to early childhood education, focusing on the whole child.
+              {t.home.features.subtitle}
             </p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -135,9 +139,11 @@ export default function HomePage() {
       <section className="bg-muted/50 px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">Our Programs</h2>
+            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
+              {t.home.programs.title}
+            </h2>
             <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-              Age-appropriate programs designed to meet the developmental needs of each child.
+              {t.home.programs.subtitle}
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
@@ -159,11 +165,9 @@ export default function HomePage() {
       <section className="px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
-              A Day at Little Sprouts
-            </h2>
+            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">{t.home.gallery.title}</h2>
             <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-              Peek into our vibrant classrooms and outdoor spaces where learning comes alive.
+              {t.home.gallery.subtitle}
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -179,7 +183,7 @@ export default function HomePage() {
           </div>
           <div className="mt-8 text-center">
             <Button asChild size="lg" variant="outline" className="rounded-full bg-transparent">
-              <Link href="/gallery">View Full Gallery</Link>
+              <Link href="/gallery">{t.home.gallery.viewFull}</Link>
             </Button>
           </div>
         </div>
@@ -188,14 +192,12 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="mb-6 text-balance text-3xl font-bold text-foreground lg:text-4xl">
-            Ready to Join Our Family?
-          </h2>
+          <h2 className="mb-6 text-balance text-3xl font-bold text-foreground lg:text-4xl">{t.home.cta.title}</h2>
           <p className="mb-8 text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
-            Schedule a tour to see our facilities, meet our teachers, and discover why families love Little Sprouts.
+            {t.home.cta.description}
           </p>
           <Button asChild size="lg" className="rounded-full text-base">
-            <Link href="/contact">Schedule Your Visit Today</Link>
+            <Link href="/contact">{t.home.cta.button}</Link>
           </Button>
         </div>
       </section>

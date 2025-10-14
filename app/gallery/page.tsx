@@ -1,20 +1,26 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
-import { getGalleryImages } from "@/lib/sanity-queries"
+import { useLanguage } from "@/lib/i18n/language-context"
 
-export const revalidate = 60 // Revalidate every 60 seconds
+export default function GalleryPage() {
+  const { t } = useLanguage()
+  const [galleryImages, setGalleryImages] = useState([])
 
-export default async function GalleryPage() {
-  // Fetch gallery images from Sanity CMS
-  let galleryImages = []
-  try {
-    galleryImages = await getGalleryImages()
-  } catch (error) {
-    console.error("Error fetching gallery images:", error)
-  }
+  useEffect(() => {
+    // Fetch gallery images from API
+    fetch("/api/gallery")
+      .then((res) => res.json())
+      .then((data) => setGalleryImages(data))
+      .catch(() => {
+        // Use fallback data
+        setGalleryImages(fallbackImages)
+      })
+  }, [])
 
-  // Fallback data if CMS is not set up yet
   const fallbackImages = [
     {
       _id: "1",
@@ -112,10 +118,10 @@ export default async function GalleryPage() {
       <section className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-accent/20 px-4 py-20 lg:py-32">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-foreground lg:text-5xl">
-            Photo Gallery
+            {t.gallery.hero.title}
           </h1>
           <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
-            Explore moments of joy, learning, and discovery at Little Sprouts Kindergarten.
+            {t.gallery.hero.description}
           </p>
         </div>
       </section>
