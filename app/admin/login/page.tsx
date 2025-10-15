@@ -23,6 +23,8 @@ export default function AdminLoginPage() {
     setIsLoading(true)
     setError(null)
 
+    console.log("[v0] Login attempt for:", email)
+
     try {
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
@@ -31,21 +33,26 @@ export default function AdminLoginPage() {
 
       if (signInError) throw signInError
 
-      // Check if user is an admin
+      console.log("[v0] Authentication successful, user ID:", data.user.id)
+
       const { data: adminUser, error: adminError } = await supabase
         .from("admin_users")
         .select("id")
         .eq("id", data.user.id)
         .single()
 
+      console.log("[v0] Admin check result:", { adminUser, adminError })
+
       if (adminError || !adminUser) {
         await supabase.auth.signOut()
-        throw new Error("You do not have admin access")
+        throw new Error("You do not have admin access. Please add your user ID to the admin_users table.")
       }
 
+      console.log("[v0] Admin access confirmed, redirecting to /admin")
       router.push("/admin")
       router.refresh()
     } catch (error: unknown) {
+      console.error("[v0] Login error:", error)
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
