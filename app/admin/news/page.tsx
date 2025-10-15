@@ -32,14 +32,14 @@ export default async function AdminNewsPage() {
           <div className="flex items-center justify-between">
             <div>
               <Link href="/admin" className="text-sm text-muted-foreground hover:text-foreground">
-                ← Back to Dashboard
+                ← Назад към таблото
               </Link>
-              <h1 className="text-3xl font-bold mt-2">Manage News & Events</h1>
+              <h1 className="text-3xl font-bold mt-2">Управление на новини и събития</h1>
             </div>
             <Link href="/admin/news/new">
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
-                Add News Post
+                Добави новина
               </Button>
             </Link>
           </div>
@@ -72,7 +72,7 @@ export default async function AdminNewsPage() {
                         </span>
                         {post.featured && (
                           <span className="inline-block px-3 py-1 bg-accent text-accent-foreground rounded-full text-xs">
-                            Featured
+                            Препоръчано
                           </span>
                         )}
                       </div>
@@ -99,9 +99,9 @@ export default async function AdminNewsPage() {
         {!newsPosts ||
           (newsPosts.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground mb-4">No news posts yet</p>
+              <p className="text-muted-foreground mb-4">Все още няма новини</p>
               <Link href="/admin/news/new">
-                <Button>Add Your First News Post</Button>
+                <Button>Добавете първата новина</Button>
               </Link>
             </div>
           ))}

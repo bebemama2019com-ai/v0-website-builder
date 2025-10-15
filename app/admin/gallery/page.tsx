@@ -34,14 +34,14 @@ export default async function AdminGalleryPage() {
           <div className="flex items-center justify-between">
             <div>
               <Link href="/admin" className="text-sm text-muted-foreground hover:text-foreground">
-                ← Back to Dashboard
+                ← Назад към таблото
               </Link>
-              <h1 className="text-3xl font-bold mt-2">Manage Gallery</h1>
+              <h1 className="text-3xl font-bold mt-2">Управление на галерия</h1>
             </div>
             <Link href="/admin/gallery/new">
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
-                Add Image
+                Добави снимка
               </Button>
             </Link>
           </div>
@@ -59,7 +59,7 @@ export default async function AdminGalleryPage() {
                 <form action={`/api/admin/gallery/${image.id}/delete`} method="POST">
                   <Button variant="destructive" size="sm" className="w-full" type="submit">
                     <Trash2 className="w-4 h-4 mr-1" />
-                    Delete
+                    Изтрий
                   </Button>
                 </form>
               </div>
@@ -70,9 +70,9 @@ export default async function AdminGalleryPage() {
         {!galleryImages ||
           (galleryImages.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground mb-4">No gallery images yet</p>
+              <p className="text-muted-foreground mb-4">Все още няма снимки в галерията</p>
               <Link href="/admin/gallery/new">
-                <Button>Add Your First Image</Button>
+                <Button>Добавете първата снимка</Button>
               </Link>
             </div>
           ))}

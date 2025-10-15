@@ -40,7 +40,7 @@ export async function updateSession(request: NextRequest) {
       }
 
       try {
-        const { data: adminUser } = await supabase.from("admin_users").select("id").eq("user_id", user.id).single()
+        const { data: adminUser } = await supabase.from("admin_users").select("id").eq("id", user.id).single()
 
         if (!adminUser) {
           const url = request.nextUrl.clone()

@@ -34,14 +34,14 @@ export default async function AdminTeamPage() {
           <div className="flex items-center justify-between">
             <div>
               <Link href="/admin" className="text-sm text-muted-foreground hover:text-foreground">
-                ← Back to Dashboard
+                ← Назад към таблото
               </Link>
-              <h1 className="text-3xl font-bold mt-2">Manage Team</h1>
+              <h1 className="text-3xl font-bold mt-2">Управление на екипа</h1>
             </div>
             <Link href="/admin/team/new">
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
-                Add Team Member
+                Добави член на екипа
               </Button>
             </Link>
           </div>
@@ -66,13 +66,13 @@ export default async function AdminTeamPage() {
                 <Link href={`/admin/team/${member.id}/edit`}>
                   <Button variant="outline" size="sm">
                     <Pencil className="w-4 h-4 mr-1" />
-                    Edit
+                    Редактирай
                   </Button>
                 </Link>
                 <form action={`/api/admin/team/${member.id}/delete`} method="POST">
                   <Button variant="destructive" size="sm" type="submit">
                     <Trash2 className="w-4 h-4 mr-1" />
-                    Delete
+                    Изтрий
                   </Button>
                 </form>
               </div>
@@ -83,9 +83,9 @@ export default async function AdminTeamPage() {
         {!teamMembers ||
           (teamMembers.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground mb-4">No team members yet</p>
+              <p className="text-muted-foreground mb-4">Все още няма членове на екипа</p>
               <Link href="/admin/team/new">
-                <Button>Add Your First Team Member</Button>
+                <Button>Добавете първия член на екипа</Button>
               </Link>
             </div>
           ))}

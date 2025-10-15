@@ -18,7 +18,7 @@ interface TeamFormProps {
     role: string
     bio: string
     image_url?: string
-    order_position: number
+    order_index: number
   }
 }
 
@@ -31,7 +31,7 @@ export default function TeamForm({ member }: TeamFormProps) {
     role: member?.role || "",
     bio: member?.bio || "",
     image_url: member?.image_url || "",
-    order_position: member?.order_position || 0,
+    order_index: member?.order_index || 0,
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,22 +40,18 @@ export default function TeamForm({ member }: TeamFormProps) {
 
     try {
       if (member) {
-        // Update existing member
         const { error } = await supabase.from("team_members").update(formData).eq("id", member.id)
-
         if (error) throw error
       } else {
-        // Create new member
         const { error } = await supabase.from("team_members").insert([formData])
-
         if (error) throw error
       }
 
       router.push("/admin/team")
       router.refresh()
     } catch (error) {
-      console.error("Error saving team member:", error)
-      alert("Error saving team member. Please try again.")
+      console.error("Грешка при запазване на член на екипа:", error)
+      alert("Грешка при запазване на член на екипа. Моля, опитайте отново.")
     } finally {
       setLoading(false)
     }
@@ -65,7 +61,7 @@ export default function TeamForm({ member }: TeamFormProps) {
     <Card className="p-6">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <Label htmlFor="name">Name *</Label>
+          <Label htmlFor="name">Име *</Label>
           <Input
             id="name"
             value={formData.name}
@@ -75,7 +71,7 @@ export default function TeamForm({ member }: TeamFormProps) {
         </div>
 
         <div>
-          <Label htmlFor="role">Role *</Label>
+          <Label htmlFor="role">Длъжност *</Label>
           <Input
             id="role"
             value={formData.role}
@@ -85,7 +81,7 @@ export default function TeamForm({ member }: TeamFormProps) {
         </div>
 
         <div>
-          <Label htmlFor="bio">Bio *</Label>
+          <Label htmlFor="bio">Биография *</Label>
           <Textarea
             id="bio"
             value={formData.bio}
@@ -96,7 +92,7 @@ export default function TeamForm({ member }: TeamFormProps) {
         </div>
 
         <div>
-          <Label htmlFor="image_url">Image URL</Label>
+          <Label htmlFor="image_url">URL на снимка</Label>
           <Input
             id="image_url"
             type="url"
@@ -104,26 +100,26 @@ export default function TeamForm({ member }: TeamFormProps) {
             onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
             placeholder="https://example.com/image.jpg"
           />
-          <p className="text-sm text-muted-foreground mt-1">Enter a direct URL to an image</p>
+          <p className="text-sm text-muted-foreground mt-1">Въведете директен URL към снимка</p>
         </div>
 
         <div>
-          <Label htmlFor="order_position">Display Order</Label>
+          <Label htmlFor="order_index">Ред на показване</Label>
           <Input
-            id="order_position"
+            id="order_index"
             type="number"
-            value={formData.order_position}
-            onChange={(e) => setFormData({ ...formData, order_position: Number.parseInt(e.target.value) })}
+            value={formData.order_index}
+            onChange={(e) => setFormData({ ...formData, order_index: Number.parseInt(e.target.value) })}
           />
-          <p className="text-sm text-muted-foreground mt-1">Lower numbers appear first</p>
+          <p className="text-sm text-muted-foreground mt-1">По-малките числа се показват първи</p>
         </div>
 
         <div className="flex gap-4">
           <Button type="submit" disabled={loading}>
-            {loading ? "Saving..." : member ? "Update" : "Create"}
+            {loading ? "Запазване..." : member ? "Актуализирай" : "Създай"}
           </Button>
           <Button type="button" variant="outline" onClick={() => router.push("/admin/team")}>
-            Cancel
+            Отказ
           </Button>
         </div>
       </form>

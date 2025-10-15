@@ -3,7 +3,8 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Newspaper, ImageIcon, LogOut } from "lucide-react"
+import { Users, Newspaper, ImageIcon, LogOut, AlertCircle } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
@@ -15,86 +16,110 @@ export default async function AdminDashboard() {
     redirect("/admin/login")
   }
 
-  // Get counts
+  // Get counts with error handling
   const { count: teamCount } = await supabase.from("team_members").select("*", { count: "exact", head: true })
-
   const { count: newsCount } = await supabase.from("news_posts").select("*", { count: "exact", head: true })
-
   const { count: galleryCount } = await supabase.from("gallery_images").select("*", { count: "exact", head: true })
-  const { count: documentsCount } = await supabase.from("documents").select("*", { count: "exact", head: true })
-  const { count: parentsCount } = await supabase.from("parent_content").select("*", { count: "exact", head: true })
+
+  let documentsCount = 0
+  let parentsCount = 0
+  let tablesExist = true
+
+  try {
+    const { count: docCount } = await supabase.from("documents").select("*", { count: "exact", head: true })
+    documentsCount = docCount || 0
+  } catch (error) {
+    tablesExist = false
+  }
+
+  try {
+    const { count: parentCount } = await supabase.from("parent_content").select("*", { count: "exact", head: true })
+    parentsCount = parentCount || 0
+  } catch (error) {
+    tablesExist = false
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5">
       <div className="container mx-auto p-6 max-w-7xl">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-            <p className="text-muted-foreground mt-1">Manage your kindergarten website content</p>
+            <h1 className="text-3xl font-bold text-foreground">Административен панел</h1>
+            <p className="text-muted-foreground mt-1">Управление на съдържанието на уебсайта</p>
           </div>
           <form action="/api/auth/logout" method="post">
             <Button variant="outline" type="submit">
               <LogOut className="mr-2 h-4 w-4" />
-              Logout
+              Изход
             </Button>
           </form>
         </div>
 
+        {!tablesExist && (
+          <Alert className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Необходима настройка</AlertTitle>
+            <AlertDescription>
+              Таблиците за Документи и За Родители трябва да бъдат създадени. Моля, изпълнете SQL скрипта{" "}
+              <code className="bg-muted px-1 py-0.5 rounded">scripts/003_add_documents_and_parents_tables.sql</code> в
+              Supabase SQL редактора или натиснете бутона Run до файла в v0.
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="grid gap-6 md:grid-cols-3 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Team Members</CardTitle>
+              <CardTitle className="text-sm font-medium">Членове на екипа</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{teamCount || 0}</div>
-              <p className="text-xs text-muted-foreground">Total staff members</p>
+              <p className="text-xs text-muted-foreground">Общо служители</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">News Posts</CardTitle>
+              <CardTitle className="text-sm font-medium">Новини</CardTitle>
               <Newspaper className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{newsCount || 0}</div>
-              <p className="text-xs text-muted-foreground">Published articles</p>
+              <p className="text-xs text-muted-foreground">Публикувани статии</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Gallery Images</CardTitle>
+              <CardTitle className="text-sm font-medium">Галерия</CardTitle>
               <ImageIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{galleryCount || 0}</div>
-              <p className="text-xs text-muted-foreground">Total photos</p>
+              <p className="text-xs text-muted-foreground">Общо снимки</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Documents</CardTitle>
-              {/* Placeholder icon for documents */}
+              <CardTitle className="text-sm font-medium">Документи</CardTitle>
               <div className="h-4 w-4 text-muted-foreground">📄</div>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{documentsCount || 0}</div>
-              <p className="text-xs text-muted-foreground">Normative documents and budget files</p>
+              <p className="text-xs text-muted-foreground">Нормативни документи и бюджет</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">For Parents</CardTitle>
-              {/* Placeholder icon for parents */}
+              <CardTitle className="text-sm font-medium">За Родители</CardTitle>
               <div className="h-4 w-4 text-muted-foreground">👨‍👩‍👧‍👦</div>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{parentsCount || 0}</div>
-              <p className="text-xs text-muted-foreground">Parent information and resources</p>
+              <p className="text-xs text-muted-foreground">Информация и ресурси за родители</p>
             </CardContent>
           </Card>
         </div>
@@ -102,62 +127,62 @@ export default async function AdminDashboard() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <CardTitle>Team Members</CardTitle>
-              <CardDescription>Manage staff profiles and information</CardDescription>
+              <CardTitle>Нашия екип</CardTitle>
+              <CardDescription>Управление на профили и информация за персонала</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/admin/team">
-                <Button className="w-full">Manage Team</Button>
+                <Button className="w-full">Управление на екипа</Button>
               </Link>
             </CardContent>
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <CardTitle>News & Events</CardTitle>
-              <CardDescription>Create and edit blog posts and announcements</CardDescription>
+              <CardTitle>Новини и събития</CardTitle>
+              <CardDescription>Създаване и редактиране на публикации и съобщения</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/admin/news">
-                <Button className="w-full">Manage News</Button>
+                <Button className="w-full">Управление на новини</Button>
               </Link>
             </CardContent>
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <CardTitle>Gallery</CardTitle>
-              <CardDescription>Upload and organize photos</CardDescription>
+              <CardTitle>Галерия</CardTitle>
+              <CardDescription>Качване и организиране на снимки</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/admin/gallery">
-                <Button className="w-full">Manage Gallery</Button>
+                <Button className="w-full">Управление на галерия</Button>
               </Link>
             </CardContent>
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <CardTitle>Documents</CardTitle>
-              <CardDescription>Manage normative documents and budget files</CardDescription>
+              <CardTitle>Документи</CardTitle>
+              <CardDescription>Управление на нормативни документи и бюджетни файлове</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold mb-2">{documentsCount || 0}</div>
               <Link href="/admin/documents">
-                <Button className="w-full">Manage Documents</Button>
+                <Button className="w-full">Управление на документи</Button>
               </Link>
             </CardContent>
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <CardTitle>For Parents</CardTitle>
-              <CardDescription>Manage parent information and resources</CardDescription>
+              <CardTitle>За Родители</CardTitle>
+              <CardDescription>Управление на информация и ресурси за родители</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold mb-2">{parentsCount || 0}</div>
               <Link href="/admin/parents">
-                <Button className="w-full">Manage Content</Button>
+                <Button className="w-full">Управление на съдържание</Button>
               </Link>
             </CardContent>
           </Card>

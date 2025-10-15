@@ -34,14 +34,14 @@ export default async function AdminDocumentsPage() {
           <div className="flex items-center justify-between">
             <div>
               <Link href="/admin" className="text-sm text-muted-foreground hover:text-foreground">
-                ← Back to Dashboard
+                ← Назад към таблото
               </Link>
-              <h1 className="text-3xl font-bold mt-2">Manage Documents</h1>
+              <h1 className="text-3xl font-bold mt-2">Управление на документи</h1>
             </div>
             <Link href="/admin/documents/new">
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
-                Add Document
+                Добави документ
               </Button>
             </Link>
           </div>
@@ -67,13 +67,13 @@ export default async function AdminDocumentsPage() {
                         <Link href={`/admin/documents/${doc.id}/edit`}>
                           <Button variant="outline" size="sm">
                             <Pencil className="w-4 h-4 mr-1" />
-                            Edit
+                            Редактирай
                           </Button>
                         </Link>
                         <form action={`/api/admin/documents/${doc.id}/delete`} method="POST">
                           <Button variant="destructive" size="sm" type="submit">
                             <Trash2 className="w-4 h-4 mr-1" />
-                            Delete
+                            Изтрий
                           </Button>
                         </form>
                       </div>
@@ -83,7 +83,7 @@ export default async function AdminDocumentsPage() {
               ))}
             </div>
             {normativeDocs.length === 0 && (
-              <p className="text-center text-muted-foreground py-8">No normative documents yet</p>
+              <p className="text-center text-muted-foreground py-8">Все още няма нормативни документи</p>
             )}
           </div>
 
@@ -104,13 +104,13 @@ export default async function AdminDocumentsPage() {
                         <Link href={`/admin/documents/${doc.id}/edit`}>
                           <Button variant="outline" size="sm">
                             <Pencil className="w-4 h-4 mr-1" />
-                            Edit
+                            Редактирай
                           </Button>
                         </Link>
                         <form action={`/api/admin/documents/${doc.id}/delete`} method="POST">
                           <Button variant="destructive" size="sm" type="submit">
                             <Trash2 className="w-4 h-4 mr-1" />
-                            Delete
+                            Изтрий
                           </Button>
                         </form>
                       </div>
@@ -120,7 +120,7 @@ export default async function AdminDocumentsPage() {
               ))}
             </div>
             {budgetDocs.length === 0 && (
-              <p className="text-center text-muted-foreground py-8">No budget documents yet</p>
+              <p className="text-center text-muted-foreground py-8">Все още няма бюджетни документи</p>
             )}
           </div>
         </div>

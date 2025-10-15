@@ -45,15 +45,16 @@ export default function AdminLoginPage() {
 
       if (adminError || !adminUser) {
         await supabase.auth.signOut()
-        throw new Error("You do not have admin access. Please add your user ID to the admin_users table.")
+        throw new Error(
+          "Нямате администраторски достъп. Моля, добавете вашия потребителски ID в таблицата admin_users.",
+        )
       }
 
       console.log("[v0] Admin access confirmed, redirecting to /admin")
-      router.push("/admin")
-      router.refresh()
+      window.location.href = "/admin"
     } catch (error: unknown) {
       console.error("[v0] Login error:", error)
-      setError(error instanceof Error ? error.message : "An error occurred")
+      setError(error instanceof Error ? error.message : "Възникна грешка")
     } finally {
       setIsLoading(false)
     }
@@ -64,14 +65,14 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
-            <CardDescription>Enter your credentials to access the CMS</CardDescription>
+            <CardTitle className="text-2xl font-bold">Вход за администратори</CardTitle>
+            <CardDescription>Въведете вашите данни за достъп до CMS</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin}>
               <div className="flex flex-col gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Имейл</Label>
                   <Input
                     id="email"
                     type="email"
@@ -82,7 +83,7 @@ export default function AdminLoginPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">Парола</Label>
                   <Input
                     id="password"
                     type="password"
@@ -93,7 +94,7 @@ export default function AdminLoginPage() {
                 </div>
                 {error && <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">{error}</div>}
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Logging in..." : "Login"}
+                  {isLoading ? "Влизане..." : "Вход"}
                 </Button>
               </div>
             </form>

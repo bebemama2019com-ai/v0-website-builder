@@ -48,20 +48,20 @@ export default async function AdminParentsPage() {
               <Link href={`/admin/parents/${item.id}/edit`}>
                 <Button variant="outline" size="sm">
                   <Pencil className="w-4 h-4 mr-1" />
-                  Edit
+                  Редактирай
                 </Button>
               </Link>
               <form action={`/api/admin/parents/${item.id}/delete`} method="POST">
                 <Button variant="destructive" size="sm" type="submit">
                   <Trash2 className="w-4 h-4 mr-1" />
-                  Delete
+                  Изтрий
                 </Button>
               </form>
             </div>
           </Card>
         ))}
       </div>
-      {items.length === 0 && <p className="text-center text-muted-foreground py-8">No content yet</p>}
+      {items.length === 0 && <p className="text-center text-muted-foreground py-8">Все още няма съдържание</p>}
     </div>
   )
 
@@ -72,14 +72,14 @@ export default async function AdminParentsPage() {
           <div className="flex items-center justify-between">
             <div>
               <Link href="/admin" className="text-sm text-muted-foreground hover:text-foreground">
-                ← Back to Dashboard
+                ← Назад към таблото
               </Link>
-              <h1 className="text-3xl font-bold mt-2">Manage Parent Content</h1>
+              <h1 className="text-3xl font-bold mt-2">Управление на съдържание за родители</h1>
             </div>
             <Link href="/admin/parents/new">
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
-                Add Content
+                Добави съдържание
               </Button>
             </Link>
           </div>

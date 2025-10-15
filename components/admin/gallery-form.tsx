@@ -17,7 +17,7 @@ export default function GalleryForm() {
   const [formData, setFormData] = useState({
     title: "",
     image_url: "",
-    category: "classroom",
+    category: "group1",
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,14 +26,13 @@ export default function GalleryForm() {
 
     try {
       const { error } = await supabase.from("gallery_images").insert([formData])
-
       if (error) throw error
 
       router.push("/admin/gallery")
       router.refresh()
     } catch (error) {
-      console.error("Error saving gallery image:", error)
-      alert("Error saving gallery image. Please try again.")
+      console.error("Грешка при запазване на снимка:", error)
+      alert("Грешка при запазване на снимка. Моля, опитайте отново.")
     } finally {
       setLoading(false)
     }
@@ -43,7 +42,7 @@ export default function GalleryForm() {
     <Card className="p-6">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <Label htmlFor="title">Title *</Label>
+          <Label htmlFor="title">Заглавие *</Label>
           <Input
             id="title"
             value={formData.title}
@@ -53,7 +52,7 @@ export default function GalleryForm() {
         </div>
 
         <div>
-          <Label htmlFor="image_url">Image URL *</Label>
+          <Label htmlFor="image_url">URL на снимка *</Label>
           <Input
             id="image_url"
             type="url"
@@ -62,10 +61,11 @@ export default function GalleryForm() {
             placeholder="https://example.com/image.jpg"
             required
           />
+          <p className="text-sm text-muted-foreground mt-1">Въведете директен URL към снимка</p>
         </div>
 
         <div>
-          <Label htmlFor="category">Category *</Label>
+          <Label htmlFor="category">Категория *</Label>
           <select
             id="category"
             value={formData.category}
@@ -73,19 +73,22 @@ export default function GalleryForm() {
             className="w-full px-3 py-2 border rounded-md"
             required
           >
-            <option value="classroom">Classroom</option>
-            <option value="outdoor">Outdoor Play</option>
-            <option value="activities">Activities</option>
-            <option value="events">Events</option>
+            <option value="group1">Група 1</option>
+            <option value="group2">Група 2</option>
+            <option value="group3">Група 3</option>
+            <option value="group4">Група 4</option>
+            <option value="dod">ДОД</option>
+            <option value="events">События</option>
+            <option value="activities">Дейности</option>
           </select>
         </div>
 
         <div className="flex gap-4">
           <Button type="submit" disabled={loading}>
-            {loading ? "Saving..." : "Create"}
+            {loading ? "Запазване..." : "Създай"}
           </Button>
           <Button type="button" variant="outline" onClick={() => router.push("/admin/gallery")}>
-            Cancel
+            Отказ
           </Button>
         </div>
       </form>
