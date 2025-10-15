@@ -21,6 +21,8 @@ export default async function AdminDashboard() {
   const { count: newsCount } = await supabase.from("news_posts").select("*", { count: "exact", head: true })
 
   const { count: galleryCount } = await supabase.from("gallery_images").select("*", { count: "exact", head: true })
+  const { count: documentsCount } = await supabase.from("documents").select("*", { count: "exact", head: true })
+  const { count: parentsCount } = await supabase.from("parent_content").select("*", { count: "exact", head: true })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5">
@@ -71,6 +73,30 @@ export default async function AdminDashboard() {
               <p className="text-xs text-muted-foreground">Total photos</p>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Documents</CardTitle>
+              {/* Placeholder icon for documents */}
+              <div className="h-4 w-4 text-muted-foreground">📄</div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{documentsCount || 0}</div>
+              <p className="text-xs text-muted-foreground">Normative documents and budget files</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">For Parents</CardTitle>
+              {/* Placeholder icon for parents */}
+              <div className="h-4 w-4 text-muted-foreground">👨‍👩‍👧‍👦</div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{parentsCount || 0}</div>
+              <p className="text-xs text-muted-foreground">Parent information and resources</p>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -106,6 +132,32 @@ export default async function AdminDashboard() {
             <CardContent>
               <Link href="/admin/gallery">
                 <Button className="w-full">Manage Gallery</Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle>Documents</CardTitle>
+              <CardDescription>Manage normative documents and budget files</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold mb-2">{documentsCount || 0}</div>
+              <Link href="/admin/documents">
+                <Button className="w-full">Manage Documents</Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle>For Parents</CardTitle>
+              <CardDescription>Manage parent information and resources</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold mb-2">{parentsCount || 0}</div>
+              <Link href="/admin/parents">
+                <Button className="w-full">Manage Content</Button>
               </Link>
             </CardContent>
           </Card>

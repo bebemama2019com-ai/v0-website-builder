@@ -1,0 +1,130 @@
+import { createServerClient } from "@/lib/supabase/server"
+import { redirect } from "next/navigation"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Plus, Pencil, Trash2, FileText } from "lucide-react"
+
+export default async function AdminDocumentsPage() {
+  const supabase = await createServerClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect("/admin/login")
+  }
+
+  const { data: isAdmin } = await supabase.from("admin_users").select("id").eq("id", user.id).single()
+
+  if (!isAdmin) {
+    redirect("/admin/login")
+  }
+
+  const { data: documents } = await supabase.from("documents").select("*").order("order_index", { ascending: true })
+
+  const normativeDocs = documents?.filter((doc) => doc.category === "normative") || []
+  const budgetDocs = documents?.filter((doc) => doc.category === "budget") || []
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="border-b">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <Link href="/admin" className="text-sm text-muted-foreground hover:text-foreground">
+                ← Back to Dashboard
+              </Link>
+              <h1 className="text-3xl font-bold mt-2">Manage Documents</h1>
+            </div>
+            <Link href="/admin/documents/new">
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Document
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-8">
+          <div>
+            <h2 className="text-2xl font-semibold mb-4">Нормативна уредба</h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {normativeDocs.map((doc) => (
+                <Card key={doc.id} className="p-6">
+                  <div className="flex items-start gap-4">
+                    <FileText className="w-8 h-8 text-primary flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-lg mb-1">{doc.title}</h3>
+                      {doc.description && <p className="text-sm text-muted-foreground mb-2">{doc.description}</p>}
+                      <p className="text-xs text-muted-foreground mb-4">
+                        {doc.file_type.toUpperCase()} • {(doc.file_size / 1024).toFixed(0)} KB
+                      </p>
+                      <div className="flex gap-2">
+                        <Link href={`/admin/documents/${doc.id}/edit`}>
+                          <Button variant="outline" size="sm">
+                            <Pencil className="w-4 h-4 mr-1" />
+                            Edit
+                          </Button>
+                        </Link>
+                        <form action={`/api/admin/documents/${doc.id}/delete`} method="POST">
+                          <Button variant="destructive" size="sm" type="submit">
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            Delete
+                          </Button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+            {normativeDocs.length === 0 && (
+              <p className="text-center text-muted-foreground py-8">No normative documents yet</p>
+            )}
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-semibold mb-4">Бюджет</h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {budgetDocs.map((doc) => (
+                <Card key={doc.id} className="p-6">
+                  <div className="flex items-start gap-4">
+                    <FileText className="w-8 h-8 text-primary flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-lg mb-1">{doc.title}</h3>
+                      {doc.description && <p className="text-sm text-muted-foreground mb-2">{doc.description}</p>}
+                      <p className="text-xs text-muted-foreground mb-4">
+                        {doc.file_type.toUpperCase()} • {(doc.file_size / 1024).toFixed(0)} KB
+                      </p>
+                      <div className="flex gap-2">
+                        <Link href={`/admin/documents/${doc.id}/edit`}>
+                          <Button variant="outline" size="sm">
+                            <Pencil className="w-4 h-4 mr-1" />
+                            Edit
+                          </Button>
+                        </Link>
+                        <form action={`/api/admin/documents/${doc.id}/delete`} method="POST">
+                          <Button variant="destructive" size="sm" type="submit">
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            Delete
+                          </Button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+            {budgetDocs.length === 0 && (
+              <p className="text-center text-muted-foreground py-8">No budget documents yet</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
