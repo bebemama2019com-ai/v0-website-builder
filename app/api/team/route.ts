@@ -10,7 +10,7 @@ export async function GET() {
     const { data: teamMembers, error } = await supabase
       .from("team_members")
       .select("*")
-      .order("order", { ascending: true })
+      .order("order_index", { ascending: true })
 
     if (error) {
       console.error("[v0] Supabase query error:", error)
