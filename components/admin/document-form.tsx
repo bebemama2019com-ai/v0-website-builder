@@ -21,6 +21,7 @@ interface DocumentFormProps {
     file_type: string
     file_size: number
     order_index: number
+    quarter?: string
   }
 }
 
@@ -36,6 +37,7 @@ export default function DocumentForm({ document }: DocumentFormProps) {
     file_type: document?.file_type || "pdf",
     file_size: document?.file_size || 0,
     order_index: document?.order_index || 0,
+    quarter: document?.quarter || "",
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,6 +99,25 @@ export default function DocumentForm({ document }: DocumentFormProps) {
             <option value="budget">Бюджет</option>
           </select>
         </div>
+
+        {formData.category === "budget" && (
+          <div>
+            <Label htmlFor="quarter">Тримесечие *</Label>
+            <select
+              id="quarter"
+              value={formData.quarter}
+              onChange={(e) => setFormData({ ...formData, quarter: e.target.value })}
+              className="w-full px-3 py-2 border rounded-md"
+              required
+            >
+              <option value="">Изберете тримесечие</option>
+              <option value="Q1">Първо тримесечие (Q1)</option>
+              <option value="Q2">Второ тримесечие (Q2)</option>
+              <option value="Q3">Трето тримесечие (Q3)</option>
+              <option value="Q4">Четвърто тримесечие (Q4)</option>
+            </select>
+          </div>
+        )}
 
         <div>
           <Label htmlFor="file_url">URL на файл *</Label>

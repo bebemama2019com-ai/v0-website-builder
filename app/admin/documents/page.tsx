@@ -27,6 +27,13 @@ export default async function AdminDocumentsPage() {
   const normativeDocs = documents?.filter((doc) => doc.category === "normative") || []
   const budgetDocs = documents?.filter((doc) => doc.category === "budget") || []
 
+  const budgetByQuarter = {
+    Q1: budgetDocs.filter((doc) => doc.quarter === "Q1"),
+    Q2: budgetDocs.filter((doc) => doc.quarter === "Q2"),
+    Q3: budgetDocs.filter((doc) => doc.quarter === "Q3"),
+    Q4: budgetDocs.filter((doc) => doc.quarter === "Q4"),
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="border-b">
@@ -89,39 +96,53 @@ export default async function AdminDocumentsPage() {
 
           <div>
             <h2 className="text-2xl font-semibold mb-4">Бюджет</h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {budgetDocs.map((doc) => (
-                <Card key={doc.id} className="p-6">
-                  <div className="flex items-start gap-4">
-                    <FileText className="w-8 h-8 text-primary flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-lg mb-1">{doc.title}</h3>
-                      {doc.description && <p className="text-sm text-muted-foreground mb-2">{doc.description}</p>}
-                      <p className="text-xs text-muted-foreground mb-4">
-                        {doc.file_type.toUpperCase()} • {(doc.file_size / 1024).toFixed(0)} KB
-                      </p>
-                      <div className="flex gap-2">
-                        <Link href={`/admin/documents/${doc.id}/edit`}>
-                          <Button variant="outline" size="sm">
-                            <Pencil className="w-4 h-4 mr-1" />
-                            Редактирай
-                          </Button>
-                        </Link>
-                        <form action={`/api/admin/documents/${doc.id}/delete`} method="POST">
-                          <Button variant="destructive" size="sm" type="submit">
-                            <Trash2 className="w-4 h-4 mr-1" />
-                            Изтрий
-                          </Button>
-                        </form>
-                      </div>
-                    </div>
+            <div className="space-y-6">
+              {(["Q1", "Q2", "Q3", "Q4"] as const).map((quarter) => (
+                <div key={quarter}>
+                  <h3 className="text-xl font-semibold mb-3">
+                    {quarter === "Q1" && "Първо тримесечие (Q1)"}
+                    {quarter === "Q2" && "Второ тримесечие (Q2)"}
+                    {quarter === "Q3" && "Трето тримесечие (Q3)"}
+                    {quarter === "Q4" && "Четвърто тримесечие (Q4)"}
+                  </h3>
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {budgetByQuarter[quarter].map((doc) => (
+                      <Card key={doc.id} className="p-6">
+                        <div className="flex items-start gap-4">
+                          <FileText className="w-8 h-8 text-primary flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-lg mb-1">{doc.title}</h3>
+                            {doc.description && <p className="text-sm text-muted-foreground mb-2">{doc.description}</p>}
+                            <p className="text-xs text-muted-foreground mb-4">
+                              {doc.file_type.toUpperCase()} • {(doc.file_size / 1024).toFixed(0)} KB
+                            </p>
+                            <div className="flex gap-2">
+                              <Link href={`/admin/documents/${doc.id}/edit`}>
+                                <Button variant="outline" size="sm">
+                                  <Pencil className="w-4 h-4 mr-1" />
+                                  Редактирай
+                                </Button>
+                              </Link>
+                              <form action={`/api/admin/documents/${doc.id}/delete`} method="POST">
+                                <Button variant="destructive" size="sm" type="submit">
+                                  <Trash2 className="w-4 h-4 mr-1" />
+                                  Изтрий
+                                </Button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
                   </div>
-                </Card>
+                  {budgetByQuarter[quarter].length === 0 && (
+                    <p className="text-center text-muted-foreground py-4 text-sm">
+                      Все още няма документи за това тримесечие
+                    </p>
+                  )}
+                </div>
               ))}
             </div>
-            {budgetDocs.length === 0 && (
-              <p className="text-center text-muted-foreground py-8">Все още няма бюджетни документи</p>
-            )}
           </div>
         </div>
       </div>
