@@ -15,8 +15,8 @@ const nunito = Nunito({
 })
 
 export const metadata: Metadata = {
-  title: "Little Sprouts Kindergarten - Where Learning Blooms",
-  description: "A warm, nurturing environment where children grow, learn, and discover through play-based education.",
+  title: "Детска Градина 202 - Където децата растат и се развиват",
+  description: "Топла, подкрепяща среда, където децата растат, учат и откриват чрез образование, базирано на игра.",
   generator: "v0.app",
 }
 

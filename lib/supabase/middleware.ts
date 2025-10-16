@@ -27,29 +27,45 @@ export async function updateSession(request: NextRequest) {
       },
     })
 
+    await supabase.auth.getSession()
+
     const {
       data: { user },
     } = await supabase.auth.getUser()
 
+    console.log("[MIDDLEWARE] Path:", request.nextUrl.pathname, "User:", user?.id || "none")
+
     // Protect admin routes
     if (request.nextUrl.pathname.startsWith("/admin") && !request.nextUrl.pathname.startsWith("/admin/login")) {
       if (!user) {
+        console.log("[MIDDLEWARE] No user found, redirecting to login")
         const url = request.nextUrl.clone()
         url.pathname = "/admin/login"
         return NextResponse.redirect(url)
       }
 
       try {
-        const { data: adminUser } = await supabase.from("admin_users").select("id").eq("id", user.id).single()
+        const { data: adminUser, error: adminError } = await supabase
+          .from("admin_users")
+          .select("id")
+          .eq("id", user.id)
+          .single()
 
-        if (!adminUser) {
+        console.log("[MIDDLEWARE] Admin check:", { adminUser, adminError })
+
+        if (adminError || !adminUser) {
+          console.log("[MIDDLEWARE] Admin check failed, redirecting to login")
           const url = request.nextUrl.clone()
           url.pathname = "/admin/login"
           return NextResponse.redirect(url)
         }
+
+        console.log("[MIDDLEWARE] Admin access granted")
       } catch (error) {
         console.error("[MIDDLEWARE] Error checking admin status:", error)
-        // Allow access if admin check fails (table might not exist yet)
+        const url = request.nextUrl.clone()
+        url.pathname = "/admin/login"
+        return NextResponse.redirect(url)
       }
     }
 

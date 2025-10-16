@@ -49,7 +49,7 @@ export function Header() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8">
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
-            <span className="text-2xl font-bold text-primary">Little Sprouts</span>
+            <span className="text-2xl font-bold text-primary">ДГ 202</span>
           </Link>
         </div>
         <div className="flex lg:hidden gap-2">

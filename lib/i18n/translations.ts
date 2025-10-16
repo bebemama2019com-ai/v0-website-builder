@@ -32,12 +32,12 @@ export const translations = {
       hero: {
         title: "Where Little Minds Grow Big Dreams",
         description:
-          "Welcome to Little Sprouts Kindergarten, a nurturing environment where children discover the joy of learning through play, creativity, and exploration.",
+          "Welcome to Kindergarten 202, a nurturing environment where children discover the joy of learning through play, creativity, and exploration.",
         scheduleVisit: "Schedule a Visit",
         learnMore: "Learn More",
       },
       features: {
-        title: "Why Choose Little Sprouts?",
+        title: "Why Choose Kindergarten 202?",
         subtitle: "We provide a holistic approach to early childhood education, focusing on the whole child.",
         nurturing: {
           title: "Nurturing Environment",
@@ -84,23 +84,23 @@ export const translations = {
         },
       },
       gallery: {
-        title: "A Day at Little Sprouts",
+        title: "A Day at Kindergarten 202",
         subtitle: "Peek into our vibrant classrooms and outdoor spaces where learning comes alive.",
         viewFull: "View Full Gallery",
       },
       cta: {
         title: "Ready to Join Our Family?",
         description:
-          "Schedule a tour to see our facilities, meet our teachers, and discover why families love Little Sprouts.",
+          "Schedule a tour to see our facilities, meet our teachers, and discover why families love Kindergarten 202.",
         button: "Schedule Your Visit Today",
       },
     },
     // About Page
     about: {
       hero: {
-        title: "About Little Sprouts",
+        title: "About Kindergarten 202",
         description1:
-          "Founded in 2010, Little Sprouts Kindergarten has been a cornerstone of early childhood education in our community. We are dedicated to providing a warm, nurturing environment where children can grow, learn, and thrive.",
+          "Founded in 2010, Kindergarten 202 has been a cornerstone of early childhood education in our community. We are dedicated to providing a warm, nurturing environment where children can grow, learn, and thrive.",
         description2:
           "Our experienced team of educators is passionate about fostering a love of learning in every child. We believe that the early years are crucial for development, and we are committed to making them magical.",
       },
@@ -333,7 +333,7 @@ export const translations = {
     gallery: {
       hero: {
         title: "Photo Gallery",
-        description: "Explore moments of joy, learning, and discovery at Little Sprouts Kindergarten.",
+        description: "Explore moments of joy, learning, and discovery at Kindergarten 202.",
       },
       filters: {
         all: "All Photos",
@@ -347,7 +347,7 @@ export const translations = {
     news: {
       hero: {
         title: "News & Events",
-        description: "Stay updated with the latest happenings, events, and activities at Little Sprouts Kindergarten.",
+        description: "Stay updated with the latest happenings, events, and activities at Kindergarten 202.",
       },
       featured: "Featured",
       readMore: "Read More",
@@ -357,7 +357,7 @@ export const translations = {
       hero: {
         title: "Get in Touch",
         description:
-          "We'd love to hear from you! Schedule a tour, ask questions, or learn more about enrollment at Little Sprouts.",
+          "We'd love to hear from you! Schedule a tour, ask questions, or learn more about enrollment at Kindergarten 202.",
       },
       info: {
         address: {
@@ -392,7 +392,7 @@ export const translations = {
       tour: {
         title: "Schedule a Tour",
         description1:
-          "The best way to experience Little Sprouts is to visit us in person! We offer tours Monday through Friday at 10:00 AM and 2:00 PM.",
+          "The best way to experience Kindergarten 202 is to visit us in person! We offer tours Monday through Friday at 10:00 AM and 2:00 PM.",
         description2:
           "During your visit, you'll meet our teachers, see our classrooms and facilities, and learn about our curriculum and daily activities.",
       },
@@ -465,12 +465,12 @@ export const translations = {
       hero: {
         title: "Където малките умове отглеждат големи мечти",
         description:
-          'Добре дошли в детска градина "Малки кълнове", подкрепяща среда, където децата откриват радостта от ученето чрез игра, творчество и изследване.',
+          "Добре дошли в Детска Градина 202, подкрепяща среда, където децата откриват радостта от ученето чрез игра, творчество и изследване.",
         scheduleVisit: "Запазете посещение",
         learnMore: "Научете повече",
       },
       features: {
-        title: 'Защо да изберете "Малки кълнове"?',
+        title: "Защо да изберете Детска Градина 202?",
         subtitle:
           "Предоставяме холистичен подход към ранното детско образование, фокусирайки се върху цялостното развитие на детето.",
         nurturing: {
@@ -518,23 +518,23 @@ export const translations = {
         },
       },
       gallery: {
-        title: 'Един ден в "Малки кълнове"',
+        title: "Един ден в Детска Градина 202",
         subtitle: "Надникнете в нашите оживени класни стаи и открити пространства, където ученето оживява.",
         viewFull: "Вижте пълната галерия",
       },
       cta: {
         title: "Готови ли сте да се присъедините към нашето семейство?",
         description:
-          'Запазете обиколка, за да видите нашите съоръжения, да се запознаете с нашите учители и да откриете защо семействата обичат "Малки кълнове".',
+          "Запазете обиколка, за да видите нашите съоръжения, да се запознаете с нашите учители и да откриете защо семействата обичат Детска Градина 202.",
         button: "Запазете вашето посещение днес",
       },
     },
     // About Page
     about: {
       hero: {
-        title: 'За "Малки кълнове"',
+        title: "За Детска Градина 202",
         description1:
-          'Основана през 2010 г., детска градина "Малки кълнове" е краеъгълен камък на ранното детско образование в нашата общност. Ние сме отдадени на предоставянето на топла, подкрепяща среда, където децата могат да растат, учат и процъфтяват.',
+          "Основана през 2010 г., Детска Градина 202 е краеъгълен камък на ранното детско образование в нашата общност. Ние сме отдадени на предоставянето на топла, подкрепяща среда, където децата могат да растат, учат и процъфтяват.",
         description2:
           "Нашият опитен екип от педагози е страстен по отношение на насърчаването на любовта към ученето у всяко дете. Вярваме, че ранните години са решаващи за развитието и сме ангажирани да ги направим магически.",
       },
@@ -764,7 +764,7 @@ export const translations = {
     gallery: {
       hero: {
         title: "Фото галерия",
-        description: 'Разгледайте моменти на радост, учене и откриване в детска градина "Малки кълнове".',
+        description: "Разгледайте моменти на радост, учене и откриване в Детска Градина 202.",
       },
       filters: {
         all: "Всички снимки",
@@ -778,7 +778,7 @@ export const translations = {
     news: {
       hero: {
         title: "Новини и събития",
-        description: 'Бъдете в крак с най-новите случвания, събития и дейности в детска градина "Малки кълнове".',
+        description: "Бъдете в крак с най-новите случвания, събития и дейности в Детска Градина 202.",
       },
       featured: "Препоръчано",
       readMore: "Прочетете повече",
@@ -788,7 +788,7 @@ export const translations = {
       hero: {
         title: "Свържете се с нас",
         description:
-          'Бихме искали да чуем от вас! Запазете обиколка, задайте въпроси или научете повече за записването в "Малки кълнове".',
+          "Бихме искали да чуем от вас! Запазете обиколка, задайте въпроси или научете повече за записването в Детска Градина 202.",
       },
       info: {
         address: {
@@ -823,7 +823,7 @@ export const translations = {
       tour: {
         title: "Запазете обиколка",
         description1:
-          'Най-добрият начин да изпитате "Малки кълнове" е да ни посетите лично! Предлагаме обиколки от понеделник до петък в 10:00 и 14:00.',
+          "Най-добрият начин да изпитате Детска Градина 202 е да ни посетите лично! Предлагаме обиколки от понеделник до петък в 10:00 и 14:00.",
         description2:
           "По време на вашето посещение ще се запознаете с нашите учители, ще видите нашите класни стаи и съоръжения и ще научите за нашата учебна програма и ежедневни дейности.",
       },

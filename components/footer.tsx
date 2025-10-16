@@ -13,7 +13,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* About */}
           <div>
-            <h3 className="mb-4 text-lg font-bold text-primary">Little Sprouts</h3>
+            <h3 className="mb-4 text-lg font-bold text-primary">ДГ 202</h3>
             <p className="text-sm leading-relaxed text-muted-foreground">{t.footer.tagline}</p>
           </div>
 
@@ -90,7 +90,7 @@ export function Footer() {
 
         <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted-foreground">
           <p>
-            &copy; {new Date().getFullYear()} Little Sprouts Kindergarten. {t.footer.rights}
+            &copy; {new Date().getFullYear()} Детска Градина 202. {t.footer.rights}
           </p>
         </div>
       </div>
