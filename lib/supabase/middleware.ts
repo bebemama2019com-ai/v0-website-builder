@@ -27,18 +27,16 @@ export async function updateSession(request: NextRequest) {
       },
     })
 
-    await supabase.auth.getSession()
-
     const {
       data: { user },
     } = await supabase.auth.getUser()
 
-    console.log("[MIDDLEWARE] Path:", request.nextUrl.pathname, "User:", user?.id || "none")
+    console.log("[SERVER][MIDDLEWARE] Path:", request.nextUrl.pathname, "User:", user?.id || "none")
 
     // Protect admin routes
     if (request.nextUrl.pathname.startsWith("/admin") && !request.nextUrl.pathname.startsWith("/admin/login")) {
       if (!user) {
-        console.log("[MIDDLEWARE] No user found, redirecting to login")
+        console.log("[SERVER][MIDDLEWARE] No user found, redirecting to login")
         const url = request.nextUrl.clone()
         url.pathname = "/admin/login"
         return NextResponse.redirect(url)
@@ -51,18 +49,18 @@ export async function updateSession(request: NextRequest) {
           .eq("id", user.id)
           .single()
 
-        console.log("[MIDDLEWARE] Admin check:", { adminUser, adminError })
+        console.log("[SERVER][MIDDLEWARE] Admin check:", { adminUser, adminError })
 
         if (adminError || !adminUser) {
-          console.log("[MIDDLEWARE] Admin check failed, redirecting to login")
+          console.log("[SERVER][MIDDLEWARE] Admin check failed, redirecting to login")
           const url = request.nextUrl.clone()
           url.pathname = "/admin/login"
           return NextResponse.redirect(url)
         }
 
-        console.log("[MIDDLEWARE] Admin access granted")
+        console.log("[SERVER][MIDDLEWARE] Admin access granted for user:", user.id)
       } catch (error) {
-        console.error("[MIDDLEWARE] Error checking admin status:", error)
+        console.error("[SERVER][MIDDLEWARE] Error checking admin status:", error)
         const url = request.nextUrl.clone()
         url.pathname = "/admin/login"
         return NextResponse.redirect(url)
@@ -71,8 +69,7 @@ export async function updateSession(request: NextRequest) {
 
     return supabaseResponse
   } catch (error) {
-    console.error("[MIDDLEWARE] Error in updateSession:", error)
-    // Return response even if middleware fails to prevent 500 errors
+    console.error("[SERVER][MIDDLEWARE] Error in updateSession:", error)
     return supabaseResponse
   }
 }

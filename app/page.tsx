@@ -1,206 +1,241 @@
 "use client"
 
-import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Heart, Users, Sparkles, BookOpen, Palette, Music } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
+import { Building2, Target, Users, Heart, BookOpen, Sparkles } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
 
 export default function HomePage() {
   const { t } = useLanguage()
-
-  const features = [
-    {
-      icon: Heart,
-      title: t.home.features.nurturing.title,
-      description: t.home.features.nurturing.description,
-      color: "bg-chart-1",
-    },
-    {
-      icon: Users,
-      title: t.home.features.teachers.title,
-      description: t.home.features.teachers.description,
-      color: "bg-chart-2",
-    },
-    {
-      icon: Sparkles,
-      title: t.home.features.playBased.title,
-      description: t.home.features.playBased.description,
-      color: "bg-chart-3",
-    },
-    {
-      icon: BookOpen,
-      title: t.home.features.curriculum.title,
-      description: t.home.features.curriculum.description,
-      color: "bg-chart-4",
-    },
-    {
-      icon: Palette,
-      title: t.home.features.arts.title,
-      description: t.home.features.arts.description,
-      color: "bg-chart-5",
-    },
-    {
-      icon: Music,
-      title: t.home.features.activities.title,
-      description: t.home.features.activities.description,
-      color: "bg-chart-1",
-    },
-  ]
-
-  const ageGroups = [
-    {
-      title: t.home.programs.toddlers.title,
-      age: t.home.programs.toddlers.age,
-      description: t.home.programs.toddlers.description,
-    },
-    {
-      title: t.home.programs.preschool.title,
-      age: t.home.programs.preschool.age,
-      description: t.home.programs.preschool.description,
-    },
-    {
-      title: t.home.programs.preK.title,
-      age: t.home.programs.preK.age,
-      description: t.home.programs.preK.description,
-    },
-  ]
 
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-accent/20 px-4 py-20 lg:py-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-            <div className="flex flex-col justify-center">
-              <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-foreground lg:text-6xl">
-                {t.home.hero.title}
-              </h1>
-              <p className="mb-8 text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
-                {t.home.hero.description}
-              </p>
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <Button asChild size="lg" className="rounded-full text-base">
-                  <Link href="/contact">{t.home.hero.scheduleVisit}</Link>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="rounded-full text-base bg-transparent">
-                  <Link href="/about">{t.home.hero.learnMore}</Link>
-                </Button>
-              </div>
+      <main className="flex-1">
+        {/* About Section */}
+        <section className="px-4 py-16 lg:py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-12 text-center">
+              <h1 className="mb-4 text-4xl font-bold text-foreground lg:text-5xl">{t.about.title}</h1>
+              <div className="mx-auto h-1 w-24 bg-primary" />
             </div>
-            <div className="relative">
-              <div className="aspect-square overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 to-accent/20">
-                <img
-                  src="/happy-children-playing-in-colorful-kindergarten-cl.jpg"
-                  alt="Children playing in kindergarten"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              {/* Decorative elements */}
-              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-chart-4 opacity-60 blur-2xl" />
-              <div className="absolute -bottom-4 -left-4 h-32 w-32 rounded-full bg-chart-5 opacity-60 blur-2xl" />
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Features Section */}
-      <section className="px-4 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
-              {t.home.features.title}
-            </h2>
-            <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-              {t.home.features.subtitle}
-            </p>
+            <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+              <div className="space-y-6 text-lg leading-relaxed text-muted-foreground">
+                <p>{t.about.welcome}</p>
+                <p>{t.about.description}</p>
+                <p>{t.about.staff.description}</p>
+                <p>{t.about.groups.description}</p>
+              </div>
+
+              <div>
+                <Card className="border-primary/20 bg-primary/5">
+                  <CardContent className="p-6">
+                    <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
+                      <Target className="h-6 w-6 text-primary" />
+                      {t.about.focus.title}
+                    </h3>
+                    <ul className="space-y-4">
+                      <li className="flex items-start gap-3">
+                        <BookOpen className="mt-1 h-5 w-5 flex-shrink-0 text-primary" />
+                        <span className="text-muted-foreground">{t.about.focus.point1.description}</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Heart className="mt-1 h-5 w-5 flex-shrink-0 text-primary" />
+                        <span className="text-muted-foreground">{t.about.focus.point2.description}</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Users className="mt-1 h-5 w-5 flex-shrink-0 text-primary" />
+                        <span className="text-muted-foreground">{t.about.focus.point3.description}</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature, index) => (
-              <Card key={index} className="overflow-hidden rounded-3xl border-2 transition-shadow hover:shadow-lg">
+        </section>
+
+        {/* Facilities Section */}
+        <section className="bg-muted/30 px-4 py-16 lg:py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-12 text-center">
+              <Building2 className="mx-auto mb-4 h-12 w-12 text-primary" />
+              <h2 className="mb-4 text-3xl font-bold text-foreground lg:text-4xl">{t.about.facilities.title}</h2>
+              <div className="mx-auto h-1 w-24 bg-primary" />
+            </div>
+
+            <div className="mb-8 space-y-4 text-center text-lg leading-relaxed text-muted-foreground">
+              <p>{t.about.facilities.intro1}</p>
+              <p>{t.about.facilities.intro2}</p>
+            </div>
+
+            <Card>
+              <CardContent className="p-8">
+                <h3 className="mb-6 text-center text-xl font-bold text-foreground">{t.about.facilities.subtitle}</h3>
+                <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {(t.about.facilities.items || []).map((item: string, index: number) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <Sparkles className="mt-1 h-5 w-5 flex-shrink-0 text-primary" />
+                      <span className="text-muted-foreground">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Development Concept Section */}
+        <section className="px-4 py-16 lg:py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-12 text-center">
+              <h2 className="mb-4 text-3xl font-bold text-foreground lg:text-4xl">{t.about.concept.title}</h2>
+              <div className="mx-auto h-1 w-24 bg-primary" />
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* Goal */}
+              <Card className="border-primary/20">
                 <CardContent className="p-6">
-                  <div className={`mb-4 inline-flex rounded-2xl ${feature.color} p-3`}>
-                    <feature.icon className="h-6 w-6 text-foreground" />
-                  </div>
-                  <h3 className="mb-2 text-xl font-bold text-foreground">{feature.title}</h3>
-                  <p className="leading-relaxed text-muted-foreground">{feature.description}</p>
+                  <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-foreground">
+                    <Target className="h-6 w-6 text-primary" />
+                    {t.about.concept.goal.title}
+                  </h3>
+                  <p className="leading-relaxed text-muted-foreground">{t.about.concept.goal.description}</p>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Age Groups Section */}
-      <section className="bg-muted/50 px-4 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
-              {t.home.programs.title}
-            </h2>
-            <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-              {t.home.programs.subtitle}
-            </p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {ageGroups.map((group, index) => (
-              <Card key={index} className="overflow-hidden rounded-3xl border-2 bg-card">
-                <CardContent className="p-8 text-center">
-                  <div className="mb-4 text-5xl font-bold text-primary">{index + 1}</div>
-                  <h3 className="mb-2 text-2xl font-bold text-foreground">{group.title}</h3>
-                  <p className="mb-4 text-sm font-semibold text-primary">{group.age}</p>
-                  <p className="leading-relaxed text-muted-foreground">{group.description}</p>
+              {/* Tasks */}
+              <Card className="border-primary/20">
+                <CardContent className="p-6">
+                  <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-foreground">
+                    <BookOpen className="h-6 w-6 text-primary" />
+                    {t.about.concept.tasks.title}
+                  </h3>
+                  <ul className="space-y-2">
+                    {(t.about.concept.tasks.items || []).map((item: string, index: number) => (
+                      <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <span className="mt-1 text-primary">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Gallery Preview */}
-      <section className="px-4 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">{t.home.gallery.title}</h2>
-            <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-              {t.home.gallery.subtitle}
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="group relative aspect-square overflow-hidden rounded-3xl">
-                <img
-                  src={`/kindergarten-activity-.jpg?height=400&width=400&query=kindergarten activity ${i}`}
-                  alt={`Gallery image ${i}`}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 text-center">
-            <Button asChild size="lg" variant="outline" className="rounded-full bg-transparent">
-              <Link href="/gallery">{t.home.gallery.viewFull}</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+              {/* Staff Management */}
+              <Card className="border-primary/20">
+                <CardContent className="p-6">
+                  <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-foreground">
+                    <Users className="h-6 w-6 text-primary" />
+                    {t.about.concept.staff.title}
+                  </h3>
+                  <p className="mb-4 text-sm text-muted-foreground">{t.about.concept.staff.description}</p>
+                  <ul className="space-y-2">
+                    {(t.about.concept.staff.criteria || []).map((item: string, index: number) => (
+                      <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <span className="mt-1 text-primary">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
 
-      {/* CTA Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 px-4 py-16 lg:py-24">
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="mb-6 text-balance text-3xl font-bold text-foreground lg:text-4xl">{t.home.cta.title}</h2>
-          <p className="mb-8 text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
-            {t.home.cta.description}
-          </p>
-          <Button asChild size="lg" className="rounded-full text-base">
-            <Link href="/contact">{t.home.cta.button}</Link>
-          </Button>
-        </div>
-      </section>
+              {/* Pedagogy */}
+              <Card className="border-primary/20">
+                <CardContent className="p-6">
+                  <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-foreground">
+                    <Sparkles className="h-6 w-6 text-primary" />
+                    {t.about.concept.pedagogy.title}
+                  </h3>
+                  <p className="mb-4 text-sm text-muted-foreground">{t.about.concept.pedagogy.description}</p>
+                  <ul className="space-y-2">
+                    {(t.about.concept.pedagogy.aspects || []).map((item: string, index: number) => (
+                      <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <span className="mt-1 text-primary">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Adaptation Model Section */}
+        <section className="bg-muted/30 px-4 py-16 lg:py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-12 text-center">
+              <Heart className="mx-auto mb-4 h-12 w-12 text-primary" />
+              <h2 className="mb-4 text-3xl font-bold text-foreground lg:text-4xl">{t.about.adaptation.title}</h2>
+              <div className="mx-auto h-1 w-24 bg-primary" />
+              <p className="mt-6 text-lg font-semibold text-primary">{t.about.adaptation.motto}</p>
+            </div>
+
+            <p className="mb-8 text-center text-lg leading-relaxed text-muted-foreground">{t.about.adaptation.intro}</p>
+
+            <div className="grid gap-6 lg:grid-cols-3">
+              {/* Goals */}
+              <Card className="border-primary/20">
+                <CardContent className="p-6">
+                  <h3 className="mb-4 text-xl font-bold text-foreground">{t.about.adaptation.goals.title}</h3>
+                  <ul className="space-y-2">
+                    {(t.about.adaptation.goals.items || []).map((item: string, index: number) => (
+                      <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <span className="mt-1 text-primary">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Tasks */}
+              <Card className="border-primary/20">
+                <CardContent className="p-6">
+                  <h3 className="mb-4 text-xl font-bold text-foreground">{t.about.adaptation.tasks.title}</h3>
+                  <ul className="space-y-2">
+                    {(t.about.adaptation.tasks.items || []).map((item: string, index: number) => (
+                      <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <span className="mt-1 text-primary">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Priorities */}
+              <Card className="border-primary/20">
+                <CardContent className="p-6">
+                  <h3 className="mb-4 text-xl font-bold text-foreground">{t.about.adaptation.priorities.title}</h3>
+                  <ul className="space-y-2">
+                    {(t.about.adaptation.priorities.items || []).map((item: string, index: number) => (
+                      <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <span className="mt-1 text-primary">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card className="mt-8 border-primary/20 bg-primary/5">
+              <CardContent className="p-6">
+                <p className="text-center text-lg leading-relaxed text-muted-foreground">
+                  {t.about.adaptation.conclusion}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      </main>
 
       <Footer />
     </div>

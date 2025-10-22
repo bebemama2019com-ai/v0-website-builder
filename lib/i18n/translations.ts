@@ -100,9 +100,139 @@ export const translations = {
       hero: {
         title: "About Kindergarten 202",
         description1:
-          "Founded in 2010, Kindergarten 202 has been a cornerstone of early childhood education in our community. We are dedicated to providing a warm, nurturing environment where children can grow, learn, and thrive.",
+          "Welcome to Kindergarten 202! Kindergarten 202 is a newly opened kindergarten in the capital. Located in the Mladost 1 residential area. It features spacious, aesthetically designed premises that meet all requirements for the education and upbringing of preschool-age children.",
         description2:
-          "Our experienced team of educators is passionate about fostering a love of learning in every child. We believe that the early years are crucial for development, and we are committed to making them magical.",
+          "For outdoor games and sports, there is a large and beautiful landscaped and secured yard with playgrounds equipped with modern park furniture, shock-absorbing flooring, climbing frames, benches, slides, and swings.",
+      },
+      staff: {
+        title: "Our Team",
+        description:
+          "The children are cared for by teams of specialists - pedagogues, medical specialists, and assistant educators who possess high professionalism, rich experience, and great love for children.",
+      },
+      groups: {
+        title: "Our Groups",
+        description: "Kindergarten 202 has 2 nursery groups and 4 kindergarten groups.",
+      },
+      focus: {
+        title: "Main Focus of Our Kindergarten",
+        point1: {
+          title: "Modern Pedagogy",
+          description:
+            "Education and upbringing are in harmony with current achievements in early and preschool age pedagogy",
+        },
+        point2: {
+          title: "Quality Healthcare",
+          description: "Quality healthcare for children",
+        },
+        point3: {
+          title: "Parent Partnership",
+          description:
+            "Active communication with parents and involving them in helping our common cause - to raise healthy, happy, knowledgeable, and capable children",
+        },
+      },
+      welcome: "Welcome to us!",
+      facilities: {
+        title: "Material and Technical Base",
+        intro1:
+          "With its rich and comfortable material base, Kindergarten 202 is a dream home for your children. We have created conditions for a full childhood, equal start for each child, and targeted preschool preparation for successful implementation in school.",
+        intro2:
+          "The material base provides dynamism in social communication between children, causing a sense of joy from cooperation in various activities. The functions of the environment ensure that children have conditions for diverse activities to meet their needs and interests according to their preferred activity.",
+        subtitle: "The kindergarten is equipped with:",
+        items: [
+          "Music/Gym Hall",
+          "Outdoor Stage",
+          "Psychologist's Office",
+          "Speech Therapy Room",
+          "Resource Teacher's Office",
+          "Early Foreign Language Learning Room - English",
+          "Applied Arts Room",
+          "Video Surveillance",
+          "Security",
+          "Individual Play Areas for Each Group",
+          "Individual Nap Rooms with Separate Cots for Each Child",
+          "Individual Assistant Educator Offices with Washrooms and Appropriate Equipment",
+          "Large Yard for Rest, Play, and Learning, Playgrounds for Each Group",
+          "Health Room",
+          "Own Kitchen Providing Healthy Meals",
+          "Laundry",
+        ],
+      },
+      concept: {
+        title: "Development Concept",
+        goal: {
+          title: "Main Goal",
+          description:
+            "Creating conditions for Kindergarten 202 to be an educational development center for the full development of children and cooperation between teachers and parents.",
+        },
+        tasks: {
+          title: "Main Tasks",
+          items: [
+            "Creating an optimal technological model for implementing administrative functions",
+            "Forming common human values and virtues in children",
+            "Enriching the material and didactic base",
+            "Attracting families as equal partners in the educational process",
+          ],
+        },
+        staff: {
+          title: "Staff Management",
+          description: "The selection of pedagogical staff is carried out according to the following criteria:",
+          criteria: [
+            "Professionalism and pedagogical mastery",
+            "Initiative and creativity",
+            "Ability to communicate with children",
+            "Ability to work in a team",
+            "Love for children and profession",
+          ],
+        },
+        pedagogy: {
+          title: "Pedagogical Activity",
+          description:
+            "In the process of pedagogical interaction, the three substantive aspects of the child's personality are revealed:",
+          aspects: [
+            "What does the child want – this implies exploring the child's orientation, needs, interests, and preferences",
+            "What can the child – helps the teacher to orientate in the cognitive sphere (knowledge of the world), in operational-technical skills, in the qualities of personality",
+            "What is the child – these are the personal dimensions and individual characteristics in the motivational and behavioral plan",
+          ],
+        },
+      },
+      adaptation: {
+        title: "Adaptation Model",
+        motto:
+          'The motto of Kindergarten 202 is: "Together for Children", and the main principle of work is: "The Child is Everything"',
+        intro:
+          "When a child enters the kindergarten, a smooth adaptation is necessary to overcome this difficult process for both the child and their parents. Changes need to be made in the family's life for this transition.",
+        goals: {
+          title: "Main Goals",
+          items: [
+            "Establishing and specifying changes in the child's psyche under conditions of transition to a new social environment",
+            "Creating an opportunity for easy adaptation without long-term negative effects on the child's psyche",
+            "Achieving adaptation through mutual assimilation and accommodation",
+          ],
+        },
+        tasks: {
+          title: "Main Tasks",
+          items: [
+            "Ensuring smooth adaptation of the child to the kindergarten with their individual needs",
+            "Giving the child the opportunity to assimilate a system of knowledge, norms, and values in the new environment",
+            "The kindergarten, teachers, medical specialists, and non-pedagogical personnel to become the desired environment and preferred partner",
+            "Creating a sustainable model of child adaptation to a new environment",
+            "Continuous improvement and enrichment of the competence of teachers and medical specialists",
+          ],
+        },
+        priorities: {
+          title: "Priorities",
+          items: [
+            "Protecting the physical and mental health of the child and preserving it",
+            "Using a healthy, safe, secure, and modern MTB resembling a family environment",
+            "Teamwork between pedagogical and medical specialists",
+            "Ensuring equal access and integration of the child in social interaction with other children",
+            "Creating a positive adaptive climate under conditions of cooperation",
+            "Ensuring conditions for improving the competence of specialists",
+            "Parental participation for ensuring smooth transition",
+          ],
+        },
+        conclusion:
+          "The child adaptation model when entering Kindergarten 202, Sofia is designed for parents, medical, pedagogical specialists, and non-pedagogical personnel. The goal is to achieve quick and painless adaptation of the new child through active interaction between the kindergarten and parents.",
       },
       missionVision: {
         title: "Our Mission, Vision & Values",
@@ -532,11 +662,140 @@ export const translations = {
     // About Page
     about: {
       hero: {
-        title: "За Детска Градина 202",
+        title: "За нас",
         description1:
-          "Основана през 2010 г., Детска Градина 202 е краеъгълен камък на ранното детско образование в нашата общност. Ние сме отдадени на предоставянето на топла, подкрепяща среда, където децата могат да растат, учат и процъфтяват.",
+          'Добре дошли в Детска градина № 202! Детска градина № 202 е новооткрита детска градина в столицата. Намира се в ж.к "Младост" 1. Разполага с просторни, естетически оформени помещения, отговарящи на всички изисквания за обучение и възпитание на деца от предучилищна възраст.',
         description2:
-          "Нашият опитен екип от педагози е страстен по отношение на насърчаването на любовта към ученето у всяко дете. Вярваме, че ранните години са решаващи за развитието и сме ангажирани да ги направим магически.",
+          "За игри и спорт на открито има голям и красив озеленен и обезопасен двор с площадки, оборудвани със съвременни парко-мебели, противоударна настилка, катерушки, пейки, пързалки, люлки.",
+      },
+      staff: {
+        title: "Нашият екип",
+        description:
+          "За децата се грижат екипи от специалисти - педагози, медицински специалисти и помощник възпитатели, които притежават висок професионализъм, богат опит и много обич към децата.",
+      },
+      groups: {
+        title: "Нашите групи",
+        description: "ДГ № 202 разполага с 2 яслени и 4 градински групи.",
+      },
+      focus: {
+        title: "Основен акцент в дейността на детската градина",
+        point1: {
+          title: "Съвременна педагогика",
+          description:
+            "Възпитанието и обучението са в унисон с актуалните постижения на педагогиката на ранната и предучилищна възраст",
+        },
+        point2: {
+          title: "Качествена здравна грижа",
+          description: "Качествена здравна грижа за децата",
+        },
+        point3: {
+          title: "Партньорство с родителите",
+          description:
+            "Активното комуникиране с родителите и привличането им в помощ на общата кауза - да отгледаме здрави, щастливи, знаещи и можещи деца",
+        },
+      },
+      welcome: "Добре дошли при нас!",
+      facilities: {
+        title: "Материално-техническа база",
+        intro1:
+          "С богатата си и уютна материална база, Детска градина № 202 е приказен дом за вашите деца. Създали сме условия за пълноценно детство, равен старт на всяко дете и целенасочена предучилищна подготовка за успешна реализация в училище.",
+        intro2:
+          "Материално-техническата база осигурява динамичност в социалната комуникация между децата, като поражда чувство за радост от сътрудничество в различни дейности. Функциите на средата позволяват да се осигурят условия за разнообразна дейност на децата, за задоволяване на потребностите и интересите им съобразно предпочетената от тях дейност.",
+        subtitle: "Детското заведение разполага с много добра материална база, обезпечено е с:",
+        items: [
+          "Музикален/физкултурен салон",
+          "Открита сцена",
+          "Кабинет на психолога",
+          "Логопедичен кабинет",
+          "Кабинет на ресурсния учител",
+          "Кабинет за ранно чуждоезиково обучение - английски език",
+          "Кабинет по приложни изкуства",
+          "Видео наблюдение",
+          "Охрана",
+          "Индивидуални занимални на всяка група",
+          "Индивидуални спални помещения със самостоятелни легла за следобеден сън на всяко дете",
+          "Индивидуални офиси за помощник-възпитателя с миялни машини и съответно оборудване",
+          "Просторен двор за отдих, игри и обучение, игрални площадки за всяка група",
+          "Здравен кабинет",
+          "Собствена кухня, осигуряваща здравословно хранене",
+          "Пералня",
+        ],
+      },
+      concept: {
+        title: "Концепция за развитие",
+        goal: {
+          title: "Основна цел",
+          description:
+            "Създаване на условия за утвърждаване на детската градина като възпитателно-образователен център за пълноценно развитие на децата и сътрудничество между учители и родители.",
+        },
+        tasks: {
+          title: "Основни задачи",
+          items: [
+            "Създаване на оптимален технологичен модел за реализиране на управленските функции",
+            "Формиране на общочовешки ценности и добродетели у децата",
+            "Обогатяване на материалната и дидактична база",
+            "Привличане на семейството като равностоен партньор във възпитателния процес",
+          ],
+        },
+        staff: {
+          title: "Управление на кадрите",
+          description: "Подборът на педагогически кадри се осъществява по следните критерии:",
+          criteria: [
+            "Професионализъм и педагогическо майсторство",
+            "Инициативност и творчество",
+            "Умение за общуване с децата",
+            "Умение за работа в екип",
+            "Любов към децата и професията",
+          ],
+        },
+        pedagogy: {
+          title: "Педагогическа дейност",
+          description:
+            "В процеса на педагогическо взаимодействие се открояват трите същностни черти в облика на детската личност:",
+          aspects: [
+            "Какво желае детето – това предполага проучване на неговата насоченост, потребности, интереси и нагласи",
+            "Какво може детето – помага на педагога да се ориентира в когнитивната сфера (в знанията за света), в операционно-техническите умения, в качествата на личността",
+            "Какво е детето – това са личностните измерения и индивидуалната характеристика в мотивационен и поведенчески план",
+          ],
+        },
+      },
+      adaptation: {
+        title: "Модел за адаптация",
+        motto: 'Девизът на ДГ № 202 е: "Заедно за децата", а основният принцип на работа е: "Детето е всичко"',
+        intro:
+          "При постъпване на детето в детската градина е необходимо да се осъществи плавна адаптация, за преодоляване на този труден процес и за детето, и за неговите родители. За пристъпването към този момент е необходимо да бъдат направени някои промени в живота на цялото семейство.",
+        goals: {
+          title: "Основни цели",
+          items: [
+            "Установяване и конкретизиране промените, настъпващи в психиката на детето в условия на преход към нова социална среда",
+            "Изграждане възможност за лесно приспособяване без това да се отразява дългосрочно на психиката на детето",
+            "Осъществяване на приспособяването чрез двупосочното действие на асимилация и акомодация",
+          ],
+        },
+        tasks: {
+          title: "Основни задачи",
+          items: [
+            "Да се осигури безпроблемна адаптация на детето в детската градина с индивидуалните му потребности",
+            "Да се даде възможност на детето да усвои система от знания, норми и ценности в новата среда",
+            "Детската градина, педагози, медицински специалисти и непедагогически персонал да се превърнат в желана среда и предпочитан партньор",
+            "Създаване на устойчив модел на адаптация на детето в нова среда",
+            "Непрекъснато усъвършенстване и обогатяване компетентността на педагогическите и медицински специалисти",
+          ],
+        },
+        priorities: {
+          title: "Приоритети",
+          items: [
+            "Опазване физическото и психическото здраве на детето и съхраняването му",
+            "Използване на здравословна, безопасна, сигурна и съвременна МТБ наподобяваща семейна среда",
+            "Екипна работа между педагогическите, медицинските специалисти",
+            "Гарантиране на равен достъп и приобщаване на детето в общуването с други деца",
+            "Изграждане на позитивен адаптационен климат в условия на сътрудничество",
+            "Осигуряване на условия за повишаване компетенциите на специалистите",
+            "Партньорско участие на родителите за осигуряване на плавен преход",
+          ],
+        },
+        conclusion:
+          "Моделът за адаптирането на детето при първоначалното му постъпване в ДГ 202, София е предназначен за родителите, медицинските, педагогически специалисти и непедагогическият персонал. Целта е при активно взаимодействие между детската градина и родителите да се постигне бърза и безболезнена адаптация на новопостъпващото дете.",
       },
       missionVision: {
         title: "Нашата мисия, визия и ценности",
@@ -567,7 +826,7 @@ export const translations = {
         playBased: {
           title: "Подход, базиран на игра",
           description:
-            "Играта е основата на ученето. Чрез структурирана и свободна игра децата развиват социални, емоционални, когнитивни и физически умения.",
+            "Играта е основата на ученето. Чрез структурирана и свободна игра децата развиват социални, емоционални, когнитивни и физически умения естествено и радостно.",
         },
         family: {
           title: "Партньорство със семейството",
