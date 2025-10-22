@@ -24,10 +24,10 @@ export default function HomePage() {
 
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
               <div className="space-y-6 text-xl leading-relaxed text-muted-foreground">
-                <p>{t.about.welcome}</p>
+                <p className="font-bold text-3xl">{t.about.welcome}</p>
                 <p>{t.about.description}</p>
-                <p>{t.about.staff.description}</p>
-                <p>{t.about.groups.description}</p>
+                <p className="font-semibold">{t.about.staff.description}</p>
+                <p className="font-semibold">{t.about.groups.description}</p>
               </div>
 
               <div>
