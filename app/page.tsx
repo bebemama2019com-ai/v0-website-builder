@@ -15,7 +15,7 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* About Section */}
-        <section className="px-4 py-16 lg:py-24">
+        <section className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-accent/20 px-4 py-16 lg:py-24">
           <div className="mx-auto max-w-6xl">
             <div className="mb-12 text-center">
               <h1 className="mb-4 text-4xl font-bold text-foreground lg:text-5xl">{t.about.title}</h1>
@@ -168,7 +168,7 @@ export default function HomePage() {
         </section>
 
         {/* Adaptation Model Section */}
-        <section className="bg-muted/30 px-4 py-16 lg:py-24">
+        <section className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 px-4 py-16 lg:py-24">
           <div className="mx-auto max-w-6xl">
             <div className="mb-12 text-center">
               <Heart className="mx-auto mb-4 h-12 w-12 text-primary" />
