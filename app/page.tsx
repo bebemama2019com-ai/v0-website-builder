@@ -23,7 +23,7 @@ export default function HomePage() {
             </div>
 
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-              <div className="space-y-6 text-lg leading-relaxed text-muted-foreground">
+              <div className="space-y-6 text-xl leading-relaxed text-muted-foreground">
                 <p>{t.about.welcome}</p>
                 <p>{t.about.description}</p>
                 <p>{t.about.staff.description}</p>
