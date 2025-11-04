@@ -6,6 +6,7 @@ import { Menu, X, ChevronDown } from "lucide-react"
 import { LanguageSelector } from "@/components/language-selector"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import Image from "next/image"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -45,18 +46,25 @@ export function Header() {
   ]
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full bg-white shadow-md border-b-4 border-primary">
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8">
         <div className="flex lg:flex-1">
-          <Link href="/" className="-m-1.5 p-1.5">
-            <span className="text-2xl font-bold text-primary">ДГ 202</span>
+          <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-3 transition-transform hover:scale-105">
+            <Image
+              src="/images/design-mode/Screenshot_1.jpg"
+              alt="ДГ 202 Logo"
+              width={160}
+              height={80}
+              className="h-16 w-auto object-contain shadow-lg mx-[-7px] rounded-sm"
+              priority
+            />
           </Link>
         </div>
         <div className="flex lg:hidden gap-2">
           <LanguageSelector />
           <button
             type="button"
-            className="-m-2.5 inline-flex items-center justify-center rounded-xl p-2.5 text-foreground"
+            className="-m-2.5 inline-flex items-center justify-center rounded-xl p-2.5 text-primary hover:bg-primary/10 transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             <span className="sr-only">Toggle menu</span>
@@ -67,18 +75,18 @@ export function Header() {
             )}
           </button>
         </div>
-        <div className="hidden lg:flex lg:gap-x-6">
+        <div className="hidden lg:flex lg:gap-x-8">
           {navigation.map((item) =>
             item.dropdown ? (
               <DropdownMenu key={item.name}>
-                <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-semibold leading-6 text-foreground transition-colors hover:text-primary">
+                <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-bold leading-6 text-foreground transition-all hover:text-primary hover:scale-105">
                   {item.name}
                   <ChevronDown className="h-4 w-4" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="rounded-2xl">
+                <DropdownMenuContent align="start" className="rounded-2xl shadow-xl border-2">
                   {item.dropdown.map((subItem) => (
                     <DropdownMenuItem key={subItem.name} asChild>
-                      <Link href={subItem.href} className="cursor-pointer">
+                      <Link href={subItem.href} className="cursor-pointer font-semibold hover:text-primary">
                         {subItem.name}
                       </Link>
                     </DropdownMenuItem>
@@ -89,7 +97,7 @@ export function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-sm font-semibold leading-6 text-foreground transition-colors hover:text-primary"
+                className="text-sm font-bold leading-6 text-foreground transition-all hover:text-primary hover:scale-105"
               >
                 {item.name}
               </Link>
@@ -101,18 +109,18 @@ export function Header() {
         </div>
       </nav>
       {mobileMenuOpen && (
-        <div className="lg:hidden">
+        <div className="lg:hidden bg-white border-t-2 border-primary/20">
           <div className="space-y-1 px-4 pb-3 pt-2">
             {navigation.map((item) =>
               item.dropdown ? (
                 <div key={item.name} className="space-y-1">
-                  <div className="px-3 py-2 text-base font-semibold text-foreground">{item.name}</div>
+                  <div className="px-3 py-2 text-base font-bold text-primary">{item.name}</div>
                   <div className="pl-4 space-y-1">
                     {item.dropdown.map((subItem) => (
                       <Link
                         key={subItem.name}
                         href={subItem.href}
-                        className="block rounded-xl px-3 py-2 text-sm text-foreground hover:bg-muted"
+                        className="block rounded-xl px-3 py-2 text-sm font-semibold text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         {subItem.name}
@@ -124,7 +132,7 @@ export function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="block rounded-xl px-3 py-2 text-base font-semibold text-foreground hover:bg-muted"
+                  className="block rounded-xl px-3 py-2 text-base font-bold text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
