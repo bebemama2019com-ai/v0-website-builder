@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: "Детска Градина 202 - Където децата растат и се развиват",
   description: "Топла, подкрепяща среда, където децата растат, учат и откриват чрез образование, базирано на игра.",
   generator: "v0.app",
+  icons: {
+    icon: "/favicon.ico",
+  },
 }
 
 export default function RootLayout({
