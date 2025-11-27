@@ -50,15 +50,15 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
-                <span className="text-muted-foreground">123 Learning Lane, Education City</span>
+                <span className="text-muted-foreground">София, Младост 1</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 flex-shrink-0 text-primary" />
-                <span className="text-muted-foreground">+1 (555) 123-4567</span>
+                <span className="text-muted-foreground">0884 80 16 40</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 flex-shrink-0 text-primary" />
-                <span className="text-muted-foreground">hello@littlesprouts.com</span>
+                <span className="text-muted-foreground">dg202sofia@abv.bg</span>
               </li>
             </ul>
           </div>
@@ -81,9 +81,9 @@ export function Footer() {
               </a>
             </div>
             <p className="text-sm text-muted-foreground">
-              <strong className="text-foreground">Hours:</strong>
+              <strong className="text-foreground">{t.footer.hours}:</strong>
               <br />
-              Mon-Fri: 7:00 AM - 6:00 PM
+              {t.footer.hoursContent}
             </p>
           </div>
         </div>

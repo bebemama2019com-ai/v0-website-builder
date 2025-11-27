@@ -51,6 +51,7 @@ export default function AdminLoginPage() {
       }
 
       console.log("[v0] Admin access confirmed, redirecting to /admin")
+
       window.location.href = "/admin"
     } catch (error: unknown) {
       console.error("[v0] Login error:", error)

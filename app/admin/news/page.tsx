@@ -17,7 +17,7 @@ export default async function AdminNewsPage() {
     redirect("/admin/login")
   }
 
-  const { data: isAdmin } = await supabase.from("admin_users").select("id").eq("user_id", user.id).single()
+  const { data: isAdmin } = await supabase.from("admin_users").select("id").eq("id", user.id).single()
 
   if (!isAdmin) {
     redirect("/admin/login")

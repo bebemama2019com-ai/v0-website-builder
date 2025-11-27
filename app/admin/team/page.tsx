@@ -16,7 +16,7 @@ export default async function AdminTeamPage() {
     redirect("/admin/login")
   }
 
-  const { data: isAdmin } = await supabase.from("admin_users").select("id").eq("user_id", user.id).single()
+  const { data: isAdmin } = await supabase.from("admin_users").select("id").eq("id", user.id).single()
 
   if (!isAdmin) {
     redirect("/admin/login")
@@ -25,7 +25,7 @@ export default async function AdminTeamPage() {
   const { data: teamMembers } = await supabase
     .from("team_members")
     .select("*")
-    .order("order_position", { ascending: true })
+    .order("order_index", { ascending: true })
 
   return (
     <div className="min-h-screen bg-background">

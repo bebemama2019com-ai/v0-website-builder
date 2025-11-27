@@ -557,7 +557,7 @@ export const translations = {
     },
     // Footer
     footer: {
-      tagline: "Nurturing young minds since 2010",
+      tagline: "Inspiring the future",
       quickLinks: "Quick Links",
       contact: "Contact Us",
       followUs: "Follow Us",
@@ -1052,15 +1052,15 @@ export const translations = {
       info: {
         address: {
           title: "Адрес",
-          content: "ул. Учене 123, Град Образование, ОБ 12345",
+          content: "София, Младост 1",
         },
         phone: {
           title: "Телефон",
-          content: "+359 (2) 123-4567",
+          content: "0884 80 16 40",
         },
         email: {
           title: "Имейл",
-          content: "hello@littlesprouts.com",
+          content: "dg202sofia@abv.bg",
         },
         hours: {
           title: "Работно време",
@@ -1117,10 +1117,12 @@ export const translations = {
     },
     // Footer
     footer: {
-      tagline: "Отглеждаме млади умове от 2010 г.",
+      tagline: "Вдъхновяваме бъдещето",
       quickLinks: "Бързи връзки",
       contact: "Свържете се с нас",
       followUs: "Последвайте ни",
+      hours: "Работно време",
+      hoursContent: "Пон-Пет: 7:00 - 18:00",
       rights: "Всички права запазени.",
     },
   },
