@@ -17,10 +17,12 @@ export function Header() {
     {
       name: t.nav.groups,
       dropdown: [
-        { name: t.nav.group1, href: "/groups/group-1" },
-        { name: t.nav.group2, href: "/groups/group-2" },
-        { name: t.nav.group3, href: "/groups/group-3" },
-        { name: t.nav.group4, href: "/groups/group-4" },
+        { name: t.nav.lavcheta, href: "/groups/lavcheta" },
+        { name: t.nav.zvanche, href: "/groups/zvanche" },
+        { name: t.nav.slanchitse, href: "/groups/slanchitse" },
+        { name: t.nav.pepelyashka, href: "/groups/pepelyashka" },
+        { name: t.nav.snezhanka, href: "/groups/snezhanka" },
+        { name: t.nav.sarchitse, href: "/groups/sarchitse" },
         { name: t.nav.dod, href: "/groups/dod" },
       ],
     },
