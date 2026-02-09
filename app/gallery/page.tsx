@@ -37,6 +37,13 @@ export default function GalleryPage() {
       date: "2024-01-14",
     },
     {
+      _id: "13",
+      title: "Детска площадка",
+      image: "/gallery-playground-real.jpg",
+      category: "Outdoor Play",
+      date: "2025-02-09",
+    },
+    {
       _id: "3",
       title: "Reading Corner",
       image: "/gallery-reading.jpg?height=600&width=600&query=children reading books in classroom",
