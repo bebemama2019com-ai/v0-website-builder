@@ -1,119 +1,87 @@
-"use client"
+import type { Metadata } from "next"
+import { DocumentPage } from "@/components/document-page"
+import { Banknote } from "lucide-react"
 
-import { useEffect, useState } from "react"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { FileText, Download } from "lucide-react"
-import { useLanguage } from "@/lib/i18n/language-context"
-
-interface Document {
-  id: string
-  title: string
-  description?: string
-  file_url: string
-  file_type: string
-  file_size: number
-  quarter: string
+export const metadata: Metadata = {
+  title: "Бюджет - План за действие и финансиране - ДГ 202",
+  description:
+    "План за действие и финансиране за 2025-2026 година в изпълнение на Стратегия за развитие на ДГ 202",
 }
 
 export default function BudgetPage() {
-  const { t } = useLanguage()
-  const [documents, setDocuments] = useState<Document[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetch("/api/documents")
-      .then((res) => res.json())
-      .then((data) => {
-        const budgetDocs = data.filter((doc: Document) => doc.quarter)
-        setDocuments(budgetDocs)
-        setLoading(false)
-      })
-      .catch((error) => {
-        console.error("Error fetching documents:", error)
-        setLoading(false)
-      })
-  }, [])
-
-  const budgetByQuarter = {
-    Q1: documents.filter((doc) => doc.quarter === "Q1"),
-    Q2: documents.filter((doc) => doc.quarter === "Q2"),
-    Q3: documents.filter((doc) => doc.quarter === "Q3"),
-    Q4: documents.filter((doc) => doc.quarter === "Q4"),
-  }
-
-  const quarterNames = {
-    Q1: t.documents?.q1 || "Първо тримесечие",
-    Q2: t.documents?.q2 || "Второ тримесечие",
-    Q3: t.documents?.q3 || "Трето тримесечие",
-    Q4: t.documents?.q4 || "Четвърто тримесечие",
-  }
-
-  if (loading) {
-    return (
-      <>
-        <Header />
-        <div className="min-h-screen flex items-center justify-center">
-          <p className="text-lg text-muted-foreground">Зареждане...</p>
-        </div>
-        <Footer />
-      </>
-    )
-  }
-
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-background py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <h1 className="text-4xl font-bold mb-4">{t.nav?.budget || "Бюджет"}</h1>
-            <p className="text-lg text-muted-foreground mb-12">
-              Тук можете да изтеглите бюджетните документи за всяко тримесечие
-            </p>
-
-            <div className="space-y-12">
-              {(["Q1", "Q2", "Q3", "Q4"] as const).map((quarter) => (
-                <div key={quarter}>
-                  <h2 className="text-2xl font-semibold mb-6">{quarterNames[quarter]}</h2>
-                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {budgetByQuarter[quarter].map((doc) => (
-                      <Card key={doc.id} className="p-6 hover:shadow-lg transition-shadow">
-                        <div className="flex items-start gap-4">
-                          <FileText className="w-10 h-10 text-primary flex-shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-lg mb-2">{doc.title}</h3>
-                            {doc.description && <p className="text-sm text-muted-foreground mb-3">{doc.description}</p>}
-                            <p className="text-xs text-muted-foreground mb-4">
-                              {doc.file_type.toUpperCase()} • {(doc.file_size / 1024).toFixed(0)} KB
-                            </p>
-                            <a href={doc.file_url} target="_blank" rel="noopener noreferrer" download>
-                              <Button className="w-full">
-                                <Download className="w-4 h-4 mr-2" />
-                                Изтегли
-                              </Button>
-                            </a>
-                          </div>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                  {budgetByQuarter[quarter].length === 0 && (
-                    <Card className="p-8">
-                      <p className="text-center text-muted-foreground">
-                        Все още няма налични документи за това тримесечие
-                      </p>
-                    </Card>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </main>
-      <Footer />
-    </>
+    <DocumentPage
+      title="План за действие и финансиране 2025-2026"
+      subtitle="В изпълнение на Стратегия за развитие на ДГ 202 за периода 2025-2030"
+      orderInfo="Протокол № 1 от 10.10.2025 г."
+      orderDetails="Планът за действие и финансиране е приет на заседание на педагогически съвет."
+      approvedBy="Петя Янкова - Директор на ДГ № 202"
+      pdfPath="/documents/plan-deystvie-finansirane.pdf"
+      icon={Banknote}
+      sections={[
+        {
+          title: "I. Осигуряване на образователна среда",
+          content: [
+            "Осигуряване на образователна среда за учене чрез игра, ориентирана към детето и гарантираща придобиване на ключови компетентности и готовност за училище. Обхващане и включване на деца в задължителна предучилищна подготовка.",
+            "Създаване на условия за целодневна и самостоятелна форма на организация. Организация за задължително предучилищно образование в трета и четвърта подготвителни групи. Създаване на система за отсъствията на децата и анализ за причините.",
+            "Осигуряване на учебни помагала, познавателни книжки. Активно участие в механизма и екипите за обхват на децата.",
+          ],
+        },
+        {
+          title: "Организиране на деня на детето",
+          content: [
+            "Организиране на деня на детето във всяка група съобразно възрастовите и индивидуални особености на децата. Здравословен начин на живот и здравословно хранене.",
+            "Актуализиране на правила за адаптация на детето в детската градина. Оптимизиране на екипната работа. Организиране на рационален дневен режим в яслените групи.",
+            "ИКТ в образователния процес и иновации. Осигуряване на развитие на интересите и способностите на децата чрез дейности извън ДОС. Издигане равнището на езикова подготовка.",
+          ],
+        },
+        {
+          title: "Сътрудничество и взаимодействие",
+          content: [
+            "Активизиране на родителската общност като партньор в обучението на детето. Съвместна работа с Обществен съвет. Активизиране дейността на Учителската настоятелност.",
+            "Взаимодействие на детската градина с институциите в системата на МОН, териториалните органи на местно управление, НПО и училища.",
+          ],
+        },
+        {
+          title: "II. Подкрепа за личностно развитие",
+          content: [
+            "Осигуряване на подкрепа за личностно развитие на детето. Противодействие на тормоза и насилието.",
+            "Усъвършенстване на механизми за адаптиране на детето към образователната среда. Актуализиране на политики за личностно развитие на детето. Създаване на условия за интегриране на деца със СОП.",
+            "Усъвършенстване на системата за превенция на насилието и агресията.",
+          ],
+        },
+        {
+          title: "III. Повишаване на квалификацията",
+          content: [
+            "Повишаване на квалификацията на персонала, обогатяване на компетентностите за работа и кариерно развитие на педагогически специалисти.",
+            "Планиране, реализиране и документиране на квалификационната дейност на педагогическите специалисти. Актуализиране на система за подкрепа на новоназначени учители и наставничество.",
+            "Изграждане механизъм за популяризиране на добрия опит. Стимулиране на иновативността в дейността на детската градина и изява на учителите.",
+          ],
+        },
+        {
+          title: "IV. Управленска дейност",
+          content: [
+            "Усъвършенстване на управленската дейност. Прозрачност и предвидимост в управлението, съгласуване, координиране между отделните звена. Екипна работа.",
+            "Актуализиране на стратегията, програмната система и тематичните разпределения. Актуализиране на вътрешна нормативна уредба. Нормативно осигуряване.",
+            "Създаване на условия за разработване и участие в проекти. Мотивиране на служителите за постигане на необходимото качество и ефективност на труда.",
+          ],
+        },
+        {
+          title: "Финансиране и материална база",
+          content: [
+            "Планиране на бюджета съобразно законовите норми и осигуряване изпълнение на стратегията. Модернизиране и опазване на материално-техническата база.",
+            "Реализиране на собствени приходи. Актуализиране на процедурите на СФУК - целесъобразност и прозрачност при разходване на средствата.",
+            "Извършване на текущи ремонти. Модернизиране на дидактичната база. Усъвършенстване на вътрешна система за движение на информацията и документите.",
+          ],
+        },
+        {
+          title: "Популяризиране дейността на ДГ",
+          content: [
+            "Взаимодействие с медиите при изяви на детската градина. Поддържане на сайта на детската градина. Актуализиране на портфолио на детската градина.",
+            "Поддържане на Фейсбук страница: Детска Градина 202. Изграждане на екип разработващи рекламната стратегия на ДГ. Презентиране работата на ДГ и информираност на обществото.",
+          ],
+        },
+      ]}
+    />
   )
 }

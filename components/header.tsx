@@ -33,6 +33,15 @@ export function Header() {
       dropdown: [
         { name: t.nav.regulations, href: "/documents/regulations" },
         { name: t.nav.budget, href: "/documents/budget" },
+        { name: t.nav.godishenPlan, href: "/documents/godishen-plan" },
+        { name: t.nav.programnaSistema, href: "/documents/programna-sistema" },
+        { name: t.nav.pravilnikPropuskatelen, href: "/documents/pravilnik-propuskatelen-rezhim" },
+        { name: t.nav.pravilaTerorizam, href: "/documents/pravila-terorizam" },
+        { name: t.nav.planProgramaBdp, href: "/documents/plan-programa-bdp" },
+        { name: t.nav.mehanizamDeteVRisk, href: "/documents/mehanizam-dete-v-risk" },
+        { name: t.nav.etichenKodeksDetsa, href: "/documents/etichen-kodeks-rabota-s-detsa" },
+        { name: t.nav.etichenKodeksDg202, href: "/documents/etichen-kodeks-dg202" },
+        { name: t.nav.modelAdaptatsia, href: "/documents/model-adaptatsia" },
       ],
     },
     {

@@ -14,7 +14,13 @@ export default function GalleryPage() {
     // Fetch gallery images from API
     fetch("/api/gallery")
       .then((res) => res.json())
-      .then((data) => setGalleryImages(data))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setGalleryImages(data)
+        } else {
+          setGalleryImages(fallbackImages)
+        }
+      })
       .catch(() => {
         // Use fallback data
         setGalleryImages(fallbackImages)
@@ -35,6 +41,13 @@ export default function GalleryPage() {
       image: "/gallery-outdoor.jpg?height=600&width=600&query=children playing outside kindergarten",
       category: "Outdoor Play",
       date: "2024-01-14",
+    },
+    {
+      _id: "13",
+      title: "Детска площадка",
+      image: "/gallery-playground-real.jpg",
+      category: "Outdoor Play",
+      date: "2025-02-09",
     },
     {
       _id: "3",
@@ -109,6 +122,7 @@ export default function GalleryPage() {
   ]
 
   const displayImages = galleryImages.length > 0 ? galleryImages : fallbackImages
+
 
   return (
     <div className="flex min-h-screen flex-col">
