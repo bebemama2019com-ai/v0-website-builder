@@ -41,6 +41,10 @@ export function GalleryGrid({ images }: GalleryGridProps) {
         return t.gallery.filters.activities
       case "Events":
         return t.gallery.filters.events
+      case "Building":
+        return t.gallery.filters.building || "Сграда"
+      case "Facilities":
+        return t.gallery.filters.facilities || "Помещения"
       default:
         return category
     }

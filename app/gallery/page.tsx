@@ -13,7 +13,10 @@ export default function GalleryPage() {
   useEffect(() => {
     // Fetch gallery images from API
     fetch("/api/gallery")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("API error")
+        return res.json()
+      })
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
           setGalleryImages(data)
@@ -28,96 +31,88 @@ export default function GalleryPage() {
   }, [])
 
   const fallbackImages = [
+    // Real photos - Building & Exterior
     {
-      _id: "1",
-      title: "Art Class Fun",
-      image: "/gallery-art-class.jpg?height=600&width=600&query=children doing art in kindergarten",
-      category: "Activities",
-      date: "2024-01-15",
-    },
-    {
-      _id: "2",
-      title: "Outdoor Play",
-      image: "/gallery-outdoor.jpg?height=600&width=600&query=children playing outside kindergarten",
-      category: "Outdoor Play",
-      date: "2024-01-14",
-    },
-    {
-      _id: "13",
-      title: "Детска площадка",
-      image: "/gallery-playground-real.jpg",
-      category: "Outdoor Play",
+      _id: "r1",
+      title: "Сграда на ДГ № 202",
+      image: "/gallery/building-exterior.jpg",
+      category: "Building",
       date: "2025-02-09",
     },
     {
-      _id: "3",
-      title: "Reading Corner",
-      image: "/gallery-reading.jpg?height=600&width=600&query=children reading books in classroom",
-      category: "Classroom",
-      date: "2024-01-13",
+      _id: "r2",
+      title: "Вход на Детска Градина № 202",
+      image: "/gallery/entrance-closeup.jpg",
+      category: "Building",
+      date: "2025-02-09",
     },
+    // Real photos - Outdoor Play
     {
-      _id: "4",
-      title: "Music Time",
-      image: "/gallery-music.jpg?height=600&width=600&query=children playing musical instruments",
-      category: "Activities",
-      date: "2024-01-12",
-    },
-    {
-      _id: "5",
-      title: "Science Experiment",
-      image: "/gallery-science.jpg?height=600&width=600&query=children doing science experiment",
-      category: "Activities",
-      date: "2024-01-11",
-    },
-    {
-      _id: "6",
-      title: "Playground Fun",
-      image: "/gallery-playground.jpg?height=600&width=600&query=children on playground equipment",
+      _id: "r3",
+      title: "Детска площадка",
+      image: "/gallery/playground-outdoor.jpg",
       category: "Outdoor Play",
-      date: "2024-01-10",
+      date: "2025-02-09",
     },
+    // Real photos - Classroom
     {
-      _id: "7",
-      title: "Colorful Classroom",
-      image: "/gallery-classroom.jpg?height=600&width=600&query=bright colorful kindergarten classroom",
+      _id: "r4",
+      title: "Занималня с играчки",
+      image: "/gallery/classroom-playroom.jpg",
       category: "Classroom",
-      date: "2024-01-09",
+      date: "2025-02-09",
     },
     {
-      _id: "8",
-      title: "Garden Time",
-      image: "/gallery-garden.jpg?height=600&width=600&query=children gardening with plants",
-      category: "Outdoor Play",
-      date: "2024-01-08",
-    },
-    {
-      _id: "9",
-      title: "Building Blocks",
-      image: "/gallery-blocks.jpg?height=600&width=600&query=children playing with building blocks",
+      _id: "r5",
+      title: "Книжки и образователни игри",
+      image: "/gallery/bookshelf-toys.jpg",
       category: "Classroom",
-      date: "2024-01-07",
+      date: "2025-02-09",
     },
     {
-      _id: "10",
-      title: "Holiday Celebration",
-      image: "/gallery-celebration.jpg?height=600&width=600&query=children celebrating at kindergarten",
-      category: "Events",
-      date: "2024-01-06",
-    },
-    {
-      _id: "11",
-      title: "Painting Activity",
-      image: "/gallery-painting.jpg?height=600&width=600&query=children painting at easels",
-      category: "Activities",
-      date: "2024-01-05",
-    },
-    {
-      _id: "12",
-      title: "Story Time Circle",
-      image: "/gallery-storytime.jpg?height=600&width=600&query=teacher reading to children in circle",
+      _id: "r6",
+      title: "Шкафчета за децата",
+      image: "/gallery/cubbies-storage.jpg",
       category: "Classroom",
-      date: "2024-01-04",
+      date: "2025-02-09",
+    },
+    // Real photos - Sleeping rooms
+    {
+      _id: "r7",
+      title: "Спалня с декорации",
+      image: "/gallery/sleeping-room-1.jpg",
+      category: "Facilities",
+      date: "2025-02-09",
+    },
+    {
+      _id: "r8",
+      title: "Спалня с рисунки на природа",
+      image: "/gallery/sleeping-room-2.jpg",
+      category: "Facilities",
+      date: "2025-02-09",
+    },
+    // Real photos - Bathroom
+    {
+      _id: "r9",
+      title: "Детска баня",
+      image: "/gallery/children-bathroom.jpg",
+      category: "Facilities",
+      date: "2025-02-09",
+    },
+    // Real photos - Music hall & Lobby
+    {
+      _id: "r10",
+      title: "Музикален салон",
+      image: "/gallery/music-hall.jpg",
+      category: "Facilities",
+      date: "2025-02-09",
+    },
+    {
+      _id: "r11",
+      title: "Фоайе с рисунка на балони",
+      image: "/gallery/lobby-mural.jpg",
+      category: "Building",
+      date: "2025-02-09",
     },
   ]
 

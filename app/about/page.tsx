@@ -46,7 +46,7 @@ export default function AboutPage() {
             </div>
             <div className="relative">
               <div className="aspect-[4/3] overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 to-accent/20">
-                <img src="/modern-kindergarten-building-exterior-with-playgro.jpg" alt="ДГ 202" className="h-full w-full object-cover" />
+                <img src="/about-building-exterior.jpg" alt="ДГ 202" className="h-full w-full object-cover" />
               </div>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function AboutPage() {
             </div>
             <div className="relative">
               <div className="aspect-[4/3] overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 to-accent/20">
-                <img src="/colorful-kindergarten-classroom.png" alt="Нашите групи" className="h-full w-full object-cover" />
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Feb%2025%2C%202026%2C%2004_04_22%20PM%20%281%29-KjYZKMSYkUjxdgVZ1lNqzSmcIDMz9b.png" alt="Нашите групи" className="h-full w-full object-cover" />
               </div>
             </div>
           </div>
