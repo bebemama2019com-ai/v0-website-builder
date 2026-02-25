@@ -13,7 +13,10 @@ export default function GalleryPage() {
   useEffect(() => {
     // Fetch gallery images from API
     fetch("/api/gallery")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("API error")
+        return res.json()
+      })
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
           setGalleryImages(data)
