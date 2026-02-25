@@ -96,6 +96,21 @@ export default function GalleryPage() {
       category: "Facilities",
       date: "2025-02-09",
     },
+    // Real photos - Music hall & Lobby
+    {
+      _id: "r10",
+      title: "Музикален салон",
+      image: "/gallery/music-hall.jpg",
+      category: "Facilities",
+      date: "2025-02-09",
+    },
+    {
+      _id: "r11",
+      title: "Фоайе с рисунка на балони",
+      image: "/gallery/lobby-mural.jpg",
+      category: "Building",
+      date: "2025-02-09",
+    },
   ]
 
   const displayImages = galleryImages.length > 0 ? galleryImages : fallbackImages
