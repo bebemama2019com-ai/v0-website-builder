@@ -46,7 +46,7 @@ export default function AboutPage() {
             </div>
             <div className="relative">
               <div className="aspect-[4/3] overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 to-accent/20">
-                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/NIK_1564-t07AZp27fRF712F9IbO0Iy22EKfTyi.jpg" alt="ДГ 202" className="h-full w-full object-cover" />
+                <img src="/about-building-exterior.jpg" alt="ДГ 202" className="h-full w-full object-cover" />
               </div>
             </div>
           </div>
