@@ -73,7 +73,7 @@ export function ContactForm() {
               id="name"
               name="name"
               type="text"
-              placeholder="John Smith"
+              placeholder="Иван Петров"
               value={formData.name}
               onChange={handleChange}
               required
@@ -87,7 +87,7 @@ export function ContactForm() {
               id="email"
               name="email"
               type="email"
-              placeholder="john@example.com"
+              placeholder="ivan@example.com"
               value={formData.email}
               onChange={handleChange}
               required
@@ -101,7 +101,7 @@ export function ContactForm() {
               id="phone"
               name="phone"
               type="tel"
-              placeholder="+1 (555) 123-4567"
+              placeholder="+359 888 12 34 56"
               value={formData.phone}
               onChange={handleChange}
               className="rounded-xl"
@@ -113,7 +113,7 @@ export function ContactForm() {
             <Textarea
               id="message"
               name="message"
-              placeholder="Tell us about your child and what you're looking for..."
+              placeholder="Расскажите нам о вашем ребенке и что вы ищете..."
               value={formData.message}
               onChange={handleChange}
               required
