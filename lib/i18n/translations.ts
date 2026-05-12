@@ -123,6 +123,13 @@ export const translations = {
       groups: {
         title: "Our Groups",
         description: "Kindergarten 202 has 2 nursery groups and 4 kindergarten groups.",
+        focusTitle: "Main Focus of Our Kindergarten Activities:",
+        focusPoints: [
+          "Education and upbringing are in harmony with current achievements in early and preschool age pedagogy",
+          "Quality healthcare for children",
+          "Active communication with parents and involving them in helping our common cause - to raise healthy, happy, knowledgeable, and capable children"
+        ],
+        welcome: "Welcome to us!"
       },
       focus: {
         title: "Main Focus of Our Kindergarten",
@@ -690,7 +697,7 @@ export const translations = {
       hero: {
         title: "За нас",
         description1:
-          'Добре дошли в Детска градина № 202! Детска градина № 202 е новооткрита детска градина в столицата. Намира се в ж.к "Младост" 1. Разполага с просторни, естетически оформени помещения, отговарящи на всички изисквания за обучение и възпитание на деца от предучилищна възраст.',
+          'Добре дошли в Детска градина № 202! Детска градина № 202 е но��ооткрита детска градина в столицата. Намира се в ж.к "Младост" 1. Разполага с просторни, естетически оформени помещения, отговарящи на всички изисквания за обучение и възпитание на деца от предучилищна възраст.',
         description2:
           "За игри и спорт на открито има голям и красив озеленен и обезопасен двор с площадки, оборудвани със съвременни парко-мебели, противоударна настилка, катерушки, пейки, пързалки, люлки.",
       },
@@ -702,6 +709,13 @@ export const translations = {
       groups: {
         title: "Нашите групи",
         description: "ДГ № 202 разполага с 2 яслени и 4 градински групи.",
+        focusTitle: "Основен акцент в дейността на детската градина:",
+        focusPoints: [
+          "Възпитанието и обучението са в унисон с актуалните постижения на педагогиката на ранната и предучилищна възраст",
+          "Качествена здравна грижа за децата",
+          "Активното комуникиране с родителите и привличането им в помощ на общата кауза - да отгледаме здрави, щастливи, знаещи и можещи деца"
+        ],
+        welcome: "Добре дошли при нас!"
       },
       focus: {
         title: "Основен акцент в дейността на детската градина",
@@ -875,7 +889,7 @@ export const translations = {
           centers: "Учебни центрове и дейности",
           snack: "Време за закуска и приказки",
           outdoor: "Игра на открито и изследване",
-          lunch: "Обяд и тихо вре��е",
+          lunch: "Обяд и тихо вре����е",
           rest: "Време за почивка / Тихи дейности",
           arts: "Творчески изкуства и музика",
           afternoon: "Следобедна закуска",

@@ -86,7 +86,18 @@ export default function AboutPage() {
               <h2 className="mb-6 text-balance text-3xl font-bold text-foreground lg:text-4xl">
                 {t.about.groups.title}
               </h2>
-              <p className="text-pretty text-lg leading-relaxed text-muted-foreground">{t.about.groups.description}</p>
+              <p className="text-pretty text-lg leading-relaxed text-muted-foreground mb-6">{t.about.groups.description}</p>
+              
+              <h3 className="text-xl font-semibold text-foreground mb-4">{t.about.groups.focusTitle}</h3>
+              <ul className="space-y-3 text-muted-foreground">
+                {t.about.groups.focusPoints.map((point: string, index: number) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span className="text-pretty leading-relaxed">{point}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-6 text-xl font-semibold text-primary">{t.about.groups.welcome}</p>
             </div>
             <div className="relative">
               <div className="aspect-[4/3] overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 to-accent/20">
