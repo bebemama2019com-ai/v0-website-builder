@@ -37,29 +37,6 @@ export default function ContactPage() {
     },
   ]
 
-  const faqs = [
-    {
-      question: t.contact.faq.q1.question,
-      answer: t.contact.faq.q1.answer,
-    },
-    {
-      question: t.contact.faq.q2.question,
-      answer: t.contact.faq.q2.answer,
-    },
-    {
-      question: t.contact.faq.q3.question,
-      answer: t.contact.faq.q3.answer,
-    },
-    {
-      question: t.contact.faq.q4.question,
-      answer: t.contact.faq.q4.answer,
-    },
-    {
-      question: t.contact.faq.q5.question,
-      answer: t.contact.faq.q5.answer,
-    },
-  ]
-
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -123,25 +100,6 @@ export default function ContactPage() {
 
 
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="bg-muted/50 px-4 py-16 lg:py-24">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">{t.contact.faq.title}</h2>
-          </div>
-          <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <Card key={index} className="overflow-hidden rounded-3xl border-2">
-                <CardContent className="p-6">
-                  <h3 className="mb-2 text-lg font-bold text-foreground">{faq.question}</h3>
-                  <p className="leading-relaxed text-muted-foreground">{faq.answer}</p>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </div>
       </section>
