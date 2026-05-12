@@ -49,6 +49,7 @@ export function Header() {
     {
       name: t.nav.forParents,
       dropdown: [
+        { name: t.nav.news, href: "/parents/news" },
         { name: t.nav.dailySchedule, href: "/parents/daily-schedule" },
         { name: t.nav.weeklyMenu, href: "/parents/weekly-menu" },
         { name: t.nav.publicCouncil, href: "/parents/public-council" },

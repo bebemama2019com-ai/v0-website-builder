@@ -40,7 +40,11 @@ export default function SlanchitsePage() {
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-2xl font-semibold text-primary mb-2">Савка Иванова</h3>
+                    <p className="text-muted-foreground font-medium">Магистър по „ПНУП"</p>
                   </div>
+                  <p className="text-lg leading-relaxed">
+                    Учител с богат опит в работата с деца от предучилищна възраст. Специализирана в развитието на креативността и социалните умения на децата чрез игрови методи и иновативни педагогически подходи.
+                  </p>
                 </div>
               </div>
             </div>

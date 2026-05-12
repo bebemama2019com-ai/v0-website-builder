@@ -37,15 +37,23 @@ export default function LavchataPage() {
                   <Users className="w-6 h-6 text-primary" />
                   <h2 className="text-3xl font-bold">Ръководител на групата</h2>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div>
                     <h3 className="text-2xl font-semibold text-primary mb-2">Ренета Попгеоргиева</h3>
                     <p className="text-muted-foreground font-medium">Магистър по „ПНУП"</p>
+                    <p className="text-lg leading-relaxed mt-2">
+                      Учител с богат опит в работата с деца от предучилищна възраст. Специализирана в развитието на
+                      креативността и социалните умения на децата чрез игрови методи и иновативни педагогически подходи.
+                    </p>
                   </div>
-                  <p className="text-lg leading-relaxed">
-                    Учител с богат опит в работата с деца от предучилищна възраст. Специализирана в развитието на
-                    креативността и социалните умения на децата чрез игрови методи и иновативни педагогически подходи.
-                  </p>
+                  <div className="border-t pt-6">
+                    <h3 className="text-2xl font-semibold text-primary mb-2">Венцислава Георгиева</h3>
+                    <p className="text-muted-foreground font-medium">Бакалавър по „ПУП"</p>
+                    <p className="text-lg leading-relaxed mt-2">
+                      Опитен педагог с дълголетна практика в предучилищното образование. Специализирана в ранното развитие
+                      и използва съвременни методи за стимулиране на любознателността и творчеството на децата.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
