@@ -18,7 +18,7 @@ export default function SlanchitsePage() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <div className="inline-block bg-primary/10 rounded-full px-6 py-2 mb-6">
-                <span className="text-primary font-semibold">Възраст: 3-4 години</span>
+                <span className="text-primary font-semibold">Възраст: 1-2 години</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
                 Група <span className="text-primary">СЛЪНЧИЦЕ</span>
@@ -39,14 +39,8 @@ export default function SlanchitsePage() {
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-2xl font-semibold text-primary mb-2">Ренета Попгеоргиева</h3>
-                    <p className="text-muted-foreground font-medium">Магистър по "ПНУП"</p>
+                    <h3 className="text-2xl font-semibold text-primary mb-2">Савка Иванова</h3>
                   </div>
-                  <p className="text-lg leading-relaxed">
-                    Опитен педагог с богат опит в работата с деца от предучилищна възраст. Специализирана в ранното
-                    детско развитие и използва съвременни образователни методи, които стимулират креативността и
-                    любознателността на децата.
-                  </p>
                 </div>
               </div>
             </div>
