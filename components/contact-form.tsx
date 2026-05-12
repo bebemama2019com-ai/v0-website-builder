@@ -113,7 +113,7 @@ export function ContactForm() {
             <Textarea
               id="message"
               name="message"
-              placeholder="Расскажите нам о вашем ребенке и что вы ищете..."
+              placeholder="Моля добавете съобщение..."
               value={formData.message}
               onChange={handleChange}
               required
