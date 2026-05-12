@@ -26,7 +26,6 @@ export function Header() {
         { name: t.nav.dod, href: "/groups/dod" },
       ],
     },
-    { name: t.nav.team, href: "/team" },
     { name: t.nav.gallery, href: "/gallery" },
     {
       name: t.nav.documents,
