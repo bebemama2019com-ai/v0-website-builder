@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
-import { Calendar, Clock, Users, BookOpen, Palette, Music } from "lucide-react"
+import { Users, BookOpen, Palette, Music } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Група ЗВЪНЧЕ - ДГ 202",
@@ -18,7 +18,7 @@ export default function ZvanchePage() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <div className="inline-block bg-primary/10 rounded-full px-6 py-2 mb-6">
-                <span className="text-primary font-semibold">Възраст: 4-5 години</span>
+                <span className="text-primary font-semibold">Възраст: 2-3 години</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
                 Група <span className="text-primary">ЗВЪНЧЕ</span>
@@ -39,167 +39,13 @@ export default function ZvanchePage() {
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-2xl font-semibold text-primary mb-2">Генка Нанкинска</h3>
+                    <h3 className="text-2xl font-semibold text-primary mb-2">Надя Петрова</h3>
                     <p className="text-muted-foreground font-medium">Бакалавър по „ПУП"</p>
                   </div>
                   <p className="text-lg leading-relaxed">
                     Опитен педагог с фокус върху емоционалното и интелектуално развитие на децата. Използва съвременни
                     методи за обучение и създава топла и подкрепяща среда за всяко дете.
                   </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Weekly Schedule */}
-        <section className="py-16 bg-card/50">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <div className="flex items-center gap-2 mb-8">
-                <Calendar className="w-8 h-8 text-primary" />
-                <h2 className="text-3xl font-bold">Седмична програма</h2>
-              </div>
-
-              <div className="grid gap-4">
-                {/* Monday */}
-                <div className="bg-card rounded-lg p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
-                  <h3 className="text-xl font-semibold mb-4 text-primary">Понеделник</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">09:00 - 09:30</p>
-                        <p className="text-muted-foreground">Музика и ритмика</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">10:00 - 10:30</p>
-                        <p className="text-muted-foreground">Български език</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">11:00 - 11:45</p>
-                        <p className="text-muted-foreground">Игри на открито</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Tuesday */}
-                <div className="bg-card rounded-lg p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
-                  <h3 className="text-xl font-semibold mb-4 text-primary">Вторник</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">09:00 - 09:30</p>
-                        <p className="text-muted-foreground">Математика</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">10:00 - 10:30</p>
-                        <p className="text-muted-foreground">Изобразително изкуство</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">11:00 - 11:45</p>
-                        <p className="text-muted-foreground">Физическо възпитание</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Wednesday */}
-                <div className="bg-card rounded-lg p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
-                  <h3 className="text-xl font-semibold mb-4 text-primary">Сряда</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">09:00 - 09:30</p>
-                        <p className="text-muted-foreground">Опознаване на околния свят</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">10:00 - 10:30</p>
-                        <p className="text-muted-foreground">Конструиране и технологии</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">11:00 - 11:45</p>
-                        <p className="text-muted-foreground">Свободна игра</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Thursday */}
-                <div className="bg-card rounded-lg p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
-                  <h3 className="text-xl font-semibold mb-4 text-primary">Четвъртък</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">09:00 - 09:30</p>
-                        <p className="text-muted-foreground">Български език и литература</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">10:00 - 10:30</p>
-                        <p className="text-muted-foreground">Музикално възпитание</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">11:00 - 11:45</p>
-                        <p className="text-muted-foreground">Игри на открито</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Friday */}
-                <div className="bg-card rounded-lg p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
-                  <h3 className="text-xl font-semibold mb-4 text-primary">Петък</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">09:00 - 09:30</p>
-                        <p className="text-muted-foreground">Изобразително изкуство</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">10:00 - 10:30</p>
-                        <p className="text-muted-foreground">Музика и ритмика</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-muted-foreground mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium">11:00 - 11:45</p>
-                        <p className="text-muted-foreground">Игри и забавления</p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
