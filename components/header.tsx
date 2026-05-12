@@ -10,7 +10,7 @@ import Image from "next/image"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { t } = useLanguage()
+  const { t, isHydrated } = useLanguage()
 
   const navigation = [
     { name: t.nav.about, href: "/about" },
@@ -26,7 +26,6 @@ export function Header() {
         { name: t.nav.dod, href: "/groups/dod" },
       ],
     },
-    { name: t.nav.team, href: "/team" },
     { name: t.nav.gallery, href: "/gallery" },
     {
       name: t.nav.documents,
@@ -57,8 +56,8 @@ export function Header() {
   ]
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white shadow-md border-b-4 border-primary">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8">
+    <header className="sticky top-0 z-50 w-full bg-white shadow-md border-b-4 border-primary" suppressHydrationWarning>
+      <nav className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8" suppressHydrationWarning>
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-3 transition-transform hover:scale-105">
             <Image
@@ -87,18 +86,18 @@ export function Header() {
           </button>
         </div>
         <div className="hidden lg:flex lg:gap-x-8">
-          {navigation.map((item) =>
+          {navigation.map((item, index) =>
             item.dropdown ? (
-              <DropdownMenu key={item.name}>
+              <DropdownMenu key={index}>
                 <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-bold leading-6 text-foreground transition-all hover:text-primary hover:scale-105">
-                  {item.name}
+                  <span suppressHydrationWarning>{item.name}</span>
                   <ChevronDown className="h-4 w-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="rounded-2xl shadow-xl border-2">
-                  {item.dropdown.map((subItem) => (
-                    <DropdownMenuItem key={subItem.name} asChild>
+                  {item.dropdown.map((subItem, subIndex) => (
+                    <DropdownMenuItem key={subIndex} asChild>
                       <Link href={subItem.href} className="cursor-pointer font-semibold hover:text-primary">
-                        {subItem.name}
+                        <span suppressHydrationWarning>{subItem.name}</span>
                       </Link>
                     </DropdownMenuItem>
                   ))}
@@ -106,11 +105,11 @@ export function Header() {
               </DropdownMenu>
             ) : (
               <Link
-                key={item.name}
+                key={index}
                 href={item.href}
                 className="text-sm font-bold leading-6 text-foreground transition-all hover:text-primary hover:scale-105"
               >
-                {item.name}
+                <span suppressHydrationWarning>{item.name}</span>
               </Link>
             ),
           )}
@@ -122,31 +121,31 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-t-2 border-primary/20">
           <div className="space-y-1 px-4 pb-3 pt-2">
-            {navigation.map((item) =>
+            {navigation.map((item, index) =>
               item.dropdown ? (
-                <div key={item.name} className="space-y-1">
-                  <div className="px-3 py-2 text-base font-bold text-primary">{item.name}</div>
+                <div key={index} className="space-y-1">
+                  <div className="px-3 py-2 text-base font-bold text-primary" suppressHydrationWarning>{item.name}</div>
                   <div className="pl-4 space-y-1">
-                    {item.dropdown.map((subItem) => (
+                    {item.dropdown.map((subItem, subIndex) => (
                       <Link
-                        key={subItem.name}
+                        key={subIndex}
                         href={subItem.href}
                         className="block rounded-xl px-3 py-2 text-sm font-semibold text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        {subItem.name}
+                        <span suppressHydrationWarning>{subItem.name}</span>
                       </Link>
                     ))}
                   </div>
                 </div>
               ) : (
                 <Link
-                  key={item.name}
+                  key={index}
                   href={item.href}
                   className="block rounded-xl px-3 py-2 text-base font-bold text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  {item.name}
+                  <span suppressHydrationWarning>{item.name}</span>
                 </Link>
               ),
             )}

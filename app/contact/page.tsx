@@ -121,13 +121,7 @@ export default function ContactPage() {
                 </div>
               </Card>
 
-              <Card className="overflow-hidden rounded-3xl border-2 bg-gradient-to-br from-primary/10 to-accent/10">
-                <CardContent className="p-8">
-                  <h3 className="mb-4 text-2xl font-bold text-foreground">{t.contact.tour.title}</h3>
-                  <p className="mb-4 leading-relaxed text-muted-foreground">{t.contact.tour.description1}</p>
-                  <p className="leading-relaxed text-muted-foreground">{t.contact.tour.description2}</p>
-                </CardContent>
-              </Card>
+
             </div>
           </div>
         </div>

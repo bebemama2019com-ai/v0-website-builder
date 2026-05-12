@@ -7,19 +7,25 @@ interface LanguageContextType {
   language: Language
   setLanguage: (lang: Language) => void
   t: TranslationKeys
+  isHydrated: boolean
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>("en")
+// Default language that matches what the server will render
+const DEFAULT_LANGUAGE: Language = "en"
 
-  // Load language from localStorage on mount
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguageState] = useState<Language>(DEFAULT_LANGUAGE)
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  // Load language from localStorage on mount - only after hydration
   useEffect(() => {
     const savedLanguage = localStorage.getItem("language") as Language
     if (savedLanguage && (savedLanguage === "en" || savedLanguage === "bg")) {
       setLanguageState(savedLanguage)
     }
+    setIsHydrated(true)
   }, [])
 
   const setLanguage = (lang: Language) => {
@@ -27,10 +33,15 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("language", lang)
   }
 
+  // Always use default language for SSR to prevent hydration mismatch
+  // Once hydrated, use the actual language from state
+  const effectiveLanguage = isHydrated ? language : DEFAULT_LANGUAGE
+
   const value = {
-    language,
+    language: effectiveLanguage,
     setLanguage,
-    t: translations[language],
+    t: translations[effectiveLanguage],
+    isHydrated,
   }
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
