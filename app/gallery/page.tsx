@@ -121,12 +121,12 @@ export default function GalleryPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-accent/20 px-4 py-20 lg:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/15 px-4 py-12 lg:py-16">
         <div className="mx-auto max-w-7xl text-center">
-          <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-foreground lg:text-5xl">
+          <h1 className="mb-4 text-balance text-3xl font-bold leading-tight text-foreground lg:text-4xl">
             {t.gallery.hero.title}
           </h1>
-          <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
+          <p className="mx-auto max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground lg:text-lg">
             {t.gallery.hero.description}
           </p>
         </div>

@@ -13,7 +13,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 // Default language that matches what the server will render
-const DEFAULT_LANGUAGE: Language = "en"
+const DEFAULT_LANGUAGE: Language = "bg"
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(DEFAULT_LANGUAGE)

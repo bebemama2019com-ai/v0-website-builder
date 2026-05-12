@@ -14,6 +14,7 @@ export function Header() {
 
   const navigation = [
     { name: t.nav.about, href: "/about" },
+    { name: t.nav.team, href: "/team" },
     {
       name: t.nav.groups,
       dropdown: [
@@ -30,8 +31,10 @@ export function Header() {
     {
       name: t.nav.documents,
       dropdown: [
-        { name: t.nav.regulations, href: "/documents/regulations" },
         { name: t.nav.budget, href: "/documents/budget" },
+        { name: t.nav.budgetReport2025, href: "/documents/budget-report-2025" },
+        { name: t.nav.ecoEducationProgram, href: "/documents/eco-education-program" },
+        { name: t.nav.dataProtectionRules, href: "/documents/data-protection-rules" },
         { name: t.nav.godishenPlan, href: "/documents/godishen-plan" },
         { name: t.nav.programnaSistema, href: "/documents/programna-sistema" },
         { name: t.nav.pravilnikPropuskatelen, href: "/documents/pravilnik-propuskatelen-rezhim" },
