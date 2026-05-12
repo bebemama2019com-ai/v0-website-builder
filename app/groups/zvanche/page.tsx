@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Calendar, Clock, Users, BookOpen, Palette, Music } from "lucide-react"
-import Image from "next/image"
 
 export const metadata: Metadata = {
   title: "Група ЗВЪНЧЕ - ДГ 202",
@@ -38,26 +37,15 @@ export default function ZvanchePage() {
                   <Users className="w-6 h-6 text-primary" />
                   <h2 className="text-3xl font-bold">Ръководител на групата</h2>
                 </div>
-                <div className="grid md:grid-cols-[200px_1fr] gap-8">
-                  <div className="flex justify-center">
-                    <Image
-                      src="/friendly-female-kindergarten-teacher.jpg"
-                      alt="Учител"
-                      width={200}
-                      height={200}
-                      className="rounded-lg shadow-md object-cover"
-                    />
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-2xl font-semibold text-primary mb-2">Генка Нанкинска</h3>
+                    <p className="text-muted-foreground font-medium">Бакалавър по „ПУП"</p>
                   </div>
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="text-2xl font-semibold text-primary mb-2">Генка Нанкинска</h3>
-                      <p className="text-muted-foreground font-medium">Бакалавър по „ПУП"</p>
-                    </div>
-                    <p className="text-lg leading-relaxed">
-                      Опитен педагог с фокус върху емоционалното и интелектуално развитие на децата. Използва съвременни
-                      методи за обучение и създава топла и подкрепяща среда за всяко дете.
-                    </p>
-                  </div>
+                  <p className="text-lg leading-relaxed">
+                    Опитен педагог с фокус върху емоционалното и интелектуално развитие на децата. Използва съвременни
+                    методи за обучение и създава топла и подкрепяща среда за всяко дете.
+                  </p>
                 </div>
               </div>
             </div>

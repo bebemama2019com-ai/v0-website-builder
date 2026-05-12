@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Calendar, Clock, Users, BookOpen, Palette, Music } from "lucide-react"
-import Image from "next/image"
 
 export const metadata: Metadata = {
   title: "Група СЛЪНЧИЦЕ - ДГ 202",
@@ -38,27 +37,16 @@ export default function SlanchitsePage() {
                   <Users className="w-6 h-6 text-primary" />
                   <h2 className="text-3xl font-bold">Ръководител на групата</h2>
                 </div>
-                <div className="grid md:grid-cols-[200px_1fr] gap-8">
-                  <div className="flex justify-center">
-                    <Image
-                      src="/friendly-female-kindergarten-teacher.jpg"
-                      alt="Учител"
-                      width={200}
-                      height={200}
-                      className="rounded-lg shadow-md object-cover"
-                    />
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-2xl font-semibold text-primary mb-2">Ренета Попгеоргиева</h3>
+                    <p className="text-muted-foreground font-medium">Магистър по "ПНУП"</p>
                   </div>
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="text-2xl font-semibold text-primary mb-2">Ренета Попгеоргиева</h3>
-                      <p className="text-muted-foreground font-medium">Магистър по "ПНУП"</p>
-                    </div>
-                    <p className="text-lg leading-relaxed">
-                      Опитен педагог с богат опит в работата с деца от предучилищна възраст. Специализирана в ранното
-                      детско развитие и използва съвременни образователни методи, които стимулират креативността и
-                      любознателността на децата.
-                    </p>
-                  </div>
+                  <p className="text-lg leading-relaxed">
+                    Опитен педагог с богат опит в работата с деца от предучилищна възраст. Специализирана в ранното
+                    детско развитие и използва съвременни образователни методи, които стимулират креативността и
+                    любознателността на децата.
+                  </p>
                 </div>
               </div>
             </div>

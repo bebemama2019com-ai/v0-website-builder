@@ -119,16 +119,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Welcome CTA */}
-      <section className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 px-4 py-16 lg:py-24">
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="mb-6 text-balance text-4xl font-bold text-foreground lg:text-5xl">{t.about.welcome}</h2>
-          <div className="aspect-video overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 to-accent/20">
-            <img src="/happy-children-playing-in-kindergarten-playground.jpg" alt="Добре дошли" className="h-full w-full object-cover" />
-          </div>
-        </div>
-      </section>
-
       <Footer />
     </div>
   )
