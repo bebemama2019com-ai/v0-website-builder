@@ -20,6 +20,8 @@ export const translations = {
       regulations: "Regulations",
       budget: "Budget",
       budgetReport2025: "Budget Report 2025",
+      ecoEducationProgram: "Ecological Education Program",
+      dataProtectionRules: "Internal Rules for Personal Data Protection",
       godishenPlan: "Annual Plan 2025/2026",
       programnaSistema: "Program System",
       pravilnikPropuskatelen: "Access Control Rules",
@@ -606,6 +608,8 @@ export const translations = {
       regulations: "Нормативна уредба",
       budget: "Бюджет",
       budgetReport2025: "Отчет Бюджет 2025",
+      ecoEducationProgram: "Програма екологично възпитание",
+      dataProtectionRules: "Вътрешни правила за защита на личните данни",
       godishenPlan: "Годишен План 2025/2026",
       programnaSistema: "Програмна Система",
       pravilnikPropuskatelen: "Правилник за пропускателния режим",
@@ -784,7 +788,7 @@ export const translations = {
           description: "Подборът на педагогически кадри се осъществява по следните критерии:",
           criteria: [
             "Професионализъм и педагогическо майсторство",
-            "Инициативност и творчество",
+            "Инициативност и т��орчество",
             "Умение за общуване с децата",
             "У��ение за работа в екип",
             "Любов към децата и професията",
@@ -868,7 +872,7 @@ export const translations = {
         playBased: {
           title: "Подход, базиран на игра",
           description:
-            "Играта е основата на ученето. Чрез структурирана и свободна игра децата развиват социални, емоционални, когнитивни и физически умения естествено и радостно.",
+            "Играта е основата на ученето. Чрез структурирана и свободна игра децата развиват социални, емоционални, ко��нитивни и физически умения естествено и радостно.",
         },
         family: {
           title: "Партньорство със семейството",
@@ -1140,7 +1144,7 @@ export const translations = {
         q2: {
           question: "Какво е вашето работно време?",
           answer:
-            "Отворени сме от понеделник до петък от 7:00 до 19:00. Предлагаме както целодневни, така и полудневни програми, за да отговорим на различните семейни графици.",
+            "Отворени сме от понеделник до петък от 7:00 до 19:00. Предлагаме както целодневни, така и полудневни програми, за да отговорим ��а различните семейни графици.",
         },
         q3: {
           question: "Какво е съотношението учител-ученик?",
