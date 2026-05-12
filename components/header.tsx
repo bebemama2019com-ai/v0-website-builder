@@ -123,7 +123,7 @@ export function Header() {
         </div>
       </nav>
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t-2 border-primary/20">
+        <div className="lg:hidden bg-white border-t-2 border-primary/20 max-h-[calc(100vh-80px)] overflow-y-auto">
           <div className="space-y-1 px-4 pb-3 pt-2">
             {navigation.map((item, index) =>
               item.dropdown ? (
