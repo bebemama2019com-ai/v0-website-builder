@@ -7,7 +7,7 @@ export async function GET() {
 
     const { data: galleryImages, error } = await supabase
       .from("gallery_images")
-      .select("*")
+      .select("id, title, description, image_url, category, created_at")
       .order("created_at", { ascending: false })
 
     if (error) {
@@ -15,7 +15,16 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    return NextResponse.json(galleryImages || [])
+    // Transform Supabase data to match GalleryGrid expected interface
+    const transformedImages = (galleryImages || []).map((img) => ({
+      _id: img.id,
+      title: img.title,
+      image: img.image_url,
+      category: img.category,
+      date: img.created_at || new Date().toISOString(),
+    }))
+
+    return NextResponse.json(transformedImages)
   } catch (error) {
     console.error("[v0] Gallery API error:", error)
     return NextResponse.json({ error: "Failed to fetch gallery images" }, { status: 500 })
