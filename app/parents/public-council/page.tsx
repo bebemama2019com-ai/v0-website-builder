@@ -175,17 +175,8 @@ export default function PublicCouncilPage() {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4">
                   <p className="text-muted-foreground">{doc.description}</p>
-                  
-                  {/* PDF Preview */}
-                  <div className="aspect-[4/3] overflow-hidden rounded-xl border bg-muted/50">
-                    <iframe
-                      src={`${doc.pdfUrl}#toolbar=0&navpanes=0`}
-                      className="h-full w-full"
-                      title={doc.title}
-                    />
-                  </div>
 
                   {/* Download Button */}
                   <Button asChild className="w-full rounded-xl" size="lg">
