@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="bg">
       <body className={`font-sans ${nunito.variable} antialiased`}>
         <LanguageProvider>
           <Suspense fallback={null}>{children}</Suspense>
