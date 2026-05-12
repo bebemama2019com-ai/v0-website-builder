@@ -30,7 +30,6 @@ export function Header() {
     {
       name: t.nav.documents,
       dropdown: [
-        { name: t.nav.regulations, href: "/documents/regulations" },
         { name: t.nav.budget, href: "/documents/budget" },
         { name: t.nav.godishenPlan, href: "/documents/godishen-plan" },
         { name: t.nav.programnaSistema, href: "/documents/programna-sistema" },
