@@ -14,6 +14,7 @@ export function Header() {
 
   const navigation = [
     { name: t.nav.about, href: "/about" },
+    { name: t.nav.team, href: "/team" },
     {
       name: t.nav.groups,
       dropdown: [

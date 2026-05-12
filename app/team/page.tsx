@@ -1,113 +1,143 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
-import { Mail } from "lucide-react"
+import { Users, Stethoscope, Briefcase, Shield } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
+import Image from "next/image"
 
 export default function TeamPage() {
-  const { t } = useLanguage()
-  const [teamMembers, setTeamMembers] = useState([])
+  const { language } = useLanguage()
 
-  useEffect(() => {
-    // Fetch team members from API
-    fetch("/api/team")
-      .then((res) => res.json())
-      .then((data) => setTeamMembers(data))
-      .catch(() => {
-        // Use fallback data
-        setTeamMembers(fallbackTeam)
-      })
-  }, [])
-
-  const fallbackTeam = [
+  const pedagogicalStaff = [
     {
-      _id: "1",
-      name: "Sarah Johnson",
-      role: "Director & Lead Teacher",
-      bio: "With over 15 years of experience in early childhood education, Sarah is passionate about creating a nurturing environment where every child can thrive. She holds a Master's degree in Early Childhood Education.",
-      image: "/teacher-portrait-1.jpg?height=400&width=400&query=friendly female kindergarten teacher",
-      order: 1,
+      name: "Петя Янкова",
+      role: language === "bg" ? "Директор" : "Director",
+      qualification: language === "bg" 
+        ? 'Висше магистър "Организация и управление на образованието" и свидетелство за придобито първо ПКС'
+        : 'Master\'s degree in "Organization and Management of Education" with First Professional Qualification Degree',
+      image: "/team/petya-yankova.jpg",
+      isDirector: true,
     },
     {
-      _id: "2",
-      name: "Michael Chen",
-      role: "Preschool Teacher",
-      bio: "Michael brings creativity and energy to the classroom. With a background in child psychology, he specializes in play-based learning and social-emotional development.",
-      image: "/teacher-portrait-2.jpg?height=400&width=400&query=friendly male kindergarten teacher",
-      order: 2,
+      name: "Ренета Попгеоргиева",
+      role: language === "bg" ? "Учител" : "Teacher",
+      qualification: language === "bg" ? 'Магистър по „ПНУП"' : 'Master\'s degree in "PNUP"',
     },
     {
-      _id: "3",
-      name: "Emily Rodriguez",
-      role: "Toddler Teacher",
-      bio: "Emily has a gentle, patient approach that helps our youngest learners feel safe and loved. She has 8 years of experience working with toddlers and infants.",
-      image: "/teacher-portrait-3.jpg?height=400&width=400&query=friendly female toddler teacher",
-      order: 3,
-    },
-    {
-      _id: "4",
-      name: "David Thompson",
-      role: "Pre-K Teacher",
-      bio: "David excels at preparing children for kindergarten through engaging, hands-on activities. His enthusiasm for learning is contagious and inspires young minds.",
-      image: "/teacher-portrait-4.jpg?height=400&width=400&query=friendly male pre-k teacher",
-      order: 4,
-    },
-    {
-      _id: "5",
-      name: "Lisa Park",
-      role: "Art & Music Specialist",
-      bio: "Lisa brings the joy of creative expression to our students. With a degree in Fine Arts and Music Education, she helps children discover their artistic talents.",
-      image: "/teacher-portrait-5.jpg?height=400&width=400&query=friendly female art teacher",
-      order: 5,
-    },
-    {
-      _id: "6",
-      name: "James Wilson",
-      role: "Assistant Teacher",
-      bio: "James supports our teaching team with dedication and care. He is currently pursuing his degree in Early Childhood Education and loves working with children.",
-      image: "/teacher-portrait-6.jpg?height=400&width=400&query=friendly male assistant teacher",
-      order: 6,
+      name: "Венцислава Георгиева",
+      role: language === "bg" ? "Учител" : "Teacher",
+      qualification: language === "bg" ? 'Бакалавър по „ПУП"' : 'Bachelor\'s degree in "PUP"',
     },
   ]
 
-  const displayTeam = teamMembers.length > 0 ? teamMembers : fallbackTeam
+  const medicalStaff = [
+    {
+      name: "Пенка Дамянова",
+      role: language === "bg" ? "Медицински специалист в детска градина" : "Medical specialist in kindergarten",
+    },
+    {
+      name: "Фани Конакчиева",
+      role: language === "bg" ? "Медицински специалист в детска градина" : "Medical specialist in kindergarten",
+    },
+    {
+      name: "Димитрийка Мангърова",
+      role: language === "bg" ? "Медицински специалист в яслена група" : "Medical specialist in nursery group",
+    },
+    {
+      name: "Надя Петрова",
+      role: language === "bg" ? "Медицински специалист в яслена група" : "Medical specialist in nursery group",
+    },
+    {
+      name: "Нели Николова",
+      role: language === "bg" ? "Медицински специалист в яслена група" : "Medical specialist in nursery group",
+    },
+    {
+      name: "Савка Иванова",
+      role: language === "bg" ? "Медицински специалист в яслена група" : "Medical specialist in nursery group",
+    },
+  ]
+
+  const otherStaff = [
+    {
+      name: "Деляна Сергиева",
+      role: language === "bg" ? "Счетоводител" : "Accountant",
+    },
+    {
+      name: "Нели Шуманова",
+      role: language === "bg" ? "ЗАС" : "Administrative Secretary",
+    },
+    {
+      name: "Теменужка Кръстева",
+      role: language === "bg" ? "Помощник-готвач" : "Assistant Cook",
+    },
+    {
+      name: "Светла Пейкова",
+      role: language === "bg" ? "Помощник-възпитател" : "Teaching Assistant",
+    },
+    {
+      name: "Розалия Кьосева",
+      role: language === "bg" ? "Помощник-възпитател" : "Teaching Assistant",
+    },
+    {
+      name: "Татяна Нинова",
+      role: language === "bg" ? "Помощник-възпитател" : "Teaching Assistant",
+    },
+    {
+      name: "Георги Колев",
+      role: language === "bg" ? "РПС" : "Maintenance Worker",
+    },
+  ]
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-accent/20 px-4 py-20 lg:py-32">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-foreground lg:text-5xl">
-            {t.team.hero.title}
+            {language === "bg" ? "Екип" : "Our Team"}
           </h1>
           <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
-            {t.team.hero.description}
+            {language === "bg" 
+              ? "Запознайте се с нашия отдаден екип от професионалисти, които се грижат за вашите деца."
+              : "Meet our dedicated team of professionals who care for your children."}
           </p>
         </div>
       </section>
 
-      {/* Team Members Grid */}
+      {/* Pedagogical Staff */}
       <section className="px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl">
+          <div className="flex items-center gap-3 mb-10">
+            <Users className="w-8 h-8 text-primary" />
+            <h2 className="text-3xl font-bold text-foreground">
+              {language === "bg" ? "Педагогически персонал" : "Pedagogical Staff"}
+            </h2>
+          </div>
+          
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {displayTeam.map((member) => (
-              <Card key={member._id} className="overflow-hidden rounded-3xl border-2 transition-shadow hover:shadow-lg">
-                <div className="aspect-square overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
-                  <img
-                    src={member.image || "/placeholder.svg"}
-                    alt={member.name}
-                    className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                  />
-                </div>
+            {pedagogicalStaff.map((member, index) => (
+              <Card key={index} className={`overflow-hidden rounded-3xl border-2 transition-shadow hover:shadow-lg ${member.isDirector ? 'md:col-span-2 lg:col-span-1 ring-2 ring-primary' : ''}`}>
+                {member.image && (
+                  <div className="aspect-square overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      width={400}
+                      height={400}
+                      className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                    />
+                  </div>
+                )}
                 <CardContent className="p-6">
                   <h3 className="mb-1 text-xl font-bold text-foreground">{member.name}</h3>
-                  <p className="mb-3 text-sm font-semibold text-primary">{member.role}</p>
-                  <p className="leading-relaxed text-muted-foreground">{member.bio}</p>
+                  <p className="mb-2 text-sm font-semibold text-primary">{member.role}</p>
+                  {member.qualification && (
+                    <p className="text-sm leading-relaxed text-muted-foreground">{member.qualification}</p>
+                  )}
                 </CardContent>
               </Card>
             ))}
@@ -115,18 +145,69 @@ export default function TeamPage() {
         </div>
       </section>
 
-      {/* Join Our Team CTA */}
-      <section className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 px-4 py-16 lg:py-24">
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="mb-6 text-balance text-3xl font-bold text-foreground lg:text-4xl">{t.team.join.title}</h2>
-          <p className="mb-8 text-pretty text-lg leading-relaxed text-muted-foreground">{t.team.join.description}</p>
-          <a
-            href={`mailto:${t.team.join.email}`}
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3 text-base font-semibold text-primary-foreground transition-transform hover:scale-105"
-          >
-            <Mail className="h-5 w-5" />
-            {t.team.join.email}
-          </a>
+      {/* Medical Staff */}
+      <section className="px-4 py-16 lg:py-24 bg-card/50">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex items-center gap-3 mb-10">
+            <Stethoscope className="w-8 h-8 text-primary" />
+            <h2 className="text-3xl font-bold text-foreground">
+              {language === "bg" ? "Медицински специалисти" : "Medical Specialists"}
+            </h2>
+          </div>
+          
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {medicalStaff.map((member, index) => (
+              <Card key={index} className="overflow-hidden rounded-2xl border transition-shadow hover:shadow-md">
+                <CardContent className="p-5">
+                  <h3 className="mb-1 text-lg font-bold text-foreground">{member.name}</h3>
+                  <p className="text-sm text-muted-foreground">{member.role}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Other Staff */}
+      <section className="px-4 py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex items-center gap-3 mb-10">
+            <Briefcase className="w-8 h-8 text-primary" />
+            <h2 className="text-3xl font-bold text-foreground">
+              {language === "bg" ? "Друг персонал" : "Other Staff"}
+            </h2>
+          </div>
+          
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {otherStaff.map((member, index) => (
+              <Card key={index} className="overflow-hidden rounded-2xl border transition-shadow hover:shadow-md">
+                <CardContent className="p-5">
+                  <h3 className="mb-1 text-lg font-bold text-foreground">{member.name}</h3>
+                  <p className="text-sm text-muted-foreground">{member.role}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Security */}
+      <section className="px-4 py-16 lg:py-24 bg-card/50">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex items-center gap-3 mb-10">
+            <Shield className="w-8 h-8 text-primary" />
+            <h2 className="text-3xl font-bold text-foreground">
+              {language === "bg" ? "Охрана" : "Security"}
+            </h2>
+          </div>
+          
+          <Card className="overflow-hidden rounded-2xl border max-w-md">
+            <CardContent className="p-6">
+              <h3 className="text-lg font-bold text-foreground">
+                {language === "bg" ? 'Охранителна фирма „ГАРД" ЕООД' : 'Security Company "GARD" Ltd.'}
+              </h3>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
