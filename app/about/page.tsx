@@ -108,8 +108,66 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Focus Areas */}
+      {/* Facilities Section */}
       <section className="px-4 py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+            <div className="relative order-2 lg:order-1">
+              <div className="aspect-[4/3] overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 to-accent/20">
+                <img src="/about-playground.jpg" alt="Материално-техническа база" className="h-full w-full object-cover" />
+              </div>
+            </div>
+            <div className="flex flex-col justify-center order-1 lg:order-2">
+              <div className="mb-6 inline-flex rounded-2xl bg-primary/10 p-4 w-fit">
+                <Building2 className="h-8 w-8 text-primary" />
+              </div>
+              <h2 className="mb-6 text-balance text-3xl font-bold text-foreground lg:text-4xl">
+                {t.about.facilities?.title || "Материално-техническа база"}
+              </h2>
+              <p className="text-pretty text-lg leading-relaxed text-muted-foreground mb-4">
+                {t.about.facilities?.description1 || "С богатата си и уютна материална база, детска градина № 202 е приказен дом за вашите деца. Създали сме условия за пълноценно детство, равен старт на всяко дете и целенасочена предучилищна подготовка за успешна реализация в училище."}
+              </p>
+              <p className="text-pretty text-lg leading-relaxed text-muted-foreground mb-4">
+                {t.about.facilities?.description2 || "Материално-техническата база осигурява динамичност в социалната комуникация между децата, като поражда чувство за радост от сътрудничество в различни дейности."}
+              </p>
+              <p className="text-pretty text-lg leading-relaxed text-muted-foreground mb-6">
+                {t.about.facilities?.description3 || "Функциите на средата позволяват да се осигурят условия за разнообразна дейност на децата, за задоволяване на потребностите и интересите им съобразно предпочетената от тях дейност."}
+              </p>
+              <p className="text-lg font-semibold text-foreground mb-4">
+                {t.about.facilities?.listTitle || "Детското заведение разполага с много добра материална база, обезпечено е с:"}
+              </p>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-muted-foreground">
+                {[
+                  "Музикален/физкултурен салон",
+                  "Открита сцена",
+                  "Кабинет на психолога",
+                  "Логопедичен кабинет",
+                  "Кабинет на ресурсния учител",
+                  "Кабинет за ранно чуждоезиково обучение - английски език",
+                  "Кабинет по приложни изкуства",
+                  "Видео наблюдение",
+                  "Охрана",
+                  "Индивидуални занимални на всяка група",
+                  "Индивидуални спални помещения",
+                  "Индивидуални офиси за помощник-възпитателя",
+                  "Просторен двор за отдих и игри",
+                  "Здравен кабинет",
+                  "Собствена кухня",
+                  "Пералня"
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span className="text-pretty">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Focus Areas */}
+      <section className="bg-muted/50 px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">{t.about.focus.title}</h2>
