@@ -32,6 +32,7 @@ export function Header() {
       name: t.nav.documents,
       dropdown: [
         { name: t.nav.budget, href: "/documents/budget" },
+        { name: t.nav.budgetReport2025, href: "/documents/budget-report-2025" },
         { name: t.nav.godishenPlan, href: "/documents/godishen-plan" },
         { name: t.nav.programnaSistema, href: "/documents/programna-sistema" },
         { name: t.nav.pravilnikPropuskatelen, href: "/documents/pravilnik-propuskatelen-rezhim" },
