@@ -11,14 +11,10 @@ export default function DODPage() {
 
   const activities = [
     { name: "Чуждоезиково обучение – английски език", icon: GraduationCap },
-    { name: "Български народни танци и фолклор", icon: Music },
-    { name: "Модерни танци", icon: Music },
     { name: "Приложни изкуства", icon: Palette },
-    { name: "Модерен и класически балет", icon: Music },
-    { name: "Плуване", icon: Dumbbell },
-    { name: "Футбол", icon: Dumbbell },
+    { name: "Подвижни игри със топка", icon: Dumbbell },
     { name: "Художествена гимнастика", icon: Dumbbell },
-    { name: "Тенис на корт", icon: Dumbbell },
+    { name: "Спортни и народни танци", icon: Music },
   ]
 
   const events = ["Ски училища", "Летни лагери", "Еднодневни екскурзии", "Спортни празници"]
@@ -34,8 +30,8 @@ export default function DODPage() {
             </h1>
             <p className="mt-4 text-pretty text-lg text-muted-foreground">
               {language === "bg"
-                ? "За учебната 2024/2025г. за стимулиране на интересите и заложбите на децата извън Държавните Образователни Стандарти"
-                : "For the 2024/2025 school year to stimulate children's interests and talents beyond State Educational Standards"}
+                ? "За учебната 2025/2026г. за стимулиране на интересите и заложбите на децата извън Държавните Образователни Стандарти"
+                : "For the 2025/2026 school year to stimulate children's interests and talents beyond State Educational Standards"}
             </p>
           </div>
 
