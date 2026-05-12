@@ -68,7 +68,7 @@ export default function NewsPage() {
             </h1>
             <p className="mx-auto max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground lg:text-lg">
               {language === "bg"
-                ? "Следете последните новини и события от Детска Градина 202"
+                ? "Следете последните новини и събития"
                 : "Follow the latest news and updates from Kindergarten 202"}
             </p>
           </div>
