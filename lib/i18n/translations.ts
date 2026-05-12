@@ -517,7 +517,7 @@ export const translations = {
         },
         hours: {
           title: "Hours",
-          content: "Monday - Friday: 7:00 AM - 6:00 PM",
+          content: "Monday - Friday: 7:00 AM - 7:00 PM",
         },
       },
       form: {
@@ -549,7 +549,7 @@ export const translations = {
         q2: {
           question: "What are your hours of operation?",
           answer:
-            "We're open Monday through Friday from 7:00 AM to 6:00 PM. We offer both full-day and half-day programs to accommodate different family schedules.",
+            "We're open Monday through Friday from 7:00 AM to 7:00 PM. We offer both full-day and half-day programs to accommodate different family schedules.",
         },
         q3: {
           question: "What is your teacher-to-student ratio?",
@@ -574,6 +574,8 @@ export const translations = {
       quickLinks: "Quick Links",
       contact: "Contact Us",
       followUs: "Follow Us",
+      hours: "Working Hours",
+      hoursContent: "Mon-Fri: 7:00 AM - 7:00 PM",
       rights: "All rights reserved.",
     },
   },
@@ -690,7 +692,7 @@ export const translations = {
         description1:
           'Добре дошли в Детска градина № 202! Детска градина № 202 е новооткрита детска градина в столицата. Намира се в ж.к "Младост" 1. Разполага с просторни, естетически оформени помещения, отговарящи на всички изисквания за обучение и възпитание на деца от предучилищна възраст.',
         description2:
-          "За игри и спорт на открито има голям и красив озеленен и обезопасен двор с площадки, оборудвани със съвременни парко-мебели, противоударна настилка, катерушки, пейки, пързалки, люлки.",
+          "За игри и спорт на открито има голям и кр��сив озеленен и обезопасен двор с площадки, оборудвани със съвременни парко-мебели, противоударна настилка, катерушки, пейки, пързалки, люлки.",
       },
       staff: {
         title: "Нашият екип",
@@ -940,7 +942,7 @@ export const translations = {
         social: {
           title: "Социални умения",
           description:
-            "Учене на сътрудничество, споделяне, емпатия и разрешаване на конфликти чрез групови дейности и игра.",
+            "Учене на сътрудн��чество, споделяне, емпатия и разрешаване на конфликти чрез групови дейности и игра.",
         },
         emotional: {
           title: "Емоционално развитие",
@@ -1090,7 +1092,7 @@ export const translations = {
         },
         hours: {
           title: "Работно време",
-          content: "Понеделник - Петък: 7:00 - 18:00",
+          content: "Понеделник - Петък: 7:00 - 19:00",
         },
       },
       form: {
@@ -1122,7 +1124,7 @@ export const translations = {
         q2: {
           question: "Какво е вашето работно време?",
           answer:
-            "Отворени сме от понеделник до петък от 7:00 до 18:00. Предлагаме както целодневни, така и полудневни програми, за да отговорим на различните семейни графици.",
+            "Отворени сме от понеделник до петък от 7:00 до 19:00. Предлагаме както целодневни, така и полудневни програми, за да отговорим на различните семейни графици.",
         },
         q3: {
           question: "Какво е съотношението учител-ученик?",
@@ -1148,7 +1150,7 @@ export const translations = {
       contact: "Свържете се с нас",
       followUs: "Последвайте ни",
       hours: "Работно време",
-      hoursContent: "Пон-Пет: 7:00 - 18:00",
+      hoursContent: "Пон-Пет: 7:00 - 19:00",
       rights: "Всички права запазени.",
     },
   },
