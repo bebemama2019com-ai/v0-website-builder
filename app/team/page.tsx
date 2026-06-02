@@ -24,11 +24,13 @@ export default function TeamPage() {
       name: "Ренета Попгеоргиева",
       role: language === "bg" ? "Учител" : "Teacher",
       qualification: language === "bg" ? 'Магистър по „ПНУП"' : 'Master\'s degree in "PNUP"',
+      image: "/team/reneta-popgeorgieva.jpg",
     },
     {
       name: "Венцислава Георгиева",
       role: language === "bg" ? "Учител" : "Teacher",
       qualification: language === "bg" ? 'Бакалавър по „ПУП"' : 'Bachelor\'s degree in "PUP"',
+      image: "/team/ventsislava-georgieva.jpg",
     },
   ]
 
