@@ -9,6 +9,13 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { createBrowserClient } from "@/lib/supabase/client"
 
 interface TeamFormProps {
@@ -19,6 +26,7 @@ interface TeamFormProps {
     bio: string
     image_url?: string
     order_index: number
+    category?: string
   }
 }
 
@@ -32,6 +40,7 @@ export default function TeamForm({ member }: TeamFormProps) {
     bio: member?.bio || "",
     image_url: member?.image_url || "",
     order_index: member?.order_index || 0,
+    category: member?.category || "other",
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -81,6 +90,22 @@ export default function TeamForm({ member }: TeamFormProps) {
             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
             required
           />
+        </div>
+
+        <div>
+          <Label htmlFor="category">Категория *</Label>
+          <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+            <SelectTrigger id="category">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="pedagogical">Педагогически персонал</SelectItem>
+              <SelectItem value="medical">Медицински специалисти</SelectItem>
+              <SelectItem value="other">Друг персонал</SelectItem>
+              <SelectItem value="security">Охрана</SelectItem>
+            </SelectContent>
+          </Select>
+          <p className="text-sm text-muted-foreground mt-1">Изберете групата, към която принадлежи членът на персонала</p>
         </div>
 
         <div>
