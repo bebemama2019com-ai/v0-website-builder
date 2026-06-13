@@ -49,7 +49,6 @@ export default function AboutPage() {
     endpoint: "/api/team",
     fallbackData: fallbackTeamMembers,
   })
-  const [teamMembers, setTeamMembers] = useState(fallbackTeamMembers)
 
   const focusAreas = [
     {
