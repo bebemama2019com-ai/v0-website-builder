@@ -7,38 +7,64 @@ import { Button } from "@/components/ui/button"
 import { FileText, Download, Baby, GraduationCap } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import Link from "next/link"
+import { useState, useEffect } from "react"
+
+interface MenuFile {
+  id: string
+  menu_type: string
+  file_name: string
+  file_url: string
+  updated_at: string
+}
 
 export default function WeeklyMenuPage() {
   const { language } = useLanguage()
+  const [menuFiles, setMenuFiles] = useState<MenuFile[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const menus = [
-    {
-      id: "kindergarten",
-      title: language === "bg" ? "Детска градина" : "Kindergarten",
-      subtitle: language === "bg" ? "Възрастова група от 3 до 7 години" : "Age group 3-7 years",
-      description: language === "bg" 
-        ? "Седмично меню за деца от групите в детската градина"
-        : "Weekly menu for children in kindergarten groups",
-      icon: GraduationCap,
-      pdfUrl: "/documents/menu-detska-gradina.pdf",
-      color: "from-primary/20 to-accent/20",
-      iconColor: "text-primary",
-      bgColor: "bg-primary/10",
-    },
-    {
-      id: "nursery",
-      title: language === "bg" ? "Ясла" : "Nursery",
-      subtitle: language === "bg" ? "Възрастова група от 1 до 3 години" : "Age group 1-3 years",
-      description: language === "bg"
-        ? "Седмично меню за деца от яслените групи"
-        : "Weekly menu for children in nursery groups",
-      icon: Baby,
-      pdfUrl: "/documents/menu-yasla.pdf",
-      color: "from-secondary/20 to-primary/20",
-      iconColor: "text-secondary",
-      bgColor: "bg-secondary/10",
-    },
-  ]
+  useEffect(() => {
+    fetchMenuFiles()
+  }, [])
+
+  async function fetchMenuFiles() {
+    try {
+      const response = await fetch("/api/weekly-menu")
+      const data = await response.json()
+      setMenuFiles(data)
+    } catch (error) {
+      console.error("[v0] Error fetching menu files:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getMenuInfo = (menuType: string) => {
+    if (menuType === "kindergarten") {
+      return {
+        title: language === "bg" ? "Детска градина" : "Kindergarten",
+        subtitle: language === "bg" ? "Възрастова група от 3 до 7 години" : "Age group 3-7 years",
+        description: language === "bg" 
+          ? "Седмично меню за деца от групите в детската градина"
+          : "Weekly menu for children in kindergarten groups",
+        icon: GraduationCap,
+        color: "from-primary/20 to-accent/20",
+        iconColor: "text-primary",
+        bgColor: "bg-primary/10",
+      }
+    } else {
+      return {
+        title: language === "bg" ? "Ясла" : "Nursery",
+        subtitle: language === "bg" ? "Възрастова група от 1 до 3 години" : "Age group 1-3 years",
+        description: language === "bg"
+          ? "Седмично меню за деца от яслените групи"
+          : "Weekly menu for children in nursery groups",
+        icon: Baby,
+        color: "from-secondary/20 to-primary/20",
+        iconColor: "text-secondary",
+        bgColor: "bg-secondary/10",
+      }
+    }
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -65,40 +91,63 @@ export default function WeeklyMenuPage() {
       <section className="px-4 py-16 lg:py-24">
         <div className="mx-auto max-w-5xl">
           <div className="grid gap-8 md:grid-cols-2">
-            {menus.map((menu) => (
-              <Card key={menu.id} className="overflow-hidden rounded-3xl border-2 transition-all hover:shadow-xl">
-                <div className={`h-3 bg-gradient-to-r ${menu.color}`} />
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-4">
-                    <div className={`rounded-2xl ${menu.bgColor} p-4`}>
-                      <menu.icon className={`h-8 w-8 ${menu.iconColor}`} />
-                    </div>
-                    <div>
-                      <CardTitle className="text-2xl font-bold">{menu.title}</CardTitle>
-                      <p className="text-sm text-muted-foreground">{menu.subtitle}</p>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-muted-foreground">{menu.description}</p>
+            {["kindergarten", "nursery"].map((menuType) => {
+              const menuFile = menuFiles.find((f) => f.menu_type === menuType)
+              const menuInfo = getMenuInfo(menuType)
+              const Icon = menuInfo.icon
 
-                  {/* View Menu Button */}
-                  <Button asChild className="w-full rounded-xl" size="lg">
-                    <Link href={menu.id === "kindergarten" ? "/parents/weekly-menu/menu-detska-gradina" : "/parents/weekly-menu/menu-yasla"}>
-                      {language === "bg" ? "Вижте меню" : "View Menu"}
-                    </Link>
-                  </Button>
+              return (
+                <Card key={menuType} className="overflow-hidden rounded-3xl border-2 transition-all hover:shadow-xl">
+                  <div className={`h-3 bg-gradient-to-r ${menuInfo.color}`} />
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center gap-4">
+                      <div className={`rounded-2xl ${menuInfo.bgColor} p-4`}>
+                        <Icon className={`h-8 w-8 ${menuInfo.iconColor}`} />
+                      </div>
+                      <div>
+                        <CardTitle className="text-2xl font-bold">{menuInfo.title}</CardTitle>
+                        <p className="text-sm text-muted-foreground">{menuInfo.subtitle}</p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-muted-foreground">{menuInfo.description}</p>
 
-                  {/* Download Button */}
-                  <Button asChild variant="outline" className="w-full rounded-xl" size="lg">
-                    <a href={menu.pdfUrl} download target="_blank" rel="noopener noreferrer">
-                      <Download className="mr-2 h-5 w-5" />
-                      {language === "bg" ? "Изтегли PDF" : "Download PDF"}
-                    </a>
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+                    {/* View Menu Button */}
+                    <Button asChild className="w-full rounded-xl" size="lg">
+                      <Link href={menuType === "kindergarten" ? "/parents/weekly-menu/menu-detska-gradina" : "/parents/weekly-menu/menu-yasla"}>
+                        {language === "bg" ? "Вижте меню" : "View Menu"}
+                      </Link>
+                    </Button>
+
+                    {/* Download Button */}
+                    {loading ? (
+                      <Button disabled className="w-full rounded-xl" size="lg">
+                        {language === "bg" ? "Зареждане..." : "Loading..."}
+                      </Button>
+                    ) : menuFile ? (
+                      <Button asChild variant="outline" className="w-full rounded-xl" size="lg">
+                        <a href={menuFile.file_url} download={menuFile.file_name} target="_blank" rel="noopener noreferrer">
+                          <Download className="mr-2 h-5 w-5" />
+                          {language === "bg" ? "Изтегли PDF" : "Download PDF"}
+                        </a>
+                      </Button>
+                    ) : (
+                      <Button disabled variant="outline" className="w-full rounded-xl" size="lg">
+                        {language === "bg" ? "Няма налична версия" : "Not available"}
+                      </Button>
+                    )}
+
+                    {menuFile && (
+                      <p className="text-xs text-muted-foreground text-center">
+                        {language === "bg" ? "Обновлено: " : "Updated: "}
+                        {new Date(menuFile.updated_at).toLocaleDateString("bg-BG")}
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              )
+            })}
           </div>
 
           {/* Allergen Information */}

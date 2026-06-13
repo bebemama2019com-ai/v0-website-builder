@@ -238,10 +238,10 @@ export default async function AdminDashboard() {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle>Седмични менюта</CardTitle>
-              <CardDescription>Управление на менюта за ясла и детската градина</CardDescription>
+              <CardDescription>Управление на PDF файлове за ясла и детската градина</CardDescription>
             </CardHeader>
             <CardContent>
-              <Link href="/admin/menus">
+              <Link href="/admin/weekly-menu">
                 <Button className="w-full">Управление на менюта</Button>
               </Link>
             </CardContent>
