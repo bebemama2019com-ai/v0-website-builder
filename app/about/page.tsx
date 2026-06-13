@@ -1,10 +1,9 @@
-"use client"
-
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Users, Heart, GraduationCap, Building2 } from "lucide-react"
-import { useLanguage } from "@/lib/i18n/language-context"
+import TeamSection from "@/components/team-section"
+import AboutPageContent from "@/components/about-page-content"
 
 export default function AboutPage() {
   const { t } = useLanguage()
