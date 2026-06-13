@@ -76,7 +76,7 @@ export default function TeamPage() {
   })
 
   // Debug: Log the data we're receiving
-  console.log("[v0] Team page received data:", allTeamData)
+  // console.log("[v0] Team page received data:", allTeamData)
 
   // Normalize field names and log each member for debugging
   const normalizedData = allTeamData.map((member: any) => {
@@ -89,7 +89,7 @@ export default function TeamPage() {
       category: member.category || null,
       featured: member.featured || false,
     }
-    console.log("[v0] Normalized member:", normalized.name, "position:", normalized.position, "category:", normalized.category)
+    // console.log("[v0] Normalized member:", normalized.name, "position:", normalized.position, "category:", normalized.category)
     return normalized
   })
 
@@ -98,7 +98,7 @@ export default function TeamPage() {
     pedagogical: normalizedData.filter((member: any) => {
       const pos = (member.position || "").toLowerCase()
       const isPedagogical = member.category === "pedagogical" || pos.includes("учител") || pos.includes("директор")
-      console.log("[v0] Checking pedagogical for", member.name, ":", isPedagogical, "pos:", pos)
+      // console.log("[v0] Checking pedagogical for", member.name, ":", isPedagogical, "pos:", pos)
       return isPedagogical
     }),
     medical: normalizedData.filter((member: any) => {
@@ -114,9 +114,12 @@ export default function TeamPage() {
       // Otherwise, check if position doesn't match pedagogical or medical patterns
       return !pos.includes("учител") && !pos.includes("директор") && !pos.includes("медицински")
     }),
+    security: normalizedData.filter((member: any) => {
+      return member.category === "security"
+    }),
   }
 
-  console.log("[v0] Grouped team:", { pedagogical: groupedTeam.pedagogical.length, medical: groupedTeam.medical.length, other: groupedTeam.other.length })
+  // console.log("[v0] Grouped team:", { pedagogical: groupedTeam.pedagogical.length, medical: groupedTeam.medical.length, other: groupedTeam.other.length })
 
   // Helper function to render team member card
   const renderTeamCard = (member: any, index: number, isDirector: boolean = false) => (
@@ -238,13 +241,21 @@ export default function TeamPage() {
             </h2>
           </div>
           
-          <Card className="overflow-hidden rounded-2xl border max-w-md">
-            <CardContent className="p-6">
-              <h3 className="text-lg font-bold text-foreground">
-                {t?.team?.securityCompany || 'Охранителна фирма "ГАРД" ЕООД'}
-              </h3>
-            </CardContent>
-          </Card>
+          {groupedTeam.security.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {groupedTeam.security.map((member: any, index: number) => 
+                renderTeamCard(member, index)
+              )}
+            </div>
+          ) : (
+            <Card className="overflow-hidden rounded-2xl border max-w-md">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-bold text-foreground">
+                  {t?.team?.securityCompany || 'Охранителна фирма "ГАРД" ЕООД'}
+                </h3>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </section>
 
