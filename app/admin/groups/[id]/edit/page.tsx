@@ -39,29 +39,51 @@ export default function EditGroupPage() {
   }, [])
 
   async function fetchTeamMembers() {
-    const { data } = await supabase.from("team_members").select("id, name, role, bio").order("name")
-    setTeamMembers(data || [])
+    try {
+      const { data, error } = await supabase.from("team_members").select("id, name, role, bio").order("name")
+      if (error) {
+        console.error("[v0] Error fetching team members:", error)
+        return
+      }
+      setTeamMembers(data || [])
+    } catch (error) {
+      console.error("[v0] Exception fetching team members:", error)
+    }
   }
 
   async function fetchGroup() {
-    const { data } = await supabase.from("groups").select("*").eq("id", params.id).single()
+    try {
+      const { data, error } = await supabase.from("groups").select("*").eq("id", params.id).single()
 
-    if (data) {
-      setName(data.name)
-      setDescription(data.description || "")
-      setAge(data.age || "")
-      setOrderIndex(data.order_index.toString())
-    }
+      if (error) {
+        console.error("[v0] Error fetching group:", error)
+        return
+      }
 
-    // Fetch teachers for this group
-    const { data: teachersData } = await supabase
-      .from("group_teachers")
-      .select("teacher_id")
-      .eq("group_id", params.id)
-      .order("order_index")
+      if (data) {
+        setName(data.name)
+        setDescription(data.description || "")
+        setAge(data.age || "")
+        setOrderIndex(data.order_index.toString())
+      }
 
-    if (teachersData) {
-      setSelectedTeachers(teachersData.map((t) => t.teacher_id))
+      // Fetch teachers for this group
+      const { data: teachersData, error: teachersError } = await supabase
+        .from("group_teachers")
+        .select("teacher_id")
+        .eq("group_id", params.id)
+        .order("order_index")
+
+      if (teachersError) {
+        console.error("[v0] Error fetching group teachers:", teachersError)
+        return
+      }
+
+      if (teachersData) {
+        setSelectedTeachers(teachersData.map((t) => t.teacher_id))
+      }
+    } catch (error) {
+      console.error("[v0] Exception fetching group:", error)
     }
   }
 
@@ -87,10 +109,17 @@ export default function EditGroupPage() {
         })
         .eq("id", params.id)
 
-      if (updateError) throw updateError
+      if (updateError) {
+        console.error("[v0] Error updating group:", updateError)
+        throw new Error(`Грешка при актуализация на групата: ${updateError.message}`)
+      }
 
       // Delete existing teachers
-      await supabase.from("group_teachers").delete().eq("group_id", params.id)
+      const { error: deleteError } = await supabase.from("group_teachers").delete().eq("group_id", params.id)
+      if (deleteError) {
+        console.error("[v0] Error deleting teachers:", deleteError)
+        throw new Error(`Грешка при изтриване на учители: ${deleteError.message}`)
+      }
 
       // Insert new teachers
       if (selectedTeachers.length > 0) {
@@ -101,13 +130,17 @@ export default function EditGroupPage() {
         }))
 
         const { error: teacherError } = await supabase.from("group_teachers").insert(groupTeachers)
-        if (teacherError) throw teacherError
+        if (teacherError) {
+          console.error("[v0] Error inserting teachers:", teacherError)
+          throw new Error(`Грешка при добавяне на учители: ${teacherError.message}`)
+        }
       }
 
       router.push("/admin/groups")
     } catch (error) {
-      console.error("Грешка при актуализация:", error)
-      alert("Грешка при актуализация на групата")
+      console.error("[v0] Error saving group:", error)
+      const errorMessage = error instanceof Error ? error.message : "Грешка при съхраняване на групата"
+      alert(errorMessage)
     } finally {
       setLoading(false)
     }
