@@ -17,10 +17,14 @@ CREATE INDEX IF NOT EXISTS idx_documents_type ON public.documents(document_type)
 -- Enable RLS
 ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies
+-- Drop existing policies to ensure idempotency
 DROP POLICY IF EXISTS "Anyone can view documents" ON public.documents;
 DROP POLICY IF EXISTS "Admins can manage documents" ON public.documents;
+DROP POLICY IF EXISTS "Admins can insert documents" ON public.documents;
+DROP POLICY IF EXISTS "Admins can update documents" ON public.documents;
+DROP POLICY IF EXISTS "Admins can delete documents" ON public.documents;
 
+-- Create policies
 CREATE POLICY "Anyone can view documents"
   ON public.documents
   FOR SELECT
@@ -49,6 +53,8 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS documents_updated_at ON public.documents;
 
 CREATE TRIGGER documents_updated_at
   BEFORE UPDATE ON public.documents

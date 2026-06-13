@@ -15,25 +15,39 @@ CREATE TABLE IF NOT EXISTS public.weekly_menu_files (
 -- Enable RLS
 ALTER TABLE public.weekly_menu_files ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies to ensure idempotency
+DROP POLICY IF EXISTS "Anyone can view weekly menu files" ON public.weekly_menu_files;
+DROP POLICY IF EXISTS "Only admins can manage weekly menu files" ON public.weekly_menu_files;
+DROP POLICY IF EXISTS "Admins can insert weekly menu files" ON public.weekly_menu_files;
+DROP POLICY IF EXISTS "Admins can update weekly menu files" ON public.weekly_menu_files;
+DROP POLICY IF EXISTS "Admins can delete weekly menu files" ON public.weekly_menu_files;
+
 -- Policy: Anyone can view files
 CREATE POLICY "Anyone can view weekly menu files"
   ON public.weekly_menu_files
   FOR SELECT
   USING (true);
 
--- Policy: Only admins can manage files
-CREATE POLICY "Only admins can manage weekly menu files"
+-- Policy: Admins can insert
+CREATE POLICY "Admins can insert weekly menu files"
   ON public.weekly_menu_files
-  FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.admin_users
-      WHERE admin_users.id = auth.uid()
-    )
-  );
+  FOR INSERT
+  WITH CHECK (EXISTS (SELECT 1 FROM public.admin_users WHERE id = auth.uid()));
+
+-- Policy: Admins can update
+CREATE POLICY "Admins can update weekly menu files"
+  ON public.weekly_menu_files
+  FOR UPDATE
+  USING (EXISTS (SELECT 1 FROM public.admin_users WHERE id = auth.uid()));
+
+-- Policy: Admins can delete
+CREATE POLICY "Admins can delete weekly menu files"
+  ON public.weekly_menu_files
+  FOR DELETE
+  USING (EXISTS (SELECT 1 FROM public.admin_users WHERE id = auth.uid()));
 
 -- Create index for faster lookups
-CREATE INDEX weekly_menu_files_type_idx ON public.weekly_menu_files(menu_type);
+CREATE INDEX IF NOT EXISTS weekly_menu_files_type_idx ON public.weekly_menu_files(menu_type);
 
 -- Add trigger for updated_at
 CREATE OR REPLACE FUNCTION update_weekly_menu_files_timestamp()
@@ -43,6 +57,8 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS weekly_menu_files_updated_at ON public.weekly_menu_files;
 
 CREATE TRIGGER weekly_menu_files_updated_at
 BEFORE UPDATE ON public.weekly_menu_files

@@ -25,11 +25,13 @@ CREATE INDEX IF NOT EXISTS news_posts_date_idx ON public.news_posts(news_date DE
 -- Enable RLS on news_files
 ALTER TABLE public.news_files ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies for news_files
+-- RLS Policies for news_files - Drop all existing policies first
 DROP POLICY IF EXISTS "Anyone can view news files" ON public.news_files;
 DROP POLICY IF EXISTS "Admins can insert news files" ON public.news_files;
 DROP POLICY IF EXISTS "Admins can delete news files" ON public.news_files;
+DROP POLICY IF EXISTS "Admins can update news files" ON public.news_files;
 
+-- Create policies
 CREATE POLICY "Anyone can view news files"
   ON public.news_files FOR SELECT
   USING (true);
