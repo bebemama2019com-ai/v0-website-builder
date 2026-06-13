@@ -3,52 +3,11 @@
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
-import { Users, Heart, GraduationCap, Building2 } from "lucide-react"
+import { GraduationCap, Heart, Building2 } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
-import { useFetchWithFallback } from "@/hooks/use-fetch-with-fallback"
-
-// Fallback team members data
-const fallbackTeamMembers = [
-  {
-    id: "1",
-    name: "Мария Попова",
-    position: "Директор",
-    bio: "Опитен педагог с 20 години в образованието",
-    image: "/team/director.jpg",
-    featured: true,
-  },
-  {
-    id: "2",
-    name: "Иван Петров",
-    position: "Заместник директор",
-    bio: "Специалист по детско развитие",
-    image: "/team/assistant-director.jpg",
-    featured: true,
-  },
-  {
-    id: "3",
-    name: "Станислава Георгиева",
-    position: "Учителка - Ясла",
-    bio: "Сертифицирана кърмачка с 10 години опит",
-    image: "/team/teacher-1.jpg",
-    featured: false,
-  },
-  {
-    id: "4",
-    name: "Анна Иванова",
-    position: "Учителка - Детска градина",
-    bio: "Специалист по интегрирано образование",
-    image: "/team/teacher-2.jpg",
-    featured: false,
-  },
-]
 
 export default function AboutPage() {
   const { t } = useLanguage()
-  const { data: teamMembers } = useFetchWithFallback({
-    endpoint: "/api/team",
-    fallbackData: fallbackTeamMembers,
-  })
 
   const focusAreas = [
     {
@@ -94,50 +53,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Staff Section */}
-      <section className="px-4 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-            <div className="relative order-2 lg:order-1">
-              <div className="aspect-[4/3] overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 to-accent/20">
-                <img src="/happy-kindergarten-teachers-with-children.jpg" alt="Нашият екип" className="h-full w-full object-cover" />
-              </div>
-            </div>
-            <div className="flex flex-col justify-center order-1 lg:order-2">
-              <div className="mb-6 inline-flex rounded-2xl bg-primary/10 p-4 w-fit">
-                <Users className="h-8 w-8 text-primary" />
-              </div>
-              <h2 className="mb-6 text-balance text-3xl font-bold text-foreground lg:text-4xl">
-                {t.about.staff.title}
-              </h2>
-              <p className="text-pretty text-lg leading-relaxed text-muted-foreground">{t.about.staff.description}</p>
-            </div>
-          </div>
-
-          {/* Team Members Grid - Fetched from Supabase or fallback */}
-          <div className="mt-16">
-            <h3 className="mb-8 text-2xl font-bold text-foreground">{t.about.staff.teamTitle || "Нашия екип"}</h3>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {teamMembers.map((member) => (
-                <Card key={member.id} className="overflow-hidden rounded-2xl border-2 hover:shadow-lg transition-shadow">
-                  <div className="aspect-square overflow-hidden bg-muted">
-                    <img
-                      src={member.image || "/placeholder-team.jpg"}
-                      alt={member.name}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <CardContent className="p-4">
-                    <h4 className="font-bold text-foreground">{member.name}</h4>
-                    <p className="text-sm text-primary font-semibold">{member.position}</p>
-                    <p className="text-sm text-muted-foreground mt-2">{member.bio}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Staff Section - Moved to /team page */}
 
       {/* Groups Section */}
       <section className="bg-muted/50 px-4 py-16 lg:py-24">

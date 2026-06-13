@@ -6,33 +6,47 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Users, Stethoscope, Briefcase, Shield } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import Image from "next/image"
+import { useFetchWithFallback } from "@/hooks/use-fetch-with-fallback"
+
+// Fallback pedagogical staff data
+const fallbackPedagogicalStaff = [
+  {
+    id: "1",
+    name: "Петя Янкова",
+    role: "Директор",
+    qualification: 'Висше магистър "Организация и управление на образованието" и свидетелство за придобито първо ПКС',
+    image: "/team/petya-yankova.jpg",
+    isDirector: true,
+  },
+  {
+    id: "2",
+    name: "Ренета Попгеоргиева",
+    role: "Учител",
+    qualification: 'Магистър по „ПНУП"',
+    image: "/team/reneta-popgeorgieva.jpg",
+  },
+  {
+    id: "3",
+    name: "Венцислава Георгиева",
+    role: "Учител",
+    qualification: 'Бакалавър по „ПУП"',
+    image: "/team/ventsislava-georgieva.jpg",
+  },
+]
 
 export default function TeamPage() {
   const { language } = useLanguage()
+  const { data: pedagogicalStaffData } = useFetchWithFallback({
+    endpoint: "/api/team",
+    fallbackData: fallbackPedagogicalStaff,
+  })
 
-  const pedagogicalStaff = [
-    {
-      name: "Петя Янкова",
-      role: language === "bg" ? "Директор" : "Director",
-      qualification: language === "bg" 
-        ? 'Висше магистър "Организация и управление на образованието" и свидетелство за придобито първо ПКС'
-        : 'Master\'s degree in "Organization and Management of Education" with First Professional Qualification Degree',
-      image: "/team/petya-yankova.jpg",
-      isDirector: true,
-    },
-    {
-      name: "Ренета Попгеоргиева",
-      role: language === "bg" ? "Учител" : "Teacher",
-      qualification: language === "bg" ? 'Магистър по „ПНУП"' : 'Master\'s degree in "PNUP"',
-      image: "/team/reneta-popgeorgieva.jpg",
-    },
-    {
-      name: "Венцислава Георгиева",
-      role: language === "bg" ? "Учител" : "Teacher",
-      qualification: language === "bg" ? 'Бакалавър по „ПУП"' : 'Bachelor\'s degree in "PUP"',
-      image: "/team/ventsislava-georgieva.jpg",
-    },
-  ]
+  // Map API data to display format with translations
+  const pedagogicalStaff = pedagogicalStaffData.map((member: any) => ({
+    ...member,
+    role: language === "bg" ? (member.position || member.role) : (member.position || member.role),
+    qualification: member.bio || member.qualification,
+  }))
 
   const medicalStaff = [
     {
