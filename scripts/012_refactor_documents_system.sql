@@ -1,22 +1,56 @@
--- Migration 012: Refactor documents table to support direct file uploads with PDF/DOCX validation
+-- Migration 012: Create documents table for PDF/DOCX file management
 
--- Add new columns to documents table
-ALTER TABLE documents
-ADD COLUMN IF NOT EXISTS file_path TEXT,
-ADD COLUMN IF NOT EXISTS file_name TEXT,
-ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW(),
-ADD COLUMN IF NOT EXISTS document_type TEXT NOT NULL DEFAULT 'budget';
+-- Create documents table if it doesn't exist
+CREATE TABLE IF NOT EXISTS public.documents (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  document_type TEXT NOT NULL UNIQUE,
+  file_name TEXT NOT NULL,
+  file_path TEXT NOT NULL,
+  file_size INTEGER,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
--- Update existing column to allow NULL file_url (for backward compatibility)
-ALTER TABLE documents
-ALTER COLUMN file_url DROP NOT NULL;
+-- Create index on document_type for faster queries
+CREATE INDEX IF NOT EXISTS idx_documents_type ON public.documents(document_type);
 
--- Create an index on document_type and order_index for faster queries
-CREATE INDEX IF NOT EXISTS idx_documents_type_order ON documents(document_type, order_index);
+-- Enable RLS
+ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 
--- Add unique constraint for document_type to ensure only one file per type
-ALTER TABLE documents
-ADD CONSTRAINT documents_type_unique UNIQUE(document_type);
+-- RLS Policies
+DROP POLICY IF EXISTS "Anyone can view documents" ON public.documents;
+DROP POLICY IF EXISTS "Admins can manage documents" ON public.documents;
 
--- Create storage bucket for documents if it doesn't exist (using trigger would be needed at application level)
--- The bucket 'documents' should be created separately with RLS policies
+CREATE POLICY "Anyone can view documents"
+  ON public.documents
+  FOR SELECT
+  USING (true);
+
+CREATE POLICY "Admins can insert documents"
+  ON public.documents
+  FOR INSERT
+  WITH CHECK (EXISTS (SELECT 1 FROM public.admin_users WHERE id = auth.uid()));
+
+CREATE POLICY "Admins can update documents"
+  ON public.documents
+  FOR UPDATE
+  USING (EXISTS (SELECT 1 FROM public.admin_users WHERE id = auth.uid()));
+
+CREATE POLICY "Admins can delete documents"
+  ON public.documents
+  FOR DELETE
+  USING (EXISTS (SELECT 1 FROM public.admin_users WHERE id = auth.uid()));
+
+-- Add trigger for updated_at timestamp
+CREATE OR REPLACE FUNCTION update_documents_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER documents_updated_at
+  BEFORE UPDATE ON public.documents
+  FOR EACH ROW
+  EXECUTE FUNCTION update_documents_timestamp();
