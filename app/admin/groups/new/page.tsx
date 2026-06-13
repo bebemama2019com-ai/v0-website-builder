@@ -37,8 +37,16 @@ export default function NewGroupPage() {
   }, [])
 
   async function fetchTeamMembers() {
-    const { data } = await supabase.from("team_members").select("id, name, role, bio").order("name")
-    setTeamMembers(data || [])
+    try {
+      const { data, error } = await supabase.from("team_members").select("id, name, role, bio").order("name")
+      if (error) {
+        console.error("[v0] Error fetching team members:", error)
+        return
+      }
+      setTeamMembers(data || [])
+    } catch (error) {
+      console.error("[v0] Exception fetching team members:", error)
+    }
   }
 
   const toggleTeacher = (teacherId: string) => {
@@ -63,10 +71,15 @@ export default function NewGroupPage() {
         })
         .select()
 
-      if (groupError) throw groupError
+      if (groupError) {
+        console.error("[v0] Error creating group:", groupError)
+        throw new Error(`Грешка при създаване на групата: ${groupError.message}`)
+      }
 
       const groupId = groupData?.[0]?.id
-      if (!groupId) throw new Error("Failed to create group")
+      if (!groupId) {
+        throw new Error("Не беше възможно да се създаде групата")
+      }
 
       // Insert group_teachers relationships
       if (selectedTeachers.length > 0) {
@@ -77,13 +90,17 @@ export default function NewGroupPage() {
         }))
 
         const { error: teacherError } = await supabase.from("group_teachers").insert(groupTeachers)
-        if (teacherError) throw teacherError
+        if (teacherError) {
+          console.error("[v0] Error adding teachers to group:", teacherError)
+          throw new Error(`Грешка при добавяне на учители: ${teacherError.message}`)
+        }
       }
 
       router.push("/admin/groups")
     } catch (error) {
-      console.error("Грешка при създаване:", error)
-      alert("Грешка при създаване на групата")
+      console.error("[v0] Error saving group:", error)
+      const errorMessage = error instanceof Error ? error.message : "Грешка при съхраняване на групата"
+      alert(errorMessage)
     } finally {
       setLoading(false)
     }
