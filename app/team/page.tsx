@@ -35,74 +35,77 @@ const fallbackPedagogicalStaff = [
 ]
 
 export default function TeamPage() {
-  const { language } = useLanguage()
+  const { language, t } = useLanguage()
   const { data: pedagogicalStaffData } = useFetchWithFallback({
     endpoint: "/api/team",
     fallbackData: fallbackPedagogicalStaff,
   })
 
-  // Map API data to display format with translations
+  // Map API data to display format - use the data as-is from database
   const pedagogicalStaff = pedagogicalStaffData.map((member: any) => ({
-    ...member,
-    role: language === "bg" ? (member.position || member.role) : (member.position || member.role),
-    qualification: member.bio || member.qualification,
+    id: member.id,
+    name: member.name,
+    role: member.position || member.role || "",
+    qualification: member.bio || member.qualification || "",
+    image: member.image || "/team/default.jpg",
+    isDirector: member.featured || false,
   }))
 
   const medicalStaff = [
     {
       name: "Пенка Дамянова",
-      role: language === "bg" ? "Медицински специалист в детска градина" : "Medical specialist in kindergarten",
+      role: "Медицински специалист в детска градина",
     },
     {
       name: "Фани Конакчиева",
-      role: language === "bg" ? "Медицински специалист в детска градина" : "Medical specialist in kindergarten",
+      role: "Медицински специалист в детска градина",
     },
     {
       name: "Димитрийка Мангърова",
-      role: language === "bg" ? "Медицински специалист в яслена група" : "Medical specialist in nursery group",
+      role: "Медицински специалист в яслена група",
     },
     {
       name: "Надя Петрова",
-      role: language === "bg" ? "Медицински специалист в яслена група" : "Medical specialist in nursery group",
+      role: "Медицински специалист в яслена група",
     },
     {
       name: "Нели Николова",
-      role: language === "bg" ? "Медицински специалист в яслена група" : "Medical specialist in nursery group",
+      role: "Медицински специалист в яслена група",
     },
     {
       name: "Савка Иванова",
-      role: language === "bg" ? "Медицински специалист в яслена група" : "Medical specialist in nursery group",
+      role: "Медицински специалист в яслена група",
     },
   ]
 
   const otherStaff = [
     {
       name: "Деляна Сергиева",
-      role: language === "bg" ? "Счетоводител" : "Accountant",
+      role: "Счетоводител",
     },
     {
       name: "Нели Шуманова",
-      role: language === "bg" ? "ЗАС" : "Administrative Secretary",
+      role: "ЗАС",
     },
     {
       name: "Теменужка Кръстева",
-      role: language === "bg" ? "Помощник-готвач" : "Assistant Cook",
+      role: "Помощник-готвач",
     },
     {
       name: "Светла Пейкова",
-      role: language === "bg" ? "Помощник-възпитател" : "Teaching Assistant",
+      role: "Помощник-възпитател",
     },
     {
       name: "Розалия Кьосева",
-      role: language === "bg" ? "Помощник-възпитател" : "Teaching Assistant",
+      role: "Помощник-възпитател",
     },
     {
       name: "Татяна Нинова",
-      role: language === "bg" ? "Помощник-възпитател" : "Teaching Assistant",
+      role: "Помощник-възпитател",
     },
     {
       name: "Георги Колев",
-      role: language === "bg" ? "РПС" : "Maintenance Worker",
+      role: "РПС",
     },
   ]
 
@@ -114,12 +117,10 @@ export default function TeamPage() {
       <section className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-accent/20 px-4 py-20 lg:py-32">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-foreground lg:text-5xl">
-            {language === "bg" ? "Екип" : "Our Team"}
+            {t?.team?.title || "Екип"}
           </h1>
           <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
-            {language === "bg" 
-              ? "Запознайте се с нашия отдаден екип от професионалисти, които се грижат за вашите деца."
-              : "Meet our dedicated team of professionals who care for your children."}
+            {t?.team?.subtitle || "Запознайте се с нашия отдаден екип от професионалисти, които се грижат за вашите деца."}
           </p>
         </div>
       </section>
@@ -130,13 +131,13 @@ export default function TeamPage() {
           <div className="flex items-center gap-3 mb-10">
             <Users className="w-8 h-8 text-primary" />
             <h2 className="text-3xl font-bold text-foreground">
-              {language === "bg" ? "Педагогически персонал" : "Pedagogical Staff"}
+              {t?.team?.pedagogicalStaff || "Педагогически персонал"}
             </h2>
           </div>
           
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {pedagogicalStaff.map((member, index) => (
-              <Card key={index} className={`overflow-hidden rounded-3xl border-2 transition-shadow hover:shadow-lg ${member.isDirector ? 'md:col-span-2 lg:col-span-1 ring-2 ring-primary' : ''}`}>
+              <Card key={member.id || index} className={`overflow-hidden rounded-3xl border-2 transition-shadow hover:shadow-lg ${member.isDirector ? 'md:col-span-2 lg:col-span-1 ring-2 ring-primary' : ''}`}>
                 {member.image && (
                   <div className="aspect-square overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
                     <Image
@@ -167,7 +168,7 @@ export default function TeamPage() {
           <div className="flex items-center gap-3 mb-10">
             <Stethoscope className="w-8 h-8 text-primary" />
             <h2 className="text-3xl font-bold text-foreground">
-              {language === "bg" ? "Медицински специалисти" : "Medical Specialists"}
+              {t?.team?.medicalStaff || "Медицински специалисти"}
             </h2>
           </div>
           
@@ -190,7 +191,7 @@ export default function TeamPage() {
           <div className="flex items-center gap-3 mb-10">
             <Briefcase className="w-8 h-8 text-primary" />
             <h2 className="text-3xl font-bold text-foreground">
-              {language === "bg" ? "Друг персонал" : "Other Staff"}
+              {t?.team?.otherStaff || "Друг персонал"}
             </h2>
           </div>
           
@@ -213,14 +214,14 @@ export default function TeamPage() {
           <div className="flex items-center gap-3 mb-10">
             <Shield className="w-8 h-8 text-primary" />
             <h2 className="text-3xl font-bold text-foreground">
-              {language === "bg" ? "Охрана" : "Security"}
+              {t?.team?.security || "Охрана"}
             </h2>
           </div>
           
           <Card className="overflow-hidden rounded-2xl border max-w-md">
             <CardContent className="p-6">
               <h3 className="text-lg font-bold text-foreground">
-                {language === "bg" ? 'Охранителна фирма „ГАРД" ЕООД' : 'Security Company "GARD" Ltd.'}
+                {t?.team?.securityCompany || 'Охранителна фирма "ГАРД" ЕООД'}
               </h3>
             </CardContent>
           </Card>
