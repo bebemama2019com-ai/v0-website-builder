@@ -10,8 +10,17 @@ export async function GET() {
 
     const { data: newsPosts, error } = await supabase
       .from("news_posts")
-      .select("*")
-      .order("published_at", { ascending: false })
+      .select(`
+        *,
+        news_files (
+          id,
+          file_name,
+          file_url
+        )
+      `)
+      .eq("is_active", true)
+      .order("news_date", { ascending: false })
+      .order("news_hour", { ascending: false })
 
     if (error) {
       console.error("[v0] Error fetching news posts:", error)

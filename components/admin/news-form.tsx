@@ -2,57 +2,110 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
-import { createBrowserClient } from "@/lib/supabase/client"
+import { Checkbox } from "@/components/ui/checkbox"
+import { createClient } from "@/lib/supabase/client"
+import { X } from "lucide-react"
+
+interface NewsFile {
+  id: string
+  file_name: string
+  file_url: string
+}
 
 interface NewsFormProps {
   post?: {
     id: string
     title: string
-    slug: string
-    excerpt: string
     content: string
-    image_url?: string
-    category: string
-    featured: boolean
-    published_at: string
+    is_active: boolean
+    news_date: string
+    news_hour: string
+    from_text: string
+    description: string
   }
 }
 
 export default function NewsForm({ post }: NewsFormProps) {
   const router = useRouter()
-  const supabase = createBrowserClient()
+  const supabase = createClient()
   const [loading, setLoading] = useState(false)
+  const [uploadingFile, setUploadingFile] = useState(false)
+  const [files, setFiles] = useState<NewsFile[]>([])
+  const [teamMembers, setTeamMembers] = useState<Array<{ id: string; name: string }>>([])
   const [formData, setFormData] = useState({
     title: post?.title || "",
-    slug: post?.slug || "",
-    excerpt: post?.excerpt || "",
     content: post?.content || "",
-    image_url: post?.image_url || "",
-    category: post?.category || "news",
-    featured: post?.featured || false,
-    published_at: post?.published_at || new Date().toISOString().split("T")[0],
+    description: post?.description || "",
+    is_active: post?.is_active ?? true,
+    news_date: post?.news_date || new Date().toISOString().split("T")[0],
+    news_hour: post?.news_hour || "09:00",
+    from_text: post?.from_text || "",
   })
 
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "")
+  useEffect(() => {
+    fetchTeamMembers()
+    if (post?.id) {
+      fetchNewsFiles()
+    }
+  }, [])
+
+  async function fetchTeamMembers() {
+    const { data } = await supabase.from("team_members").select("id, name").order("name")
+    setTeamMembers(data || [])
   }
 
-  const handleTitleChange = (title: string) => {
-    setFormData({
-      ...formData,
-      title,
-      slug: generateSlug(title),
-    })
+  async function fetchNewsFiles() {
+    const { data } = await supabase.from("news_files").select("id, file_name, file_url").eq("news_id", post?.id)
+    setFiles(data || [])
+  }
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !post?.id) return
+
+    setUploadingFile(true)
+    try {
+      const fileName = `news/${post.id}/${Date.now()}-${file.name}`
+      const { data, error } = await supabase.storage.from("files").upload(fileName, file)
+
+      if (error) throw error
+
+      const { data: publicUrl } = supabase.storage.from("files").getPublicUrl(fileName)
+
+      const { error: dbError } = await supabase.from("news_files").insert({
+        news_id: post.id,
+        file_name: file.name,
+        file_url: publicUrl.publicUrl,
+        file_size: file.size,
+      })
+
+      if (dbError) throw dbError
+
+      await fetchNewsFiles()
+    } catch (error) {
+      console.error("Error uploading file:", error)
+      alert("Error uploading file. Please try again.")
+    } finally {
+      setUploadingFile(false)
+    }
+  }
+
+  async function deleteFile(fileId: string) {
+    try {
+      const { error } = await supabase.from("news_files").delete().eq("id", fileId)
+      if (error) throw error
+      await fetchNewsFiles()
+    } catch (error) {
+      console.error("Error deleting file:", error)
+      alert("Error deleting file.")
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -60,13 +113,21 @@ export default function NewsForm({ post }: NewsFormProps) {
     setLoading(true)
 
     try {
-      if (post) {
-        const { error } = await supabase.from("news_posts").update(formData).eq("id", post.id)
+      const submitData = {
+        title: formData.title,
+        content: formData.content,
+        description: formData.description,
+        is_active: formData.is_active,
+        news_date: formData.news_date,
+        news_hour: formData.news_hour,
+        from_text: formData.from_text,
+      }
 
+      if (post) {
+        const { error } = await supabase.from("news_posts").update(submitData).eq("id", post.id)
         if (error) throw error
       } else {
-        const { error } = await supabase.from("news_posts").insert([formData])
-
+        const { error } = await supabase.from("news_posts").insert([submitData])
         if (error) throw error
       }
 
@@ -83,98 +144,133 @@ export default function NewsForm({ post }: NewsFormProps) {
   return (
     <Card className="p-6">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <Label htmlFor="title">Title *</Label>
-          <Input id="title" value={formData.title} onChange={(e) => handleTitleChange(e.target.value)} required />
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="is_active"
+            checked={formData.is_active}
+            onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked as boolean })}
+          />
+          <Label htmlFor="is_active" className="cursor-pointer">
+            Активна новина
+          </Label>
         </div>
 
         <div>
-          <Label htmlFor="slug">URL Slug *</Label>
+          <Label htmlFor="title">Заглавие *</Label>
           <Input
-            id="slug"
-            value={formData.slug}
-            onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-            required
-          />
-          <p className="text-sm text-muted-foreground mt-1">Auto-generated from title, but you can customize it</p>
-        </div>
-
-        <div>
-          <Label htmlFor="excerpt">Excerpt *</Label>
-          <Textarea
-            id="excerpt"
-            value={formData.excerpt}
-            onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-            rows={2}
+            id="title"
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            placeholder="Введете заглавието на новината"
             required
           />
         </div>
 
-        <div>
-          <Label htmlFor="content">Content *</Label>
-          <Textarea
-            id="content"
-            value={formData.content}
-            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-            rows={10}
-            required
-          />
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="news_date">Дата *</Label>
+            <Input
+              id="news_date"
+              type="date"
+              value={formData.news_date}
+              onChange={(e) => setFormData({ ...formData, news_date: e.target.value })}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="news_hour">Час *</Label>
+            <Input
+              id="news_hour"
+              type="time"
+              value={formData.news_hour}
+              onChange={(e) => setFormData({ ...formData, news_hour: e.target.value })}
+              required
+            />
+          </div>
         </div>
 
         <div>
-          <Label htmlFor="image_url">Image URL</Label>
-          <Input
-            id="image_url"
-            type="url"
-            value={formData.image_url}
-            onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-            placeholder="https://example.com/image.jpg"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="category">Category *</Label>
+          <Label htmlFor="from_text">От (Отговорен) *</Label>
           <select
-            id="category"
-            value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            className="w-full px-3 py-2 border rounded-md"
+            id="from_text"
+            value={formData.from_text}
+            onChange={(e) => setFormData({ ...formData, from_text: e.target.value })}
+            className="w-full px-3 py-2 border border-input rounded-md bg-background"
             required
           >
-            <option value="news">News</option>
-            <option value="events">Events</option>
-            <option value="announcements">Announcements</option>
+            <option value="">Изберете член на персонала</option>
+            {teamMembers.map((member) => (
+              <option key={member.id} value={member.name}>
+                {member.name}
+              </option>
+            ))}
           </select>
         </div>
 
         <div>
-          <Label htmlFor="published_at">Publish Date *</Label>
-          <Input
-            id="published_at"
-            type="date"
-            value={formData.published_at}
-            onChange={(e) => setFormData({ ...formData, published_at: e.target.value })}
+          <Label htmlFor="description">Описание *</Label>
+          <Textarea
+            id="description"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            placeholder="Кратко описание на новината"
+            rows={3}
             required
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="featured"
-            checked={formData.featured}
-            onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-            className="w-4 h-4"
+        <div>
+          <Label htmlFor="content">Пълно съдържание *</Label>
+          <Textarea
+            id="content"
+            value={formData.content}
+            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+            placeholder="Пълното съдържание на новината"
+            rows={8}
+            required
           />
-          <Label htmlFor="featured">Featured Post</Label>
         </div>
+
+        {post && (
+          <div>
+            <Label>Прикачени файлове</Label>
+            <div className="space-y-3">
+              {files.length > 0 && (
+                <div className="space-y-2">
+                  {files.map((file) => (
+                    <div key={file.id} className="flex items-center justify-between bg-muted p-3 rounded-lg">
+                      <a href={file.file_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline flex-1">
+                        {file.file_name}
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => deleteFile(file.id)}
+                        className="ml-2 text-destructive hover:bg-destructive/10 p-1 rounded"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <input
+                type="file"
+                onChange={handleFileUpload}
+                disabled={uploadingFile}
+                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+              />
+              {uploadingFile && <p className="text-sm text-muted-foreground">Зареждане на файл...</p>}
+            </div>
+          </div>
+        )}
 
         <div className="flex gap-4">
           <Button type="submit" disabled={loading}>
-            {loading ? "Saving..." : post ? "Update" : "Create"}
+            {loading ? "Запазване..." : post ? "Обновяване" : "Създаване"}
           </Button>
           <Button type="button" variant="outline" onClick={() => router.push("/admin/news")}>
-            Cancel
+            Отказ
           </Button>
         </div>
       </form>

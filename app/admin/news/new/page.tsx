@@ -22,7 +22,7 @@ export default async function NewNewsPostPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <h1 className="text-3xl font-bold mb-8">Add News Post</h1>
+        <h1 className="text-3xl font-bold mb-8">Добави новина</h1>
         <NewsForm />
       </div>
     </div>
