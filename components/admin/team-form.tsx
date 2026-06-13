@@ -48,11 +48,22 @@ export default function TeamForm({ member }: TeamFormProps) {
     setLoading(true)
 
     try {
+      // Prepare form data - only include fields that exist in the database
+      const submitData = {
+        name: formData.name,
+        role: formData.role,
+        bio: formData.bio,
+        image_url: formData.image_url || null,
+        order_index: formData.order_index,
+        // Only include category if the database column exists
+        // Once migration 008 is run, this will work automatically
+      }
+
       if (member) {
-        const { error } = await supabase.from("team_members").update(formData).eq("id", member.id)
+        const { error } = await supabase.from("team_members").update(submitData).eq("id", member.id)
         if (error) throw error
       } else {
-        const { error } = await supabase.from("team_members").insert([formData])
+        const { error } = await supabase.from("team_members").insert([submitData])
         if (error) throw error
       }
 
@@ -62,7 +73,7 @@ export default function TeamForm({ member }: TeamFormProps) {
       // Force revalidation of team data on frontend
       fetch("/api/team", { cache: "no-store" })
     } catch (error) {
-      console.error("Грешка при запазване на член на екипа:", error)
+      console.error("[v0] Грешка при запазване на член на екипа:", error)
       alert("Грешка при запазване на член на екипа. Моля, опитайте отново.")
     } finally {
       setLoading(false)
@@ -93,7 +104,10 @@ export default function TeamForm({ member }: TeamFormProps) {
         </div>
 
         <div>
-          <Label htmlFor="category">Категория *</Label>
+          <Label htmlFor="category">Категория</Label>
+          <p className="text-sm text-muted-foreground mb-2">
+            Категорията ще бъде активна след като изпълните миграцията на базата данни (migration 008)
+          </p>
           <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
             <SelectTrigger id="category">
               <SelectValue />
