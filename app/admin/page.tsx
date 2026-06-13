@@ -217,7 +217,7 @@ export default async function AdminDashboard() {
               <CardDescription>Управление на нормативни документи и бюджетни файлове</CardDescription>
             </CardHeader>
             <CardContent>
-              <Link href="/admin/documents">
+              <Link href="/admin/documents-new">
                 <Button className="w-full">Управление на документи</Button>
               </Link>
             </CardContent>
