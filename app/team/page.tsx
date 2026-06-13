@@ -97,8 +97,7 @@ export default function TeamPage() {
   const groupedTeam = {
     pedagogical: normalizedData.filter((member: any) => {
       const pos = (member.position || "").toLowerCase()
-      const isPedagogical = member.category === "pedagogical" || pos.includes("учител") || pos.includes("директор")
-      // console.log("[v0] Checking pedagogical for", member.name, ":", isPedagogical, "pos:", pos)
+      const isPedagogical = member.category === "pedagogical" || pos.includes("учител") || pos.includes("директор") || pos.includes("педагогически")
       return isPedagogical
     }),
     medical: normalizedData.filter((member: any) => {
@@ -112,7 +111,7 @@ export default function TeamPage() {
       // If has category set to something else, exclude it
       if (member.category && member.category !== "other") return false
       // Otherwise, check if position doesn't match pedagogical or medical patterns
-      return !pos.includes("учител") && !pos.includes("директор") && !pos.includes("медицински")
+      return !pos.includes("учител") && !pos.includes("директор") && !pos.includes("медицински") && !pos.includes("педагогически")
     }),
     security: normalizedData.filter((member: any) => {
       return member.category === "security"
