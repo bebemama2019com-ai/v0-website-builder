@@ -3,7 +3,7 @@
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
-import { GraduationCap, Heart, Building2 } from "lucide-react"
+import { GraduationCap, Heart, Building2, Users } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 
 export default function AboutPage() {
