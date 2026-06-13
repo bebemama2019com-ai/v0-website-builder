@@ -8,106 +8,113 @@ import { useLanguage } from "@/lib/i18n/language-context"
 import Image from "next/image"
 import { useFetchWithFallback } from "@/hooks/use-fetch-with-fallback"
 
-// Fallback pedagogical staff data
-const fallbackPedagogicalStaff = [
+// Fallback team data with categories
+const fallbackTeamData = [
+  // Pedagogical staff
   {
     id: "1",
     name: "Петя Янкова",
-    role: "Директор",
-    qualification: 'Висше магистър "Организация и управление на образованието" и свидетелство за придобито първо ПКС',
-    image: "/team/petya-yankova.jpg",
-    isDirector: true,
+    position: "Директор",
+    bio: 'Висше магистър "Организация и управление на образованието"',
+    image: null,
+    category: "pedagogical",
+    featured: true,
   },
   {
     id: "2",
     name: "Ренета Попгеоргиева",
-    role: "Учител",
-    qualification: 'Магистър по „ПНУП"',
-    image: "/team/reneta-popgeorgieva.jpg",
+    position: "Учител",
+    bio: 'Магистър по „ПНУП"',
+    image: null,
+    category: "pedagogical",
   },
   {
     id: "3",
     name: "Венцислава Георгиева",
-    role: "Учител",
-    qualification: 'Бакалавър по „ПУП"',
-    image: "/team/ventsislava-georgieva.jpg",
+    position: "Учител",
+    bio: 'Бакалавър по „ПУП"',
+    image: null,
+    category: "pedagogical",
+  },
+  // Medical staff
+  {
+    id: "4",
+    name: "Пенка Дамянова",
+    position: "Медицински специалист в детска градина",
+    image: null,
+    category: "medical",
+  },
+  {
+    id: "5",
+    name: "Фани Конакчиева",
+    position: "Медицински специалист в детска градина",
+    image: null,
+    category: "medical",
+  },
+  // Other staff
+  {
+    id: "6",
+    name: "Деляна Сергиева",
+    position: "Счетоводител",
+    image: null,
+    category: "other",
+  },
+  {
+    id: "7",
+    name: "Нели Шуманова",
+    position: "ЗАС",
+    image: null,
+    category: "other",
   },
 ]
 
 export default function TeamPage() {
-  const { language, t } = useLanguage()
-  const { data: pedagogicalStaffData } = useFetchWithFallback({
+  const { t } = useLanguage()
+  const { data: allTeamData } = useFetchWithFallback({
     endpoint: "/api/team",
-    fallbackData: fallbackPedagogicalStaff,
+    fallbackData: fallbackTeamData,
   })
 
-  // Map API data to display format - use the data as-is from database
-  const pedagogicalStaff = pedagogicalStaffData.map((member: any) => ({
-    id: member.id,
-    name: member.name,
-    role: member.position || member.role || "",
-    qualification: member.bio || member.qualification || "",
-    image: member.image || "/team/default.jpg",
-    isDirector: member.featured || false,
-  }))
+  // Group team members by category
+  const groupedTeam = {
+    pedagogical: allTeamData.filter((member: any) => member.category === "pedagogical" || member.position?.includes("Учител") || member.position?.includes("Директор")),
+    medical: allTeamData.filter((member: any) => member.category === "medical" || member.position?.includes("Медицински")),
+    other: allTeamData.filter((member: any) => member.category === "other" && !member.position?.includes("Медицински") && !member.position?.includes("Учител") && !member.position?.includes("Директор")),
+  }
 
-  const medicalStaff = [
-    {
-      name: "Пенка Дамянова",
-      role: "Медицински специалист в детска градина",
-    },
-    {
-      name: "Фани Конакчиева",
-      role: "Медицински специалист в детска градина",
-    },
-    {
-      name: "Димитрийка Мангърова",
-      role: "Медицински специалист в яслена група",
-    },
-    {
-      name: "Надя Петрова",
-      role: "Медицински специалист в яслена група",
-    },
-    {
-      name: "Нели Николова",
-      role: "Медицински специалист в яслена група",
-    },
-    {
-      name: "Савка Иванова",
-      role: "Медицински специалист в яслена група",
-    },
-  ]
-
-  const otherStaff = [
-    {
-      name: "Деляна Сергиева",
-      role: "Счетоводител",
-    },
-    {
-      name: "Нели Шуманова",
-      role: "ЗАС",
-    },
-    {
-      name: "Теменужка Кръстева",
-      role: "Помощник-готвач",
-    },
-    {
-      name: "Светла Пейкова",
-      role: "Помощник-възпитател",
-    },
-    {
-      name: "Розалия Кьосева",
-      role: "Помощник-възпитател",
-    },
-    {
-      name: "Татяна Нинова",
-      role: "Помощник-възпитател",
-    },
-    {
-      name: "Георги Колев",
-      role: "РПС",
-    },
-  ]
+  // Helper function to render team member card
+  const renderTeamCard = (member: any, index: number, isDirector: boolean = false) => (
+    <Card 
+      key={member.id || index} 
+      className={`overflow-hidden rounded-2xl border-2 transition-shadow hover:shadow-lg ${
+        isDirector ? 'md:col-span-2 lg:col-span-1 ring-2 ring-primary' : ''
+      }`}
+    >
+      {/* Only show image container if image URL exists */}
+      {member.image && (
+        <div className="aspect-square overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
+          <Image
+            src={member.image}
+            alt={member.name}
+            width={400}
+            height={400}
+            className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+            priority={false}
+            unoptimized={true}
+          />
+        </div>
+      )}
+      <CardContent className={member.image ? "p-4" : "p-6"}>
+        <h3 className="mb-1 font-bold text-foreground">
+          {member.image ? <span className="text-lg">{member.name}</span> : <span className="text-lg">{member.name}</span>}
+        </h3>
+        <p className="text-sm font-semibold text-primary mb-2">{member.position || member.role}</p>
+        {member.bio && (
+          <p className="text-sm leading-relaxed text-muted-foreground">{member.bio}</p>
+        )}
+      </CardContent>
+    </Card>
+  )
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -126,87 +133,64 @@ export default function TeamPage() {
       </section>
 
       {/* Pedagogical Staff */}
-      <section className="px-4 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex items-center gap-3 mb-10">
-            <Users className="w-8 h-8 text-primary" />
-            <h2 className="text-3xl font-bold text-foreground">
-              {t?.team?.pedagogicalStaff || "Педагогически персонал"}
-            </h2>
+      {groupedTeam.pedagogical.length > 0 && (
+        <section className="px-4 py-16 lg:py-24">
+          <div className="mx-auto max-w-7xl">
+            <div className="flex items-center gap-3 mb-10">
+              <Users className="w-8 h-8 text-primary" />
+              <h2 className="text-3xl font-bold text-foreground">
+                {t?.team?.pedagogicalStaff || "Педагогически персонал"}
+              </h2>
+            </div>
+            
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {groupedTeam.pedagogical.map((member: any, index: number) => 
+                renderTeamCard(member, index, member.featured || false)
+              )}
+            </div>
           </div>
-          
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {pedagogicalStaff.map((member, index) => (
-              <Card key={member.id || index} className={`overflow-hidden rounded-3xl border-2 transition-shadow hover:shadow-lg ${member.isDirector ? 'md:col-span-2 lg:col-span-1 ring-2 ring-primary' : ''}`}>
-                {member.image && (
-                  <div className="aspect-square overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
-                    <Image
-                      src={member.image}
-                      alt={member.name}
-                      width={400}
-                      height={400}
-                      className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                    />
-                  </div>
-                )}
-                <CardContent className="p-6">
-                  <h3 className="mb-1 text-xl font-bold text-foreground">{member.name}</h3>
-                  <p className="mb-2 text-sm font-semibold text-primary">{member.role}</p>
-                  {member.qualification && (
-                    <p className="text-sm leading-relaxed text-muted-foreground">{member.qualification}</p>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Medical Staff */}
-      <section className="px-4 py-16 lg:py-24 bg-card/50">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex items-center gap-3 mb-10">
-            <Stethoscope className="w-8 h-8 text-primary" />
-            <h2 className="text-3xl font-bold text-foreground">
-              {t?.team?.medicalStaff || "Медицински специалисти"}
-            </h2>
+      {groupedTeam.medical.length > 0 && (
+        <section className="px-4 py-16 lg:py-24 bg-card/50">
+          <div className="mx-auto max-w-7xl">
+            <div className="flex items-center gap-3 mb-10">
+              <Stethoscope className="w-8 h-8 text-primary" />
+              <h2 className="text-3xl font-bold text-foreground">
+                {t?.team?.medicalStaff || "Медицински специалисти"}
+              </h2>
+            </div>
+            
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {groupedTeam.medical.map((member: any, index: number) => 
+                renderTeamCard(member, index)
+              )}
+            </div>
           </div>
-          
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {medicalStaff.map((member, index) => (
-              <Card key={index} className="overflow-hidden rounded-2xl border transition-shadow hover:shadow-md">
-                <CardContent className="p-5">
-                  <h3 className="mb-1 text-lg font-bold text-foreground">{member.name}</h3>
-                  <p className="text-sm text-muted-foreground">{member.role}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Other Staff */}
-      <section className="px-4 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex items-center gap-3 mb-10">
-            <Briefcase className="w-8 h-8 text-primary" />
-            <h2 className="text-3xl font-bold text-foreground">
-              {t?.team?.otherStaff || "Друг персонал"}
-            </h2>
+      {groupedTeam.other.length > 0 && (
+        <section className="px-4 py-16 lg:py-24">
+          <div className="mx-auto max-w-7xl">
+            <div className="flex items-center gap-3 mb-10">
+              <Briefcase className="w-8 h-8 text-primary" />
+              <h2 className="text-3xl font-bold text-foreground">
+                {t?.team?.otherStaff || "Друг персонал"}
+              </h2>
+            </div>
+            
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {groupedTeam.other.map((member: any, index: number) => 
+                renderTeamCard(member, index)
+              )}
+            </div>
           </div>
-          
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {otherStaff.map((member, index) => (
-              <Card key={index} className="overflow-hidden rounded-2xl border transition-shadow hover:shadow-md">
-                <CardContent className="p-5">
-                  <h3 className="mb-1 text-lg font-bold text-foreground">{member.name}</h3>
-                  <p className="text-sm text-muted-foreground">{member.role}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Security */}
       <section className="px-4 py-16 lg:py-24 bg-card/50">
