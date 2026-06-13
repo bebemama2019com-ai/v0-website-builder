@@ -25,7 +25,9 @@ export function useFetchWithFallback({ endpoint, fallbackData, onError }: UseFet
     const fetchData = async () => {
       try {
         setIsLoading(true)
-        const response = await fetch(endpoint)
+      const response = await fetch(endpoint, {
+        cache: "no-store", // Always fetch fresh data, never use browser cache
+      })
 
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`)

@@ -49,6 +49,9 @@ export default function TeamForm({ member }: TeamFormProps) {
 
       router.push("/admin/team")
       router.refresh()
+
+      // Force revalidation of team data on frontend
+      fetch("/api/team", { cache: "no-store" })
     } catch (error) {
       console.error("Грешка при запазване на член на екипа:", error)
       alert("Грешка при запазване на член на екипа. Моля, опитайте отново.")
