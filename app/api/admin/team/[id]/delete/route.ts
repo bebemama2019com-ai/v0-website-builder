@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { createServerClient } from "@/lib/supabase/server"
+import { redirect } from "next/navigation"
 
 export async function POST(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = await createClient()
+    const supabase = await createServerClient()
 
     // Verify user is authenticated
     const {
@@ -14,29 +15,32 @@ export async function POST(
     } = await supabase.auth.getUser()
 
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      redirect("/admin/login")
     }
 
     // Verify user is admin
-    const { data: isAdmin } = await supabase.from("admin_users").select("id").eq("id", user.id).single()
+    const { data: adminUser, error: adminError } = await supabase
+      .from("admin_users")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle()
 
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    if (adminError || !adminUser) {
+      redirect("/admin/login")
     }
 
     // Delete the team member
-    const { error } = await supabase.from("team_members").delete().eq("id", params.id)
+    const { error: deleteError } = await supabase.from("team_members").delete().eq("id", params.id)
 
-    if (error) {
-      console.error("[v0] Error deleting team member:", error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+    if (deleteError) {
+      console.error("[v0] Error deleting team member:", deleteError)
+      redirect("/admin/team?error=delete_failed")
     }
 
     // Redirect to team admin page
-    return NextResponse.redirect(new URL("/admin/team", request.url), 303)
+    redirect("/admin/team")
   } catch (error) {
     console.error("[v0] Delete team member error:", error)
-    const errorMessage = error instanceof Error ? error.message : "Failed to delete team member"
-    return NextResponse.json({ error: errorMessage }, { status: 500 })
+    redirect("/admin/team?error=delete_error")
   }
 }
