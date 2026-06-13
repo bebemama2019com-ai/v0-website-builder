@@ -75,18 +75,38 @@ export default function TeamPage() {
     fallbackData: fallbackTeamData,
   })
 
+  // Debug: Log the data we're receiving
+  console.log("[v0] Team page received data:", allTeamData)
+
+  // Normalize field names and log each member for debugging
+  const normalizedData = allTeamData.map((member: any) => {
+    const normalized = {
+      id: member.id,
+      name: member.name,
+      position: member.position || member.role || "",
+      bio: member.bio || member.qualification || "",
+      image: member.image || member.image_url || null,
+      category: member.category || null,
+      featured: member.featured || false,
+    }
+    console.log("[v0] Normalized member:", normalized.name, "position:", normalized.position, "category:", normalized.category)
+    return normalized
+  })
+
   // Group team members by category - more robust logic
   const groupedTeam = {
-    pedagogical: allTeamData.filter((member: any) => {
-      const pos = (member.position || member.role || "").toLowerCase()
-      return member.category === "pedagogical" || pos.includes("учител") || pos.includes("директор")
+    pedagogical: normalizedData.filter((member: any) => {
+      const pos = (member.position || "").toLowerCase()
+      const isPedagogical = member.category === "pedagogical" || pos.includes("учител") || pos.includes("директор")
+      console.log("[v0] Checking pedagogical for", member.name, ":", isPedagogical, "pos:", pos)
+      return isPedagogical
     }),
-    medical: allTeamData.filter((member: any) => {
-      const pos = (member.position || member.role || "").toLowerCase()
+    medical: normalizedData.filter((member: any) => {
+      const pos = (member.position || "").toLowerCase()
       return member.category === "medical" || pos.includes("медицински")
     }),
-    other: allTeamData.filter((member: any) => {
-      const pos = (member.position || member.role || "").toLowerCase()
+    other: normalizedData.filter((member: any) => {
+      const pos = (member.position || "").toLowerCase()
       // Include items with "other" category OR positions that don't match pedagogical or medical
       if (member.category === "other") return true
       // If has category set to something else, exclude it
@@ -95,6 +115,8 @@ export default function TeamPage() {
       return !pos.includes("учител") && !pos.includes("директор") && !pos.includes("медицински")
     }),
   }
+
+  console.log("[v0] Grouped team:", { pedagogical: groupedTeam.pedagogical.length, medical: groupedTeam.medical.length, other: groupedTeam.other.length })
 
   // Helper function to render team member card
   const renderTeamCard = (member: any, index: number, isDirector: boolean = false) => (
@@ -122,7 +144,7 @@ export default function TeamPage() {
         <h3 className="mb-1 font-bold text-foreground">
           {member.image ? <span className="text-lg">{member.name}</span> : <span className="text-lg">{member.name}</span>}
         </h3>
-        <p className="text-sm font-semibold text-primary mb-2">{member.position || member.role}</p>
+        <p className="text-sm font-semibold text-primary mb-2">{member.position}</p>
         {member.bio && (
           <p className="text-sm leading-relaxed text-muted-foreground">{member.bio}</p>
         )}
