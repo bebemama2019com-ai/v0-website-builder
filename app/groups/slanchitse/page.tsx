@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
-import { Users, BookOpen, Palette, Music } from "lucide-react"
+import { Users } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Група СЛЪНЧИЦЕ - ДГ 202",
@@ -45,32 +45,6 @@ export default function SlanchitsePage() {
                   <p className="text-lg leading-relaxed">
                     Учител с богат опит в работата с деца от предучилищна възраст. Специализирана в развитието на креативността и социалните умения на децата чрез игрови методи и иновативни педагогически подходи.
                   </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Activities Overview */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold mb-8 text-center">Основни дейности</h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-card rounded-lg p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
-                  <BookOpen className="w-12 h-12 text-primary mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">Развитие на речта</h3>
-                  <p className="text-muted-foreground">Обогатяване на речниковия запас и комуникативни умения</p>
-                </div>
-                <div className="bg-card rounded-lg p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
-                  <Palette className="w-12 h-12 text-secondary mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">Творчество</h3>
-                  <p className="text-muted-foreground">Рисуване, моделиране и развиване на въображението</p>
-                </div>
-                <div className="bg-card rounded-lg p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
-                  <Music className="w-12 h-12 text-accent mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">Музика</h3>
-                  <p className="text-muted-foreground">Музикално-ритмични игри и песни</p>
                 </div>
               </div>
             </div>
