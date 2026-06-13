@@ -75,11 +75,25 @@ export default function TeamPage() {
     fallbackData: fallbackTeamData,
   })
 
-  // Group team members by category
+  // Group team members by category - more robust logic
   const groupedTeam = {
-    pedagogical: allTeamData.filter((member: any) => member.category === "pedagogical" || member.position?.includes("Учител") || member.position?.includes("Директор")),
-    medical: allTeamData.filter((member: any) => member.category === "medical" || member.position?.includes("Медицински")),
-    other: allTeamData.filter((member: any) => member.category === "other" && !member.position?.includes("Медицински") && !member.position?.includes("Учител") && !member.position?.includes("Директор")),
+    pedagogical: allTeamData.filter((member: any) => {
+      const pos = (member.position || member.role || "").toLowerCase()
+      return member.category === "pedagogical" || pos.includes("учител") || pos.includes("директор")
+    }),
+    medical: allTeamData.filter((member: any) => {
+      const pos = (member.position || member.role || "").toLowerCase()
+      return member.category === "medical" || pos.includes("медицински")
+    }),
+    other: allTeamData.filter((member: any) => {
+      const pos = (member.position || member.role || "").toLowerCase()
+      // Include items with "other" category OR positions that don't match pedagogical or medical
+      if (member.category === "other") return true
+      // If has category set to something else, exclude it
+      if (member.category && member.category !== "other") return false
+      // Otherwise, check if position doesn't match pedagogical or medical patterns
+      return !pos.includes("учител") && !pos.includes("директор") && !pos.includes("медицински")
+    }),
   }
 
   // Helper function to render team member card
