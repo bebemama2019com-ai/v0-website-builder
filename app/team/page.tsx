@@ -8,63 +8,63 @@ import { useLanguage } from "@/lib/i18n/language-context"
 import Image from "next/image"
 import { useFetchWithFallback } from "@/hooks/use-fetch-with-fallback"
 
-// Fallback team data with categories
+// Fallback team data - role field determines the group
 const fallbackTeamData = [
   // Pedagogical staff
   {
     id: "1",
     name: "Петя Янкова",
     position: "Директор",
+    role: "pedagogical",
     bio: 'Висше магистър "Организация и управление на образованието"',
     image: null,
-    category: "pedagogical",
     featured: true,
   },
   {
     id: "2",
     name: "Ренета Попгеоргиева",
     position: "Учител",
+    role: "pedagogical",
     bio: 'Магистър по „ПНУП"',
     image: null,
-    category: "pedagogical",
   },
   {
     id: "3",
     name: "Венцислава Георгиева",
     position: "Учител",
+    role: "pedagogical",
     bio: 'Бакалавър по „ПУП"',
     image: null,
-    category: "pedagogical",
   },
   // Medical staff
   {
     id: "4",
     name: "Пенка Дамянова",
     position: "Медицински специалист в детска градина",
+    role: "medical",
     image: null,
-    category: "medical",
   },
   {
     id: "5",
     name: "Фани Конакчиева",
     position: "Медицински специалист в детска градина",
+    role: "medical",
     image: null,
-    category: "medical",
   },
   // Other staff
   {
     id: "6",
     name: "Деляна Сергиева",
     position: "Счетоводител",
+    role: "other",
     image: null,
-    category: "other",
   },
   {
     id: "7",
     name: "Нели Шуманова",
     position: "ЗАС",
+    role: "other",
     image: null,
-    category: "other",
   },
 ]
 
@@ -75,50 +75,26 @@ export default function TeamPage() {
     fallbackData: fallbackTeamData,
   })
 
-  // Debug: Log the data we're receiving
-  // console.log("[v0] Team page received data:", allTeamData)
-
-  // Normalize field names and log each member for debugging
+  // Normalize field names
   const normalizedData = allTeamData.map((member: any) => {
-    const normalized = {
+    return {
       id: member.id,
       name: member.name,
-      position: member.position || member.role || "",
-      bio: member.bio || member.qualification || "",
+      position: member.position || "",
+      role: member.role || "other",
+      bio: member.bio || "",
       image: member.image || member.image_url || null,
-      category: member.category || null,
       featured: member.featured || false,
     }
-    // console.log("[v0] Normalized member:", normalized.name, "position:", normalized.position, "category:", normalized.category)
-    return normalized
   })
 
-  // Group team members by category - more robust logic
+  // Group team members by their role field
   const groupedTeam = {
-    pedagogical: normalizedData.filter((member: any) => {
-      const pos = (member.position || "").toLowerCase()
-      const isPedagogical = member.category === "pedagogical" || pos.includes("учител") || pos.includes("директор") || pos.includes("педагогически")
-      return isPedagogical
-    }),
-    medical: normalizedData.filter((member: any) => {
-      const pos = (member.position || "").toLowerCase()
-      return member.category === "medical" || pos.includes("медицински")
-    }),
-    other: normalizedData.filter((member: any) => {
-      const pos = (member.position || "").toLowerCase()
-      // Include items with "other" category OR positions that don't match pedagogical or medical
-      if (member.category === "other") return true
-      // If has category set to something else, exclude it
-      if (member.category && member.category !== "other") return false
-      // Otherwise, check if position doesn't match pedagogical or medical patterns
-      return !pos.includes("учител") && !pos.includes("директор") && !pos.includes("медицински") && !pos.includes("педагогически")
-    }),
-    security: normalizedData.filter((member: any) => {
-      return member.category === "security"
-    }),
+    pedagogical: normalizedData.filter((member: any) => member.role === "pedagogical"),
+    medical: normalizedData.filter((member: any) => member.role === "medical"),
+    other: normalizedData.filter((member: any) => member.role === "other"),
+    security: normalizedData.filter((member: any) => member.role === "security"),
   }
-
-  // console.log("[v0] Grouped team:", { pedagogical: groupedTeam.pedagogical.length, medical: groupedTeam.medical.length, other: groupedTeam.other.length })
 
   // Helper function to render team member card
   const renderTeamCard = (member: any, index: number, isDirector: boolean = false) => (

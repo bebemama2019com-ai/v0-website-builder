@@ -36,11 +36,10 @@ export default function TeamForm({ member }: TeamFormProps) {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: member?.name || "",
-    role: member?.role || "",
+    role: member?.role || "other",
     bio: member?.bio || "",
     image_url: member?.image_url || "",
     order_index: member?.order_index || 0,
-    category: member?.category || "other",
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,8 +54,6 @@ export default function TeamForm({ member }: TeamFormProps) {
         bio: formData.bio,
         image_url: formData.image_url || null,
         order_index: formData.order_index,
-        // Only include category if the database column exists
-        // Once migration 008 is run, this will work automatically
       }
 
       if (member) {
@@ -94,22 +91,9 @@ export default function TeamForm({ member }: TeamFormProps) {
         </div>
 
         <div>
-          <Label htmlFor="role">Длъжност *</Label>
-          <Input
-            id="role"
-            value={formData.role}
-            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-            required
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="category">Категория</Label>
-          <p className="text-sm text-muted-foreground mb-2">
-            Категорията ще бъде активна след като изпълните миграцията на базата данни (migration 008)
-          </p>
-          <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
-            <SelectTrigger id="category">
+          <Label htmlFor="role">Група *</Label>
+          <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
+            <SelectTrigger id="role">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -119,7 +103,6 @@ export default function TeamForm({ member }: TeamFormProps) {
               <SelectItem value="security">Охрана</SelectItem>
             </SelectContent>
           </Select>
-          <p className="text-sm text-muted-foreground mt-1">Изберете групата, към която принадлежи членът на персонала</p>
         </div>
 
         <div>
