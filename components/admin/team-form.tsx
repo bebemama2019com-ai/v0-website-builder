@@ -36,10 +36,11 @@ export default function TeamForm({ member }: TeamFormProps) {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: member?.name || "",
-    role: member?.role || "other",
+    role: member?.role || "",
     bio: member?.bio || "",
     image_url: member?.image_url || "",
     order_index: member?.order_index || 0,
+    category: member?.category || "other",
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,13 +48,14 @@ export default function TeamForm({ member }: TeamFormProps) {
     setLoading(true)
 
     try {
-      // Prepare form data - only include fields that exist in the database
+      // Prepare form data - include category field
       const submitData = {
         name: formData.name,
         role: formData.role,
         bio: formData.bio,
         image_url: formData.image_url || null,
         order_index: formData.order_index,
+        category: formData.category,
       }
 
       if (member) {
@@ -91,9 +93,20 @@ export default function TeamForm({ member }: TeamFormProps) {
         </div>
 
         <div>
-          <Label htmlFor="role">Група *</Label>
-          <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
-            <SelectTrigger id="role">
+          <Label htmlFor="role">Длъжност/Позиция *</Label>
+          <Input
+            id="role"
+            value={formData.role}
+            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+            placeholder="например: Учител, Директор, Счетоводител"
+            required
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="category">Категория *</Label>
+          <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+            <SelectTrigger id="category">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -103,6 +116,7 @@ export default function TeamForm({ member }: TeamFormProps) {
               <SelectItem value="security">Охрана</SelectItem>
             </SelectContent>
           </Select>
+          <p className="text-sm text-muted-foreground mt-1">Изберете групата, към която принадлежи членът на персонала</p>
         </div>
 
         <div>

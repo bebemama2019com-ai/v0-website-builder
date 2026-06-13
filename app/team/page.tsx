@@ -8,14 +8,14 @@ import { useLanguage } from "@/lib/i18n/language-context"
 import Image from "next/image"
 import { useFetchWithFallback } from "@/hooks/use-fetch-with-fallback"
 
-// Fallback team data - role field determines the group
+// Fallback team data - category field determines the group
 const fallbackTeamData = [
   // Pedagogical staff
   {
     id: "1",
     name: "Петя Янкова",
-    position: "Директор",
-    role: "pedagogical",
+    role: "Директор",
+    category: "pedagogical",
     bio: 'Висше магистър "Организация и управление на образованието"',
     image: null,
     featured: true,
@@ -23,16 +23,16 @@ const fallbackTeamData = [
   {
     id: "2",
     name: "Ренета Попгеоргиева",
-    position: "Учител",
-    role: "pedagogical",
+    role: "Учител",
+    category: "pedagogical",
     bio: 'Магистър по „ПНУП"',
     image: null,
   },
   {
     id: "3",
     name: "Венцислава Георгиева",
-    position: "Учител",
-    role: "pedagogical",
+    role: "Учител",
+    category: "pedagogical",
     bio: 'Бакалавър по „ПУП"',
     image: null,
   },
@@ -40,30 +40,30 @@ const fallbackTeamData = [
   {
     id: "4",
     name: "Пенка Дамянова",
-    position: "Медицински специалист в детска градина",
-    role: "medical",
+    role: "Медицински специалист в детска градина",
+    category: "medical",
     image: null,
   },
   {
     id: "5",
     name: "Фани Конакчиева",
-    position: "Медицински специалист в детска градина",
-    role: "medical",
+    role: "Медицински специалист в детска градина",
+    category: "medical",
     image: null,
   },
   // Other staff
   {
     id: "6",
     name: "Деляна Сергиева",
-    position: "Счетоводител",
-    role: "other",
+    role: "Счетоводител",
+    category: "other",
     image: null,
   },
   {
     id: "7",
     name: "Нели Шуманова",
-    position: "ЗАС",
-    role: "other",
+    role: "ЗАС",
+    category: "other",
     image: null,
   },
 ]
@@ -80,20 +80,20 @@ export default function TeamPage() {
     return {
       id: member.id,
       name: member.name,
-      position: member.position || "",
-      role: member.role || "other",
+      role: member.role || "",
       bio: member.bio || "",
       image: member.image || member.image_url || null,
+      category: member.category || "other",
       featured: member.featured || false,
     }
   })
 
-  // Group team members by their role field
+  // Group team members by their category field
   const groupedTeam = {
-    pedagogical: normalizedData.filter((member: any) => member.role === "pedagogical"),
-    medical: normalizedData.filter((member: any) => member.role === "medical"),
-    other: normalizedData.filter((member: any) => member.role === "other"),
-    security: normalizedData.filter((member: any) => member.role === "security"),
+    pedagogical: normalizedData.filter((member: any) => member.category === "pedagogical"),
+    medical: normalizedData.filter((member: any) => member.category === "medical"),
+    other: normalizedData.filter((member: any) => member.category === "other"),
+    security: normalizedData.filter((member: any) => member.category === "security"),
   }
 
   // Helper function to render team member card
@@ -122,7 +122,7 @@ export default function TeamPage() {
         <h3 className="mb-1 font-bold text-foreground">
           {member.image ? <span className="text-lg">{member.name}</span> : <span className="text-lg">{member.name}</span>}
         </h3>
-        <p className="text-sm font-semibold text-primary mb-2">{member.position}</p>
+        <p className="text-sm font-semibold text-primary mb-2">{member.role}</p>
         {member.bio && (
           <p className="text-sm leading-relaxed text-muted-foreground">{member.bio}</p>
         )}
