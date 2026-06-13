@@ -12,11 +12,14 @@ interface Group {
   id: string
   name: string
   description: string | null
-  responsible_teacher_id: string | null
+  age: string | null
   order_index: number
-  team_members: {
-    name: string
-  } | null
+  group_teachers: Array<{
+    team_members: {
+      name: string
+      role: string
+    }
+  }>
 }
 
 export default function GroupsAdminPage() {
@@ -35,7 +38,9 @@ export default function GroupsAdminPage() {
         .from("groups")
         .select(`
           *,
-          team_members:responsible_teacher_id (name)
+          group_teachers (
+            team_members:teacher_id (name, role)
+          )
         `)
         .order("order_index", { ascending: true })
 
@@ -89,10 +94,22 @@ export default function GroupsAdminPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {group.team_members && (
+                {group.age && (
                   <div className="text-sm">
-                    <span className="font-medium">Отговорник: </span>
-                    {group.team_members.name}
+                    <span className="font-medium">Възраст: </span>
+                    {group.age}
+                  </div>
+                )}
+                {group.group_teachers && group.group_teachers.length > 0 && (
+                  <div className="text-sm">
+                    <span className="font-medium">Отговорни учители: </span>
+                    <div className="mt-1 space-y-1">
+                      {group.group_teachers.map((gt, index) => (
+                        <div key={index} className="text-xs">
+                          {gt.team_members?.name} ({gt.team_members?.role})
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
                 <div className="flex gap-2">

@@ -9,10 +9,14 @@ export async function GET() {
       .from("groups")
       .select(`
         *,
-        team_members:responsible_teacher_id (
-          id,
-          name,
-          role
+        group_teachers (
+          teacher_id,
+          team_members:teacher_id (
+            id,
+            name,
+            role,
+            bio
+          )
         )
       `)
       .order("order_index", { ascending: true })
