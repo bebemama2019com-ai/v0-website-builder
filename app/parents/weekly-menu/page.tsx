@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { FileText, Download, Baby, GraduationCap } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
+import Link from "next/link"
 
 export default function WeeklyMenuPage() {
   const { language } = useLanguage()
@@ -81,11 +82,18 @@ export default function WeeklyMenuPage() {
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground">{menu.description}</p>
 
-                  {/* Download Button */}
+                  {/* View Menu Button */}
                   <Button asChild className="w-full rounded-xl" size="lg">
+                    <Link href={menu.id === "kindergarten" ? "/parents/weekly-menu/menu-detska-gradina" : "/parents/weekly-menu/menu-yasla"}>
+                      {language === "bg" ? "Вижте меню" : "View Menu"}
+                    </Link>
+                  </Button>
+
+                  {/* Download Button */}
+                  <Button asChild variant="outline" className="w-full rounded-xl" size="lg">
                     <a href={menu.pdfUrl} download target="_blank" rel="noopener noreferrer">
                       <Download className="mr-2 h-5 w-5" />
-                      {language === "bg" ? "Изтегли меню" : "Download Menu"}
+                      {language === "bg" ? "Изтегли PDF" : "Download PDF"}
                     </a>
                   </Button>
                 </CardContent>
