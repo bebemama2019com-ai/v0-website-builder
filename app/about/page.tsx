@@ -1,12 +1,55 @@
+"use client"
+
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Users, Heart, GraduationCap, Building2 } from "lucide-react"
-import TeamSection from "@/components/team-section"
-import AboutPageContent from "@/components/about-page-content"
+import { useLanguage } from "@/lib/i18n/language-context"
+import { useFetchWithFallback } from "@/hooks/use-fetch-with-fallback"
+
+// Fallback team members data
+const fallbackTeamMembers = [
+  {
+    id: "1",
+    name: "Мария Попова",
+    position: "Директор",
+    bio: "Опитен педагог с 20 години в образованието",
+    image: "/team/director.jpg",
+    featured: true,
+  },
+  {
+    id: "2",
+    name: "Иван Петров",
+    position: "Заместник директор",
+    bio: "Специалист по детско развитие",
+    image: "/team/assistant-director.jpg",
+    featured: true,
+  },
+  {
+    id: "3",
+    name: "Станислава Георгиева",
+    position: "Учителка - Ясла",
+    bio: "Сертифицирана кърмачка с 10 години опит",
+    image: "/team/teacher-1.jpg",
+    featured: false,
+  },
+  {
+    id: "4",
+    name: "Анна Иванова",
+    position: "Учителка - Детска градина",
+    bio: "Специалист по интегрирано образование",
+    image: "/team/teacher-2.jpg",
+    featured: false,
+  },
+]
 
 export default function AboutPage() {
   const { t } = useLanguage()
+  const { data: teamMembers } = useFetchWithFallback({
+    endpoint: "/api/team",
+    fallbackData: fallbackTeamMembers,
+  })
+  const [teamMembers, setTeamMembers] = useState(fallbackTeamMembers)
 
   const focusAreas = [
     {
@@ -69,6 +112,29 @@ export default function AboutPage() {
                 {t.about.staff.title}
               </h2>
               <p className="text-pretty text-lg leading-relaxed text-muted-foreground">{t.about.staff.description}</p>
+            </div>
+          </div>
+
+          {/* Team Members Grid - Fetched from Supabase or fallback */}
+          <div className="mt-16">
+            <h3 className="mb-8 text-2xl font-bold text-foreground">{t.about.staff.teamTitle || "Нашия екип"}</h3>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {teamMembers.map((member) => (
+                <Card key={member.id} className="overflow-hidden rounded-2xl border-2 hover:shadow-lg transition-shadow">
+                  <div className="aspect-square overflow-hidden bg-muted">
+                    <img
+                      src={member.image || "/placeholder-team.jpg"}
+                      alt={member.name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <h4 className="font-bold text-foreground">{member.name}</h4>
+                    <p className="text-sm text-primary font-semibold">{member.position}</p>
+                    <p className="text-sm text-muted-foreground mt-2">{member.bio}</p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </div>

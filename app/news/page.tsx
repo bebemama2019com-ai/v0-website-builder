@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -8,86 +7,79 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Calendar, ArrowRight } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
+import { useFetchWithFallback } from "@/hooks/use-fetch-with-fallback"
+
+const fallbackNewsPosts = [
+  {
+    _id: "1",
+    title: "Welcome to Our New School Year!",
+    slug: { current: "welcome-new-school-year" },
+    excerpt:
+      "We're excited to welcome all our returning families and new students to Little Sprouts for another amazing year of learning and growth.",
+    image: "/news-school-year.jpg?height=600&width=800&query=happy children first day of school",
+    category: "News",
+    publishedAt: "2024-09-01T08:00:00Z",
+  },
+  {
+    _id: "2",
+    title: "Fall Festival Coming Soon",
+    slug: { current: "fall-festival-coming-soon" },
+    excerpt:
+      "Join us for our annual Fall Festival on October 15th! There will be games, activities, pumpkin decorating, and more family fun.",
+    image: "/news-fall-festival.jpg?height=600&width=800&query=fall festival with pumpkins and children",
+    category: "Events",
+    publishedAt: "2024-09-15T10:00:00Z",
+  },
+  {
+    _id: "3",
+    title: "New Art Studio Opening",
+    slug: { current: "new-art-studio-opening" },
+    excerpt:
+      "We're thrilled to announce the opening of our brand new art studio, complete with easels, supplies, and plenty of space for creativity.",
+    image: "/news-art-studio.jpg?height=600&width=800&query=children's art studio with supplies",
+    category: "News",
+    publishedAt: "2024-08-20T09:00:00Z",
+  },
+  {
+    _id: "4",
+    title: "Parent-Teacher Conferences",
+    slug: { current: "parent-teacher-conferences" },
+    excerpt:
+      "Fall parent-teacher conferences will be held the week of October 20th. Sign up for your time slot in the parent portal.",
+    image: "/news-conferences.jpg?height=600&width=800&query=teacher meeting with parents",
+    category: "Events",
+    publishedAt: "2024-10-01T08:00:00Z",
+  },
+  {
+    _id: "5",
+    title: "Garden Project Success",
+    slug: { current: "garden-project-success" },
+    excerpt:
+      "Our students have been busy tending to our school garden! We've harvested tomatoes, cucumbers, and herbs that we used in our cooking activities.",
+    image: "/news-garden.jpg?height=600&width=800&query=children harvesting vegetables in garden",
+    category: "Activities",
+    publishedAt: "2024-09-25T11:00:00Z",
+  },
+  {
+    _id: "6",
+    title: "Music Program Expansion",
+    slug: { current: "music-program-expansion" },
+    excerpt:
+      "We're expanding our music program with new instruments and weekly music classes for all age groups. Students will explore rhythm, melody, and movement.",
+    image: "/news-music.jpg?height=600&width=800&query=children playing musical instruments",
+    category: "News",
+    publishedAt: "2024-08-10T10:00:00Z",
+  },
+]
 
 export default function NewsPage() {
   const { t } = useLanguage()
-  const [newsPosts, setNewsPosts] = useState([])
+  const { data: newsPosts } = useFetchWithFallback({
+    endpoint: "/api/news",
+    fallbackData: fallbackNewsPosts,
+  })
 
-  useEffect(() => {
-    // Fetch news posts from API
-    fetch("/api/news")
-      .then((res) => res.json())
-      .then((data) => setNewsPosts(data))
-      .catch(() => {
-        // Use fallback data
-        setNewsPosts(fallbackPosts)
-      })
-  }, [])
-
-  const fallbackPosts = [
-    {
-      _id: "1",
-      title: "Welcome to Our New School Year!",
-      slug: { current: "welcome-new-school-year" },
-      excerpt:
-        "We're excited to welcome all our returning families and new students to Little Sprouts for another amazing year of learning and growth.",
-      image: "/news-school-year.jpg?height=600&width=800&query=happy children first day of school",
-      category: "News",
-      publishedAt: "2024-09-01T08:00:00Z",
-    },
-    {
-      _id: "2",
-      title: "Fall Festival Coming Soon",
-      slug: { current: "fall-festival-coming-soon" },
-      excerpt:
-        "Join us for our annual Fall Festival on October 15th! There will be games, activities, pumpkin decorating, and more family fun.",
-      image: "/news-fall-festival.jpg?height=600&width=800&query=fall festival with pumpkins and children",
-      category: "Events",
-      publishedAt: "2024-09-15T10:00:00Z",
-    },
-    {
-      _id: "3",
-      title: "New Art Studio Opening",
-      slug: { current: "new-art-studio-opening" },
-      excerpt:
-        "We're thrilled to announce the opening of our brand new art studio, complete with easels, supplies, and plenty of space for creativity.",
-      image: "/news-art-studio.jpg?height=600&width=800&query=children's art studio with supplies",
-      category: "News",
-      publishedAt: "2024-08-20T09:00:00Z",
-    },
-    {
-      _id: "4",
-      title: "Parent-Teacher Conferences",
-      slug: { current: "parent-teacher-conferences" },
-      excerpt:
-        "Fall parent-teacher conferences will be held the week of October 20th. Sign up for your time slot in the parent portal.",
-      image: "/news-conferences.jpg?height=600&width=800&query=teacher meeting with parents",
-      category: "Events",
-      publishedAt: "2024-10-01T08:00:00Z",
-    },
-    {
-      _id: "5",
-      title: "Garden Project Success",
-      slug: { current: "garden-project-success" },
-      excerpt:
-        "Our students have been busy tending to our school garden! We've harvested tomatoes, cucumbers, and herbs that we used in our cooking activities.",
-      image: "/news-garden.jpg?height=600&width=800&query=children harvesting vegetables in garden",
-      category: "Activities",
-      publishedAt: "2024-09-25T11:00:00Z",
-    },
-    {
-      _id: "6",
-      title: "Music Program Expansion",
-      slug: { current: "music-program-expansion" },
-      excerpt:
-        "We're expanding our music program with new instruments and weekly music classes for all age groups. Students will explore rhythm, melody, and movement.",
-      image: "/news-music.jpg?height=600&width=800&query=children playing musical instruments",
-      category: "News",
-      publishedAt: "2024-08-10T10:00:00Z",
-    },
-  ]
-
-  const displayPosts = newsPosts.length > 0 ? newsPosts : fallbackPosts
+  const displayPosts = newsPosts
 
   // Sort posts by date (newest first)
   const sortedPosts = [...displayPosts].sort(
