@@ -1,7 +1,11 @@
 -- Migration 012: Create documents table for PDF/DOCX file management
+-- This migration creates a new documents table for managing regulatory and budget documents
 
--- Create documents table if it doesn't exist
-CREATE TABLE IF NOT EXISTS public.documents (
+-- Drop existing table and policies if they exist (for clean migration)
+DROP TABLE IF EXISTS public.documents CASCADE;
+
+-- Create documents table with proper structure
+CREATE TABLE public.documents (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   document_type TEXT NOT NULL UNIQUE,
   file_name TEXT NOT NULL,
@@ -11,20 +15,16 @@ CREATE TABLE IF NOT EXISTS public.documents (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Add comment to document_type to explain the expected values
+COMMENT ON COLUMN public.documents.document_type IS 'Unique identifier for document type (e.g. budget, ecology-program, data-protection, etc.)';
+
 -- Create index on document_type for faster queries
-CREATE INDEX IF NOT EXISTS idx_documents_type ON public.documents(document_type);
+CREATE INDEX idx_documents_type ON public.documents(document_type);
 
 -- Enable RLS
 ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 
--- Drop existing policies to ensure idempotency
-DROP POLICY IF EXISTS "Anyone can view documents" ON public.documents;
-DROP POLICY IF EXISTS "Admins can manage documents" ON public.documents;
-DROP POLICY IF EXISTS "Admins can insert documents" ON public.documents;
-DROP POLICY IF EXISTS "Admins can update documents" ON public.documents;
-DROP POLICY IF EXISTS "Admins can delete documents" ON public.documents;
-
--- Create policies
+-- Create RLS policies
 CREATE POLICY "Anyone can view documents"
   ON public.documents
   FOR SELECT
@@ -45,7 +45,7 @@ CREATE POLICY "Admins can delete documents"
   FOR DELETE
   USING (EXISTS (SELECT 1 FROM public.admin_users WHERE id = auth.uid()));
 
--- Add trigger for updated_at timestamp
+-- Create function for updated_at timestamp
 CREATE OR REPLACE FUNCTION update_documents_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -54,8 +54,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS documents_updated_at ON public.documents;
-
+-- Create trigger for updated_at
 CREATE TRIGGER documents_updated_at
   BEFORE UPDATE ON public.documents
   FOR EACH ROW
