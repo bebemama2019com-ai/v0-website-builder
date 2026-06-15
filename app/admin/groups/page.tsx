@@ -44,10 +44,33 @@ export default function GroupsAdminPage() {
         `)
         .order("order_index", { ascending: true })
 
-      if (error) throw error
-      setGroups(data || [])
+      // If the error is about missing relationship (Migration 009 not run yet),
+      // fall back to fetching just groups without teachers
+      if (error && error.message && error.message.includes("relationship")) {
+        console.warn("[v0] group_teachers table not found, fetching groups without teachers")
+        
+        const { data: groupsOnly, error: groupsError } = await supabase
+          .from("groups")
+          .select("*")
+          .order("order_index", { ascending: true })
+
+        if (groupsError) throw groupsError
+        
+        // Add empty group_teachers array to maintain consistent structure
+        const groupsWithEmpty = groupsOnly?.map(group => ({
+          ...group,
+          group_teachers: []
+        })) || []
+        
+        setGroups(groupsWithEmpty)
+      } else if (error) {
+        throw error
+      } else {
+        setGroups(data || [])
+      }
     } catch (error) {
-      console.error("Грешка при зареждане на групи:", error)
+      console.error("[v0] Error fetching groups:", error)
+      alert("Грешка при зареждане на групи")
     } finally {
       setLoading(false)
     }

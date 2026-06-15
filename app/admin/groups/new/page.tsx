@@ -81,7 +81,7 @@ export default function NewGroupPage() {
         throw new Error("Не беше възможно да се създаде групата")
       }
 
-      // Insert group_teachers relationships
+      // Insert group_teachers relationships only if table exists (Migration 009 run)
       if (selectedTeachers.length > 0) {
         const groupTeachers = selectedTeachers.map((teacherId, index) => ({
           group_id: groupId,
@@ -90,7 +90,11 @@ export default function NewGroupPage() {
         }))
 
         const { error: teacherError } = await supabase.from("group_teachers").insert(groupTeachers)
-        if (teacherError) {
+        
+        // If table doesn't exist, log warning but don't fail - group was created successfully
+        if (teacherError && teacherError.message && teacherError.message.includes("does not exist")) {
+          console.warn("[v0] group_teachers table not found - Migration 009 not run yet. Group created but teachers not assigned.")
+        } else if (teacherError) {
           console.error("[v0] Error adding teachers to group:", teacherError)
           throw new Error(`Грешка при добавяне на учители: ${teacherError.message}`)
         }

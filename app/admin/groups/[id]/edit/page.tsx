@@ -74,12 +74,10 @@ export default function EditGroupPage() {
         .eq("group_id", params.id)
         .order("order_index")
 
-      if (teachersError) {
+      // If the error is about missing table (Migration 009 not run yet), just skip it
+      if (teachersError && teachersError.message && !teachersError.message.includes("does not exist")) {
         console.error("[v0] Error fetching group teachers:", teachersError)
-        return
-      }
-
-      if (teachersData) {
+      } else if (teachersData) {
         setSelectedTeachers(teachersData.map((t) => t.teacher_id))
       }
     } catch (error) {
@@ -114,15 +112,18 @@ export default function EditGroupPage() {
         throw new Error(`Грешка при актуализация на групата: ${updateError.message}`)
       }
 
+      // Only try to manage teachers if the group_teachers table exists
       // Delete existing teachers
       const { error: deleteError } = await supabase.from("group_teachers").delete().eq("group_id", params.id)
-      if (deleteError) {
+      
+      // If table doesn't exist, skip teacher management (Migration 009 not run yet)
+      if (deleteError && deleteError.message && !deleteError.message.includes("does not exist")) {
         console.error("[v0] Error deleting teachers:", deleteError)
         throw new Error(`Грешка при изтриване на учители: ${deleteError.message}`)
       }
 
-      // Insert new teachers
-      if (selectedTeachers.length > 0) {
+      // Insert new teachers only if table exists
+      if (selectedTeachers.length > 0 && !deleteError?.message?.includes("does not exist")) {
         const groupTeachers = selectedTeachers.map((teacherId, index) => ({
           group_id: params.id,
           teacher_id: teacherId,
