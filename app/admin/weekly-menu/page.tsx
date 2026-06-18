@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { uploadMenuFile } from "@/app/actions/upload-menu"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { createClient } from "@/lib/supabase/client"
@@ -86,17 +87,12 @@ export default function AdminWeeklyMenuPage() {
       formData.append("file", file)
       formData.append("menuType", menuType)
 
-      console.log("[v0] Sending upload request to API")
-      const response = await fetch("/api/upload-menu", {
-        method: "POST",
-        body: formData,
-      })
+      console.log("[v0] Sending upload request to server action")
+      const result = await uploadMenuFile(formData)
 
-      const result = await response.json()
-
-      if (!response.ok) {
-        console.error("[v0] API error:", result.error)
-        throw new Error(result.error || "Upload failed")
+      if (result.error) {
+        console.error("[v0] Upload error:", result.error)
+        throw new Error(result.error)
       }
 
       console.log("[v0] File upload completed successfully")
