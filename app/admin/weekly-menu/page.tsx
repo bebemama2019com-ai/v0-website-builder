@@ -52,21 +52,31 @@ export default function AdminWeeklyMenuPage() {
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>, menuType: string) {
     const file = e.target.files?.[0]
-    if (!file) return
+    console.log("[v0] File selected:", { file: file?.name, type: file?.type, size: file?.size })
+    
+    if (!file) {
+      console.log("[v0] No file selected")
+      return
+    }
 
     // Validate PDF
     if (!file.name.endsWith(".pdf") || file.type !== "application/pdf") {
+      console.log("[v0] Invalid file type:", file.type)
       setError("Само PDF файлове са позволени")
+      e.target.value = ""
       return
     }
 
     // Validate file size (max 50MB)
     const maxSize = 50 * 1024 * 1024 // 50MB
     if (file.size > maxSize) {
+      console.log("[v0] File too large:", file.size)
       setError("Файлът е твърде голям. Максимум 50MB.")
+      e.target.value = ""
       return
     }
 
+    console.log("[v0] Starting file upload for:", menuType)
     setUploading(menuType)
     setError(null)
     setSuccess(null)
@@ -156,7 +166,15 @@ export default function AdminWeeklyMenuPage() {
         }
       }
 
+      console.log("[v0] File upload completed successfully")
       setSuccess(`Файлът за ${menuType === "kindergarten" ? "детската градина" : "яслите"} беше успешно качен`)
+      
+      // Reset file input
+      const fileInput = document.getElementById(`file-input-${menuType}`) as HTMLInputElement
+      if (fileInput) {
+        fileInput.value = ""
+      }
+      
       await fetchFiles()
     } catch (err) {
       console.error("[v0] Error uploading file:", err)
@@ -171,8 +189,10 @@ export default function AdminWeeklyMenuPage() {
         }
       }
       
+      console.log("[v0] Upload error message:", errorMsg)
       setError(`Грешка при качване на файл: ${errorMsg}`)
     } finally {
+      console.log("[v0] Upload finished, setting uploading to null")
       setUploading(null)
     }
   }
