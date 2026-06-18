@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Users } from 'lucide-react'
+import { Users, Clock, BookOpen } from 'lucide-react'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { useLanguage } from '@/lib/i18n/language-context'
@@ -29,11 +29,23 @@ interface GroupTeacher {
   team_members: Teacher
 }
 
+interface GroupSchedule {
+  id: string
+  day_of_week: number
+  time_period: string
+  activity: string
+  order_index: number
+}
+
+const DAY_NAMES_BG = ['', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък']
+const DAY_NAMES_EN = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+
 export default function GroupPage() {
   const params = useParams()
   const { language } = useLanguage()
   const [group, setGroup] = useState<Group | null>(null)
   const [teachers, setTeachers] = useState<Teacher[]>([])
+  const [schedules, setSchedules] = useState<GroupSchedule[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -97,6 +109,23 @@ export default function GroupPage() {
         const teachersList = teachersData.map((t: GroupTeacher) => t.team_members).filter(Boolean)
         setTeachers(teachersList)
       }
+
+      // Fetch schedules for this group
+      const { data: schedulesData, error: schedulesError } = await supabase
+        .from('group_schedules')
+        .select('*')
+        .eq('group_id', groupId)
+        .order('day_of_week')
+        .order('order_index')
+
+      // If schedules table doesn't exist yet, just continue without it
+      if (schedulesError && !schedulesError.message.includes('does not exist')) {
+        console.error('[v0] Error fetching schedules:', schedulesError)
+      }
+
+      if (schedulesData) {
+        setSchedules(schedulesData)
+      }
     } catch (err) {
       console.error('[v0] Error loading group:', err)
       setError(err instanceof Error ? err.message : 'Failed to load group')
@@ -104,6 +133,14 @@ export default function GroupPage() {
       setLoading(false)
     }
   }
+
+  // Group schedules by day
+  const schedulesByDay = schedules.reduce((acc, schedule) => {
+    const day = schedule.day_of_week
+    if (!acc[day]) acc[day] = []
+    acc[day].push(schedule)
+    return acc
+  }, {} as Record<number, GroupSchedule[]>)
 
   if (loading) {
     return (
@@ -142,60 +179,95 @@ export default function GroupPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-        {/* Group Header Card */}
-        <Card className="mb-12 border-primary/20 bg-primary/5">
-          <CardHeader>
-            <CardTitle className="text-4xl">{group.name}</CardTitle>
+      <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+        {/* Hero Section */}
+        <div className="bg-gradient-to-b from-blue-50 to-white py-16 px-4 sm:px-6 lg:px-8 border-b-4 border-primary">
+          <div className="max-w-4xl mx-auto text-center">
             {group.age && (
-              <CardDescription className="text-base">
-                Age Range: <span className="font-semibold text-foreground">{group.age}</span>
-              </CardDescription>
+              <div className="inline-block bg-blue-100 text-primary px-4 py-2 rounded-full mb-6">
+                <p className="text-sm font-semibold">
+                  {language === 'bg' ? 'Възраст' : 'Age'}: {group.age}
+                </p>
+              </div>
             )}
-          </CardHeader>
-          {group.description && (
-            <CardContent>
-              <p className="text-foreground leading-relaxed">{group.description}</p>
-            </CardContent>
-          )}
-        </Card>
-
-        {/* Teachers Section */}
-        {teachers.length > 0 && (
-          <div className="space-y-6">
-            <div className="flex items-center gap-2">
-              <Users className="h-6 w-6 text-primary" />
-              <h2 className="text-3xl font-bold text-foreground">{language === 'bg' ? 'Педагози' : 'Teachers'}</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {teachers.map((teacher) => (
-                <Card key={teacher.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                  <CardHeader className="bg-primary/5">
-                    <CardTitle className="text-xl">{teacher.name}</CardTitle>
-                    {teacher.role && (
-                      <CardDescription className="text-base">{teacher.role}</CardDescription>
-                    )}
-                  </CardHeader>
-                  {teacher.bio && (
-                    <CardContent className="pt-4">
-                      <p className="text-foreground leading-relaxed">{teacher.bio}</p>
-                    </CardContent>
-                  )}
-                </Card>
-              ))}
-            </div>
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4">
+              {language === 'bg' ? 'Група' : 'Group'} <span className="text-primary">{group.name}</span>
+            </h1>
+            {group.description && (
+              <p className="text-lg text-muted-foreground">{group.description}</p>
+            )}
           </div>
-        )}
+        </div>
 
-        {teachers.length === 0 && (
-          <Card className="bg-muted/50">
-            <CardContent className="pt-8 text-center">
-              <p className="text-muted-foreground">{language === 'bg' ? 'Няма назначени педагози за тази група.' : 'No teachers assigned to this group yet.'}</p>
-            </CardContent>
-          </Card>
-        )}
+        {/* Content Section */}
+        <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-12">
+          {/* Teachers Section */}
+          {teachers.length > 0 && (
+            <section>
+              <div className="flex items-center gap-3 mb-8">
+                <Users className="h-8 w-8 text-primary" />
+                <h2 className="text-3xl font-bold text-foreground">
+                  {language === 'bg' ? 'Педагози' : 'Teachers'}
+                </h2>
+              </div>
+
+              <div className="space-y-4">
+                {teachers.map((teacher) => (
+                  <Card key={teacher.id} className="overflow-hidden hover:shadow-lg transition-shadow border-l-4 border-l-primary">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-2xl text-primary">{teacher.name}</CardTitle>
+                      {teacher.role && (
+                        <CardDescription className="text-base">{teacher.role}</CardDescription>
+                      )}
+                    </CardHeader>
+                    {teacher.bio && (
+                      <CardContent>
+                        <p className="text-foreground leading-relaxed">{teacher.bio}</p>
+                      </CardContent>
+                    )}
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Schedule Section */}
+          {schedules.length > 0 && (
+            <section>
+              <div className="flex items-center gap-3 mb-8">
+                <Clock className="h-8 w-8 text-primary" />
+                <h2 className="text-3xl font-bold text-foreground">
+                  {language === 'bg' ? 'Седмична програма' : 'Weekly Program'}
+                </h2>
+              </div>
+
+              <div className="space-y-6">
+                {[1, 2, 3, 4, 5].map((dayNum) => (
+                  schedulesByDay[dayNum] && schedulesByDay[dayNum].length > 0 && (
+                    <Card key={dayNum} className="overflow-hidden">
+                      <CardHeader className="bg-primary/5">
+                        <CardTitle className="text-xl text-primary">
+                          {language === 'bg' ? DAY_NAMES_BG[dayNum] : DAY_NAMES_EN[dayNum]}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-6">
+                        <div className="space-y-4">
+                          {schedulesByDay[dayNum].map((schedule) => (
+                            <div key={schedule.id} className="flex gap-4 items-start">
+                              <Clock className="h-5 w-5 text-muted-foreground mt-1 flex-shrink-0" />
+                              <div>
+                                <p className="text-foreground font-semibold">{schedule.activity}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </main>
       <Footer />
