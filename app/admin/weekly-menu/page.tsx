@@ -44,7 +44,6 @@ export default function AdminWeeklyMenuPage() {
       if (err) throw err
       setFiles(data || [])
     } catch (err) {
-      console.error("[v0] Error fetching menu files:", err)
       setError("Грешка при зареждане на файлове")
     } finally {
       setLoading(false)
@@ -53,31 +52,24 @@ export default function AdminWeeklyMenuPage() {
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>, menuType: string) {
     const file = e.target.files?.[0]
-    console.log("[v0] File selected:", { file: file?.name, type: file?.type, size: file?.size })
     
-    if (!file) {
-      console.log("[v0] No file selected")
-      return
-    }
+    if (!file) return
 
     // Validate PDF
     if (!file.name.endsWith(".pdf") || file.type !== "application/pdf") {
-      console.log("[v0] Invalid file type:", file.type)
       setError("Само PDF файлове са позволени")
       e.target.value = ""
       return
     }
 
     // Validate file size (max 50MB)
-    const maxSize = 50 * 1024 * 1024 // 50MB
+    const maxSize = 50 * 1024 * 1024
     if (file.size > maxSize) {
-      console.log("[v0] File too large:", file.size)
       setError("Файлът е твърде голям. Максимум 50MB.")
       e.target.value = ""
       return
     }
 
-    console.log("[v0] Starting file upload for:", menuType)
     setUploading(menuType)
     setError(null)
     setSuccess(null)
@@ -87,15 +79,12 @@ export default function AdminWeeklyMenuPage() {
       formData.append("file", file)
       formData.append("menuType", menuType)
 
-      console.log("[v0] Sending upload request to server action")
       const result = await uploadMenuFile(formData)
 
       if (result.error) {
-        console.error("[v0] Upload error:", result.error)
         throw new Error(result.error)
       }
 
-      console.log("[v0] File upload completed successfully")
       setSuccess(`Файлът за ${menuType === "kindergarten" ? "детската градина" : "яслите"} беше успешно качен`)
       
       // Reset file input
@@ -106,17 +95,12 @@ export default function AdminWeeklyMenuPage() {
       
       await fetchFiles()
     } catch (err) {
-      console.error("[v0] Error uploading file:", err)
       let errorMsg = "Неизвестна грешка"
-      
       if (err instanceof Error) {
         errorMsg = err.message
       }
-      
-      console.log("[v0] Upload error message:", errorMsg)
       setError(`Грешка при качване на файл: ${errorMsg}`)
     } finally {
-      console.log("[v0] Upload finished, setting uploading to null")
       setUploading(null)
     }
   }
@@ -142,7 +126,6 @@ export default function AdminWeeklyMenuPage() {
       setSuccess("Файлът беше успешно изтрит")
       await fetchFiles()
     } catch (err) {
-      console.error("[v0] Error deleting file:", err)
       setError("Грешка при изтриване на файл")
     }
   }
