@@ -4,7 +4,7 @@ import { useLanguage } from "@/lib/i18n/language-context"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
-import { BookOpen, Palette, Music, Dumbbell } from "lucide-react"
+import { BookOpen, Palette, Music, Dumbbell, Calendar } from "lucide-react"
 
 interface Activity {
   id: string
@@ -95,6 +95,73 @@ export default function DODPage() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          {/* Organization Section */}
+          <div className="space-y-8">
+            <Card className="border-0 shadow-sm">
+              <CardContent className="pt-8 pb-8">
+                <h2 className="text-2xl font-bold text-foreground mb-8">
+                  {language === "bg" ? "Организират се" : "Getting Organized"}
+                </h2>
+                
+                <div className="grid gap-6 md:grid-cols-2">
+                  {/* Ski Schools */}
+                  <Card className="border rounded-lg hover:shadow-md transition-shadow cursor-pointer">
+                    <CardContent className="pt-6 pb-6 flex items-center gap-4">
+                      <Calendar className="h-8 w-8 text-primary flex-shrink-0" />
+                      <p className="font-semibold text-foreground">
+                        {language === "bg" ? "Ски училища" : "Ski Schools"}
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  {/* Summer Camps */}
+                  <Card className="border rounded-lg hover:shadow-md transition-shadow cursor-pointer">
+                    <CardContent className="pt-6 pb-6 flex items-center gap-4">
+                      <Calendar className="h-8 w-8 text-primary flex-shrink-0" />
+                      <p className="font-semibold text-foreground">
+                        {language === "bg" ? "Летни лагери" : "Summer Camps"}
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  {/* Day Excursions */}
+                  <Card className="border rounded-lg hover:shadow-md transition-shadow cursor-pointer">
+                    <CardContent className="pt-6 pb-6 flex items-center gap-4">
+                      <Calendar className="h-8 w-8 text-primary flex-shrink-0" />
+                      <p className="font-semibold text-foreground">
+                        {language === "bg" ? "Еднодневни екскурзии" : "Day Excursions"}
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  {/* Sports Holidays */}
+                  <Card className="border rounded-lg hover:shadow-md transition-shadow cursor-pointer">
+                    <CardContent className="pt-6 pb-6 flex items-center gap-4">
+                      <Calendar className="h-8 w-8 text-primary flex-shrink-0" />
+                      <p className="font-semibold text-foreground">
+                        {language === "bg" ? "Спортни празници" : "Sports Holidays"}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Important Notice */}
+            <Card className="border-2 border-primary bg-primary/5">
+              <CardContent className="pt-8 pb-8">
+                <h3 className="text-lg font-bold text-primary mb-4">
+                  {language === "bg" ? "Важно" : "Important"}
+                </h3>
+                <p className="text-foreground leading-relaxed">
+                  {language === "bg"
+                    ? "Участието в допълнителните дейности става по желание на родителите и се заплаща всеки месец от 1 до 10 число."
+                    : "Participation in additional activities is optional and paid monthly between the 1st and 10th of the month."}
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
