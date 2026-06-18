@@ -28,23 +28,23 @@ CREATE POLICY "Anyone can view weekly menu files"
   FOR SELECT
   USING (true);
 
--- Policy: Admins can insert
-CREATE POLICY "Admins can insert weekly menu files"
+-- Policy: Authenticated users can manage files (for admin panel access)
+CREATE POLICY "Authenticated users can manage weekly menu files"
   ON public.weekly_menu_files
   FOR INSERT
-  WITH CHECK (EXISTS (SELECT 1 FROM public.admin_users WHERE id = auth.uid()));
+  WITH CHECK (auth.uid() IS NOT NULL);
 
--- Policy: Admins can update
-CREATE POLICY "Admins can update weekly menu files"
+-- Policy: Authenticated users can update
+CREATE POLICY "Authenticated users can update weekly menu files"
   ON public.weekly_menu_files
   FOR UPDATE
-  USING (EXISTS (SELECT 1 FROM public.admin_users WHERE id = auth.uid()));
+  USING (auth.uid() IS NOT NULL);
 
--- Policy: Admins can delete
-CREATE POLICY "Admins can delete weekly menu files"
+-- Policy: Authenticated users can delete
+CREATE POLICY "Authenticated users can delete weekly menu files"
   ON public.weekly_menu_files
   FOR DELETE
-  USING (EXISTS (SELECT 1 FROM public.admin_users WHERE id = auth.uid()));
+  USING (auth.uid() IS NOT NULL);
 
 -- Create index for faster lookups
 CREATE INDEX IF NOT EXISTS weekly_menu_files_type_idx ON public.weekly_menu_files(menu_type);
