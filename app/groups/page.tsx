@@ -5,7 +5,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useLanguage } from "@/lib/i18n/language-context"
-import { Users, Loader2 } from "lucide-react"
+import { Users, Loader2, BookOpen, Palette, Music, Dumbbell } from "lucide-react"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 
@@ -192,6 +192,65 @@ export default function GroupsPage() {
               </CardContent>
             </Card>
           )}
+
+          {/* Organized Activities Section */}
+          <div className="mt-16">
+            <h2 className="mb-8 text-3xl font-bold text-foreground">
+              {language === "bg" ? "Организирани занимания" : "Organized Activities"}
+            </h2>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {/* Activity 1 */}
+              <Card className="flex flex-col overflow-hidden transition-shadow hover:shadow-lg cursor-pointer">
+                <CardContent className="flex flex-col items-center justify-center gap-4 pt-8 pb-8">
+                  <BookOpen className="h-12 w-12 text-primary" />
+                  <p className="text-center font-semibold text-foreground">
+                    {language === "bg" ? "Чужденезиково обучение – английски език" : "Foreign Language Learning - English"}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Activity 2 */}
+              <Card className="flex flex-col overflow-hidden transition-shadow hover:shadow-lg cursor-pointer">
+                <CardContent className="flex flex-col items-center justify-center gap-4 pt-8 pb-8">
+                  <Palette className="h-12 w-12 text-primary" />
+                  <p className="text-center font-semibold text-foreground">
+                    {language === "bg" ? "Приложни изкуства" : "Applied Arts"}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Activity 3 */}
+              <Card className="flex flex-col overflow-hidden transition-shadow hover:shadow-lg cursor-pointer">
+                <CardContent className="flex flex-col items-center justify-center gap-4 pt-8 pb-8">
+                  <Dumbbell className="h-12 w-12 text-primary" />
+                  <p className="text-center font-semibold text-foreground">
+                    {language === "bg" ? "Поддържни игри със топка" : "Ball Games Support"}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Activity 4 */}
+              <Card className="flex flex-col overflow-hidden transition-shadow hover:shadow-lg cursor-pointer">
+                <CardContent className="flex flex-col items-center justify-center gap-4 pt-8 pb-8">
+                  <Dumbbell className="h-12 w-12 text-primary" />
+                  <p className="text-center font-semibold text-foreground">
+                    {language === "bg" ? "Художествена гимнастика" : "Rhythmic Gymnastics"}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Activity 5 */}
+              <Card className="flex flex-col overflow-hidden transition-shadow hover:shadow-lg cursor-pointer">
+                <CardContent className="flex flex-col items-center justify-center gap-4 pt-8 pb-8">
+                  <Music className="h-12 w-12 text-primary" />
+                  <p className="text-center font-semibold text-foreground">
+                    {language === "bg" ? "Спортни и народни танци" : "Sports and Folk Dancing"}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
       <Footer />
