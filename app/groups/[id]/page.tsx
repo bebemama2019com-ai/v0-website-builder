@@ -32,19 +32,14 @@ interface GroupTeacher {
 interface GroupSchedule {
   id: string
   day_of_week: number
-  time_period: string
+  start_time: string
+  end_time: string
   activity: string
   order_index: number
 }
 
 const DAY_NAMES_BG = ['', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък']
 const DAY_NAMES_EN = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-
-// Time period display mapping
-const TIME_PERIOD_DISPLAY = {
-  morning: 'Сутрин (09:00 - 12:00)',
-  afternoon: 'Следобед (12:00 - 16:00)',
-}
 
 // Map activity keywords to icons for display
 const getActivityIcon = (activity: string) => {
@@ -131,7 +126,7 @@ export default function GroupPage() {
         .select('*')
         .eq('group_id', groupId)
         .order('day_of_week')
-        .order('order_index')
+        .order('start_time')
 
       // If schedules table doesn't exist yet, just continue without it
       if (schedulesError && !schedulesError.message.includes('does not exist')) {
@@ -266,30 +261,16 @@ export default function GroupPage() {
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="pt-6">
-                        <div className="space-y-6">
-                          {['morning', 'afternoon'].map((period) => {
-                            const periodActivities = schedulesByDay[dayNum].filter(
-                              (s) => s.time_period === period
-                            )
-                            
-                            if (periodActivities.length === 0) return null
-                            
-                            return (
-                              <div key={period} className="border-l-4 border-l-primary pl-4">
-                                <h4 className="font-semibold text-primary mb-3">
-                                  {TIME_PERIOD_DISPLAY[period as keyof typeof TIME_PERIOD_DISPLAY]}
-                                </h4>
-                                <div className="space-y-2">
-                                  {periodActivities.map((schedule) => (
-                                    <div key={schedule.id} className="flex gap-3 items-start">
-                                      <Clock className="h-4 w-4 text-muted-foreground mt-1 flex-shrink-0" />
-                                      <p className="text-foreground">{schedule.activity}</p>
-                                    </div>
-                                  ))}
-                                </div>
+                        <div className="space-y-3">
+                          {schedulesByDay[dayNum].map((schedule) => (
+                            <div key={schedule.id} className="flex gap-3 items-start border-l-4 border-l-primary pl-4 py-2">
+                              <Clock className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                              <div>
+                                <p className="text-sm font-semibold text-primary">{schedule.start_time} - {schedule.end_time}</p>
+                                <p className="text-foreground">{schedule.activity}</p>
                               </div>
-                            )
-                          })}
+                            </div>
+                          ))}
                         </div>
                       </CardContent>
                     </Card>
