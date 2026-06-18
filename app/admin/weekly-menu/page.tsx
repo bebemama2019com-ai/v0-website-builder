@@ -60,38 +60,53 @@ export default function AdminWeeklyMenuPage() {
       return
     }
 
+    // Validate file size (max 50MB)
+    const maxSize = 50 * 1024 * 1024 // 50MB
+    if (file.size > maxSize) {
+      setError("Файлът е твърде голям. Максимум 50MB.")
+      return
+    }
+
     setUploading(menuType)
     setError(null)
     setSuccess(null)
 
     try {
       // Get existing file to delete
-      const { data: existingFile } = await supabase
+      const { data: existingFile, error: fetchErr } = await supabase
         .from("weekly_menu_files")
         .select("file_url")
         .eq("menu_type", menuType)
-        .single()
+
+      console.log("[v0] Existing files query:", { existingFile, fetchErr })
 
       // Delete old file from storage if it exists
-      if (existingFile?.file_url) {
-        const oldPath = existingFile.file_url.split("/").pop()
+      if (existingFile && existingFile.length > 0 && existingFile[0]?.file_url) {
+        const oldPath = existingFile[0].file_url.split("/").pop()
         if (oldPath) {
+          console.log("[v0] Deleting old file:", oldPath)
           await supabase.storage.from("menu-files").remove([oldPath])
         }
       }
 
       // Upload new file
       const fileName = `${menuType}-${Date.now()}.pdf`
+      console.log("[v0] Uploading file:", fileName)
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("menu-files")
         .upload(fileName, file)
 
-      if (uploadError) throw uploadError
+      if (uploadError) {
+        console.error("[v0] Upload error:", uploadError)
+        throw uploadError
+      }
 
+      console.log("[v0] Upload successful:", uploadData)
       const { data: publicUrl } = supabase.storage.from("menu-files").getPublicUrl(fileName)
 
       // Update or insert database record
-      if (existingFile?.file_url) {
+      if (existingFile && existingFile.length > 0) {
+        console.log("[v0] Updating existing record")
         const { error: updateError } = await supabase
           .from("weekly_menu_files")
           .update({
@@ -101,8 +116,12 @@ export default function AdminWeeklyMenuPage() {
           })
           .eq("menu_type", menuType)
 
-        if (updateError) throw updateError
+        if (updateError) {
+          console.error("[v0] Update error:", updateError)
+          throw updateError
+        }
       } else {
+        console.log("[v0] Inserting new record")
         const { error: insertError } = await supabase.from("weekly_menu_files").insert({
           menu_type: menuType,
           file_name: file.name,
@@ -110,14 +129,18 @@ export default function AdminWeeklyMenuPage() {
           file_size: file.size,
         })
 
-        if (insertError) throw insertError
+        if (insertError) {
+          console.error("[v0] Insert error:", insertError)
+          throw insertError
+        }
       }
 
       setSuccess(`Файлът за ${menuType === "kindergarten" ? "детската градина" : "яслите"} беше успешно качен`)
       await fetchFiles()
     } catch (err) {
       console.error("[v0] Error uploading file:", err)
-      setError("Грешка при качване на файл. Моля, опитайте отново.")
+      const errorMsg = err instanceof Error ? err.message : "Неизвестна грешка"
+      setError(`Грешка при качване на файл: ${errorMsg}`)
     } finally {
       setUploading(null)
     }
