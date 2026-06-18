@@ -23,14 +23,31 @@ interface ScheduleItem {
 }
 
 const DAYS = ["Понеделник", "Вторник", "Сряда", "Четвъртък", "Петък"]
-const TIME_PERIODS = { morning: "Сутрин", afternoon: "Следобед" }
+
+// Generate time periods from 09:00 to 16:00 in 30-minute intervals
+const TIME_PERIODS = [
+  "09:00 - 09:30",
+  "09:30 - 10:00",
+  "10:00 - 10:30",
+  "10:30 - 11:00",
+  "11:00 - 11:30",
+  "11:30 - 12:00",
+  "12:00 - 12:30",
+  "12:30 - 13:00",
+  "13:00 - 13:30",
+  "13:30 - 14:00",
+  "14:00 - 14:30",
+  "14:30 - 15:00",
+  "15:00 - 15:30",
+  "15:30 - 16:00",
+]
 
 export default function GroupSchedulePage() {
   const [group, setGroup] = useState<Group | null>(null)
   const [schedules, setSchedules] = useState<ScheduleItem[]>([])
   const [newActivity, setNewActivity] = useState("")
   const [selectedDay, setSelectedDay] = useState(1)
-  const [selectedPeriod, setSelectedPeriod] = useState<"morning" | "afternoon">("morning")
+  const [selectedPeriod, setSelectedPeriod] = useState(TIME_PERIODS[0])
   const params = useParams()
   const supabase = createClient()
 
@@ -153,11 +170,14 @@ export default function GroupSchedulePage() {
             </select>
             <select
               value={selectedPeriod}
-              onChange={(e) => setSelectedPeriod(e.target.value as "morning" | "afternoon")}
+              onChange={(e) => setSelectedPeriod(e.target.value)}
               className="border rounded px-3 py-2"
             >
-              <option value="morning">Сутрин</option>
-              <option value="afternoon">Следобед</option>
+              {TIME_PERIODS.map((period) => (
+                <option key={period} value={period}>
+                  {period}
+                </option>
+              ))}
             </select>
             <Input
               value={newActivity}
@@ -180,10 +200,10 @@ export default function GroupSchedulePage() {
               <CardTitle>{day}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-2 gap-6">
-                {(["morning", "afternoon"] as const).map((period) => (
-                  <div key={period}>
-                    <h3 className="font-semibold mb-3">{TIME_PERIODS[period]}</h3>
+              <div className="space-y-4">
+                {TIME_PERIODS.map((period) => (
+                  <div key={period} className="border rounded p-4">
+                    <h3 className="font-semibold mb-3 text-primary">{period}</h3>
                     <div className="space-y-2">
                       {getScheduleForDay(dayIndex + 1, period).map((item) => (
                         <div key={item.id} className="flex items-center justify-between p-2 bg-muted rounded">
