@@ -139,7 +139,17 @@ export default function AdminWeeklyMenuPage() {
       await fetchFiles()
     } catch (err) {
       console.error("[v0] Error uploading file:", err)
-      const errorMsg = err instanceof Error ? err.message : "Неизвестна грешка"
+      let errorMsg = "Неизвестна грешка"
+      
+      if (err instanceof Error) {
+        errorMsg = err.message
+        
+        // Provide helpful message for bucket not found
+        if (errorMsg.includes("Bucket not found") || errorMsg.includes("bucket_id")) {
+          errorMsg = "Хранилището 'menu-files' не е конфигурирано. Вижте STORAGE_SETUP.md за инструкции за настройка."
+        }
+      }
+      
       setError(`Грешка при качване на файл: ${errorMsg}`)
     } finally {
       setUploading(null)
