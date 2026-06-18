@@ -159,22 +159,30 @@ export default function GroupSchedulePage() {
       const groupId = Array.isArray(params.id) ? params.id[0] : params.id
       const period = TIME_PERIODS_MAP[selectedPeriod as keyof typeof TIME_PERIODS_MAP]
       
-      const { error } = await supabase.from("group_schedules").insert({
+      console.log("[v0] Adding activity:", { groupId, selectedDay, period, newActivity })
+
+      const { error, data } = await supabase.from("group_schedules").insert({
         group_id: groupId,
         day_of_week: selectedDay,
         start_time: period.start_time,
         end_time: period.end_time,
         activity: newActivity,
         order_index: schedules.filter((s) => s.day_of_week === selectedDay && s.start_time === period.start_time).length,
-      })
+      }).select()
 
-      if (error) throw error
+      console.log("[v0] Insert response:", { error, data })
+
+      if (error) {
+        console.error("[v0] Insert error:", error)
+        throw error
+      }
       
+      console.log("[v0] Activity added successfully, refreshing list")
       setNewActivity("")
-      fetchSchedules()
+      await fetchSchedules()
     } catch (error) {
-      console.error("Грешка при добавяне:", error)
-      alert("Грешка при добавяне на дейност")
+      console.error("[v0] Грешка при добавяне:", error)
+      alert(`Грешка при добавяне на дейност: ${error instanceof Error ? error.message : "Unknown error"}`)
     }
   }
 
@@ -251,37 +259,54 @@ export default function GroupSchedulePage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-6">
-        {DAYS.map((day, dayIndex) => (
-          <Card key={dayIndex}>
-            <CardHeader>
-              <CardTitle>{day}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {Object.entries(TIME_PERIODS_MAP).map(([key, period]) => (
-                  <div key={key} className="border rounded p-4">
-                    <h3 className="font-semibold mb-3 text-primary">{period.label}</h3>
-                    <div className="space-y-2">
-                      {getScheduleForDay(dayIndex + 1, key).map((item) => (
-                        <div key={item.id} className="flex items-center justify-between p-2 bg-muted rounded">
-                          <span>{item.activity}</span>
-                          <Button variant="ghost" size="sm" onClick={() => deleteActivity(item.id)}>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+      {/* Display added activities grouped by day */}
+      {schedules.length > 0 ? (
+        <div className="grid gap-6">
+          {DAYS.map((day, dayIndex) => {
+            const dayActivities = schedules.filter((s) => s.day_of_week === dayIndex + 1)
+            if (dayActivities.length === 0) return null
+            
+            return (
+              <Card key={dayIndex}>
+                <CardHeader>
+                  <CardTitle>{day}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {dayActivities
+                      .sort((a, b) => a.start_time.localeCompare(b.start_time))
+                      .map((schedule) => (
+                        <div key={schedule.id} className="flex items-center justify-between p-4 bg-muted rounded-lg border border-border hover:border-primary transition-colors">
+                          <div className="flex-1">
+                            <p className="font-semibold text-primary">{schedule.start_time} - {schedule.end_time}</p>
+                            <p className="text-foreground">{schedule.activity}</p>
+                          </div>
+                          <div className="flex gap-2 ml-4">
+                            <Button variant="ghost" size="sm" onClick={() => {
+                              // TODO: Implement edit functionality
+                              console.log("[v0] Edit clicked for:", schedule.id)
+                            }}>
+                              ✏️
+                            </Button>
+                            <Button variant="ghost" size="sm" onClick={() => deleteActivity(schedule.id)}>
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       ))}
-                      {getScheduleForDay(dayIndex + 1, key).length === 0 && (
-                        <p className="text-sm text-muted-foreground">Няма дейности</p>
-                      )}
-                    </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+      ) : (
+        <Card className="bg-muted/50 border-dashed">
+          <CardContent className="pt-8 text-center">
+            <p className="text-muted-foreground">Няма добавени дейности. Добави дейност с формата по-горе.</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }
