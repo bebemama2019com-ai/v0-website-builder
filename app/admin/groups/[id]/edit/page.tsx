@@ -35,8 +35,13 @@ export default function EditGroupPage() {
 
   useEffect(() => {
     fetchTeamMembers()
-    fetchGroup()
   }, [])
+
+  useEffect(() => {
+    if (params.id) {
+      fetchGroup()
+    }
+  }, [params.id])
 
   async function fetchTeamMembers() {
     try {
@@ -53,7 +58,13 @@ export default function EditGroupPage() {
 
   async function fetchGroup() {
     try {
-      const { data, error } = await supabase.from("groups").select("*").eq("id", params.id).single()
+      const id = Array.isArray(params.id) ? params.id[0] : params.id
+      if (!id) {
+        console.error("[v0] No group ID provided")
+        return
+      }
+
+      const { data, error } = await supabase.from("groups").select("*").eq("id", id).single()
 
       if (error) {
         console.error("[v0] Error fetching group:", error)
@@ -71,7 +82,7 @@ export default function EditGroupPage() {
       const { data: teachersData, error: teachersError } = await supabase
         .from("group_teachers")
         .select("teacher_id")
-        .eq("group_id", params.id)
+        .eq("group_id", id)
         .order("order_index")
 
       // If the error is about missing table (Migration 009 not run yet), just skip it
@@ -96,6 +107,11 @@ export default function EditGroupPage() {
     setLoading(true)
 
     try {
+      const id = Array.isArray(params.id) ? params.id[0] : params.id
+      if (!id) {
+        throw new Error("No group ID provided")
+      }
+
       // Update group
       const { error: updateError } = await supabase
         .from("groups")
@@ -105,7 +121,7 @@ export default function EditGroupPage() {
           age: age || null,
           order_index: Number.parseInt(orderIndex),
         })
-        .eq("id", params.id)
+        .eq("id", id)
 
       if (updateError) {
         console.error("[v0] Error updating group:", updateError)
@@ -114,7 +130,7 @@ export default function EditGroupPage() {
 
       // Only try to manage teachers if the group_teachers table exists
       // Delete existing teachers
-      const { error: deleteError } = await supabase.from("group_teachers").delete().eq("group_id", params.id)
+      const { error: deleteError } = await supabase.from("group_teachers").delete().eq("group_id", id)
       
       // If table doesn't exist, skip teacher management (Migration 009 not run yet)
       if (deleteError && deleteError.message && !deleteError.message.includes("does not exist")) {
@@ -125,7 +141,7 @@ export default function EditGroupPage() {
       // Insert new teachers only if table exists
       if (selectedTeachers.length > 0 && !deleteError?.message?.includes("does not exist")) {
         const groupTeachers = selectedTeachers.map((teacherId, index) => ({
-          group_id: params.id,
+          group_id: id,
           teacher_id: teacherId,
           order_index: index,
         }))
