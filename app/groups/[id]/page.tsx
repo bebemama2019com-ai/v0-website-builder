@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Users } from 'lucide-react'
 
 interface Group {
   id: string
@@ -121,10 +123,12 @@ export default function GroupPage() {
     return (
       <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-6 text-center">
-            <h1 className="text-2xl font-bold text-foreground mb-2">Group Not Found</h1>
-            <p className="text-muted-foreground">{error || 'The group you are looking for does not exist.'}</p>
-          </div>
+          <Card className="border-destructive/20 bg-destructive/5">
+            <CardHeader>
+              <CardTitle>Group Not Found</CardTitle>
+              <CardDescription>{error || 'The group you are looking for does not exist.'}</CardDescription>
+            </CardHeader>
+          </Card>
         </div>
       </div>
     )
@@ -132,47 +136,58 @@ export default function GroupPage() {
 
   return (
     <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        {/* Group Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-foreground mb-2">{group.name}</h1>
-          {group.age && (
-            <p className="text-lg text-muted-foreground mb-4">
-              Age: <span className="font-semibold">{group.age}</span>
-            </p>
-          )}
+      <div className="max-w-4xl mx-auto">
+        {/* Group Header Card */}
+        <Card className="mb-12 border-primary/20 bg-primary/5">
+          <CardHeader>
+            <CardTitle className="text-4xl">{group.name}</CardTitle>
+            {group.age && (
+              <CardDescription className="text-base">
+                Age Range: <span className="font-semibold text-foreground">{group.age}</span>
+              </CardDescription>
+            )}
+          </CardHeader>
           {group.description && (
-            <p className="text-base text-foreground leading-relaxed">{group.description}</p>
+            <CardContent>
+              <p className="text-foreground leading-relaxed">{group.description}</p>
+            </CardContent>
           )}
-        </div>
+        </Card>
 
         {/* Teachers Section */}
         {teachers.length > 0 && (
-          <div>
-            <h2 className="text-2xl font-bold text-foreground mb-6">Teachers</h2>
+          <div className="space-y-6">
+            <div className="flex items-center gap-2">
+              <Users className="h-6 w-6 text-primary" />
+              <h2 className="text-3xl font-bold text-foreground">Teachers</h2>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {teachers.map((teacher) => (
-                <div
-                  key={teacher.id}
-                  className="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-shadow"
-                >
-                  <h3 className="text-xl font-semibold text-foreground mb-1">{teacher.name}</h3>
-                  {teacher.role && (
-                    <p className="text-sm text-muted-foreground mb-3">{teacher.role}</p>
-                  )}
+                <Card key={teacher.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <CardHeader className="bg-primary/5">
+                    <CardTitle className="text-xl">{teacher.name}</CardTitle>
+                    {teacher.role && (
+                      <CardDescription className="text-base">{teacher.role}</CardDescription>
+                    )}
+                  </CardHeader>
                   {teacher.bio && (
-                    <p className="text-sm text-foreground leading-relaxed">{teacher.bio}</p>
+                    <CardContent className="pt-4">
+                      <p className="text-foreground leading-relaxed">{teacher.bio}</p>
+                    </CardContent>
                   )}
-                </div>
+                </Card>
               ))}
             </div>
           </div>
         )}
 
         {teachers.length === 0 && (
-          <div className="bg-muted/50 border border-border rounded-lg p-8 text-center">
-            <p className="text-muted-foreground">No teachers assigned to this group yet.</p>
-          </div>
+          <Card className="bg-muted/50">
+            <CardContent className="pt-8 text-center">
+              <p className="text-muted-foreground">No teachers assigned to this group yet.</p>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>
