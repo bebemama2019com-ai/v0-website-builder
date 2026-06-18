@@ -132,44 +132,51 @@ export default function GroupsPage() {
           {!loading && !error && groups.length > 0 && (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {groups.map((group) => (
-                <Card key={group.id} className="flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
-                  <CardHeader className="bg-primary/5">
-                    <CardTitle className="text-2xl">{group.name}</CardTitle>
-                    {group.age && <CardDescription>{group.age}</CardDescription>}
-                  </CardHeader>
+                <Link key={group.id} href={`/groups/${group.id}`}>
+                  <Card className="flex flex-col overflow-hidden transition-shadow hover:shadow-lg cursor-pointer h-full">
+                    <CardHeader className="bg-primary/5">
+                      <CardTitle className="text-2xl">{group.name}</CardTitle>
+                      {group.age && <CardDescription>{group.age}</CardDescription>}
+                    </CardHeader>
 
-                  <CardContent className="flex flex-1 flex-col gap-4 pt-6">
-                    {/* Description */}
-                    {group.description && (
-                      <p className="text-sm text-muted-foreground leading-relaxed">{group.description}</p>
-                    )}
-
-                    {/* Teachers */}
-                    <div className="flex-1">
-                      <h3 className="mb-3 flex items-center gap-2 font-semibold">
-                        <Users className="h-4 w-4" />
-                        {language === "bg" ? "Педагози" : "Teachers"}
-                      </h3>
-
-                      {group.group_teachers && group.group_teachers.length > 0 ? (
-                        <ul className="space-y-2">
-                          {group.group_teachers.map((gt) => (
-                            <li key={gt.teacher_id} className="text-sm text-foreground">
-                              {gt.team_members?.name || "Unknown"}
-                              {gt.team_members?.role && (
-                                <div className="text-xs text-muted-foreground">{gt.team_members.role}</div>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-xs text-muted-foreground">
-                          {language === "bg" ? "Няма назначени педагози" : "No teachers assigned"}
-                        </p>
+                    <CardContent className="flex flex-1 flex-col gap-4 pt-6">
+                      {/* Description */}
+                      {group.description && (
+                        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{group.description}</p>
                       )}
-                    </div>
-                  </CardContent>
-                </Card>
+
+                      {/* Teachers */}
+                      <div className="flex-1">
+                        <h3 className="mb-3 flex items-center gap-2 font-semibold">
+                          <Users className="h-4 w-4" />
+                          {language === "bg" ? "Педагози" : "Teachers"}
+                        </h3>
+
+                        {group.group_teachers && group.group_teachers.length > 0 ? (
+                          <ul className="space-y-2">
+                            {group.group_teachers.slice(0, 2).map((gt) => (
+                              <li key={gt.teacher_id} className="text-sm text-foreground">
+                                {gt.team_members?.name || "Unknown"}
+                                {gt.team_members?.role && (
+                                  <div className="text-xs text-muted-foreground">{gt.team_members.role}</div>
+                                )}
+                              </li>
+                            ))}
+                            {group.group_teachers.length > 2 && (
+                              <li className="text-xs text-muted-foreground italic">
+                                +{group.group_teachers.length - 2} {language === "bg" ? "друго" : "more"}
+                              </li>
+                            )}
+                          </ul>
+                        ) : (
+                          <p className="text-xs text-muted-foreground">
+                            {language === "bg" ? "Няма назначени педагози" : "No teachers assigned"}
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
           )}
