@@ -38,10 +38,16 @@ export function Header() {
     }
   }
 
-  const groupsDropdown = groups.map((group) => ({
-    name: group.name,
-    href: `/groups/${group.id}`,
-  }))
+  const groupsDropdown = [
+    ...groups.map((group) => ({
+      name: group.name,
+      href: `/groups/${group.id}`,
+    })),
+    {
+      name: "ДОД",
+      href: "/dod",
+    },
+  ]
 
   const navigation = [
     { name: t.nav.about, href: "/about" },
