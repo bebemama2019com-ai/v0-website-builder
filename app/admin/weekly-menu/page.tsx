@@ -102,7 +102,28 @@ export default function AdminWeeklyMenuPage() {
       }
 
       console.log("[v0] Upload successful:", uploadData)
-      const { data: publicUrl } = supabase.storage.from("menu-files").getPublicUrl(fileName)
+      const { data: publicUrlData } = supabase.storage.from("menu-files").getPublicUrl(fileName)
+      
+      console.log("[v0] Public URL data:", publicUrlData)
+      
+      // Handle different possible response structures
+      let fileUrl = ""
+      if (publicUrlData?.publicUrl) {
+        fileUrl = publicUrlData.publicUrl
+      } else if (typeof publicUrlData === "string") {
+        fileUrl = publicUrlData
+      } else if (publicUrlData?.path) {
+        // Construct URL manually if needed
+        const bucketName = "menu-files"
+        const projectId = process.env.NEXT_PUBLIC_SUPABASE_URL?.split(".")[0].split("//")[1]
+        fileUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucketName}/${fileName}`
+      }
+      
+      console.log("[v0] Final file URL:", fileUrl)
+      
+      if (!fileUrl) {
+        throw new Error("না তৈরি করতে পারেনি পাবলিক URL। অনুগ্রহ করুন ফাইল আপলোড বাকেট কনফিগারেশন পরীক্ষা করুন।")
+      }
 
       // Update or insert database record
       if (existingFile && existingFile.length > 0) {
@@ -111,7 +132,7 @@ export default function AdminWeeklyMenuPage() {
           .from("weekly_menu_files")
           .update({
             file_name: file.name,
-            file_url: publicUrl.publicUrl,
+            file_url: fileUrl,
             file_size: file.size,
           })
           .eq("menu_type", menuType)
@@ -125,7 +146,7 @@ export default function AdminWeeklyMenuPage() {
         const { error: insertError } = await supabase.from("weekly_menu_files").insert({
           menu_type: menuType,
           file_name: file.name,
-          file_url: publicUrl.publicUrl,
+          file_url: fileUrl,
           file_size: file.size,
         })
 
