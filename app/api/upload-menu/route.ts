@@ -3,11 +3,15 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
+    console.log("[v0] API request received")
     const formData = await request.formData()
     const file = formData.get("file") as File
     const menuType = formData.get("menuType") as string
 
+    console.log("[v0] Form data:", { file: file?.name, menuType, fileSize: file?.size })
+
     if (!file || !menuType) {
+      console.error("[v0] Missing required fields:", { file: !!file, menuType: !!menuType })
       return NextResponse.json(
         { error: "File and menuType are required" },
         { status: 400 }
