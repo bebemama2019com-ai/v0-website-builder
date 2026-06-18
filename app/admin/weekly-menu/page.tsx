@@ -82,88 +82,21 @@ export default function AdminWeeklyMenuPage() {
     setSuccess(null)
 
     try {
-      // Get existing file to delete
-      const { data: existingFile, error: fetchErr } = await supabase
-        .from("weekly_menu_files")
-        .select("file_url")
-        .eq("menu_type", menuType)
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("menuType", menuType)
 
-      console.log("[v0] Existing files query:", { existingFile, fetchErr })
+      console.log("[v0] Sending upload request to API")
+      const response = await fetch("/api/upload-menu", {
+        method: "POST",
+        body: formData,
+      })
 
-      // Delete old file from storage if it exists
-      if (existingFile && existingFile.length > 0 && existingFile[0]?.file_url) {
-        const oldPath = existingFile[0].file_url.split("/").pop()
-        if (oldPath) {
-          console.log("[v0] Deleting old file:", oldPath)
-          await supabase.storage.from("menu-files").remove([oldPath])
-        }
-      }
+      const result = await response.json()
 
-      // Upload new file
-      const fileName = `${menuType}-${Date.now()}.pdf`
-      console.log("[v0] Uploading file:", fileName)
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("menu-files")
-        .upload(fileName, file)
-
-      if (uploadError) {
-        console.error("[v0] Upload error:", uploadError)
-        throw uploadError
-      }
-
-      console.log("[v0] Upload successful:", uploadData)
-      const { data: publicUrlData } = supabase.storage.from("menu-files").getPublicUrl(fileName)
-      
-      console.log("[v0] Public URL data:", publicUrlData)
-      
-      // Handle different possible response structures
-      let fileUrl = ""
-      if (publicUrlData?.publicUrl) {
-        fileUrl = publicUrlData.publicUrl
-      } else if (typeof publicUrlData === "string") {
-        fileUrl = publicUrlData
-      } else if (publicUrlData?.path) {
-        // Construct URL manually if needed
-        const bucketName = "menu-files"
-        const projectId = process.env.NEXT_PUBLIC_SUPABASE_URL?.split(".")[0].split("//")[1]
-        fileUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucketName}/${fileName}`
-      }
-      
-      console.log("[v0] Final file URL:", fileUrl)
-      
-      if (!fileUrl) {
-        throw new Error("না তৈরি করতে পারেনি পাবলিক URL। অনুগ্রহ করুন ফাইল আপলোড বাকেট কনফিগারেশন পরীক্ষা করুন।")
-      }
-
-      // Update or insert database record
-      if (existingFile && existingFile.length > 0) {
-        console.log("[v0] Updating existing record")
-        const { error: updateError } = await supabase
-          .from("weekly_menu_files")
-          .update({
-            file_name: file.name,
-            file_url: fileUrl,
-            file_size: file.size,
-          })
-          .eq("menu_type", menuType)
-
-        if (updateError) {
-          console.error("[v0] Update error:", updateError)
-          throw updateError
-        }
-      } else {
-        console.log("[v0] Inserting new record")
-        const { error: insertError } = await supabase.from("weekly_menu_files").insert({
-          menu_type: menuType,
-          file_name: file.name,
-          file_url: fileUrl,
-          file_size: file.size,
-        })
-
-        if (insertError) {
-          console.error("[v0] Insert error:", insertError)
-          throw insertError
-        }
+      if (!response.ok) {
+        console.error("[v0] API error:", result.error)
+        throw new Error(result.error || "Upload failed")
       }
 
       console.log("[v0] File upload completed successfully")
@@ -182,11 +115,6 @@ export default function AdminWeeklyMenuPage() {
       
       if (err instanceof Error) {
         errorMsg = err.message
-        
-        // Provide helpful message for bucket not found
-        if (errorMsg.includes("Bucket not found") || errorMsg.includes("bucket_id")) {
-          errorMsg = "Хранилището 'menu-files' не е конфигурирано. Вижте STORAGE_SETUP.md за инструкции за настройка."
-        }
       }
       
       console.log("[v0] Upload error message:", errorMsg)
