@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Users, Clock, BookOpen } from 'lucide-react'
+import { Users, Clock, BookOpen, Palette, Music, Utensils } from 'lucide-react'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { useLanguage } from '@/lib/i18n/language-context'
@@ -39,6 +39,15 @@ interface GroupSchedule {
 
 const DAY_NAMES_BG = ['', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък']
 const DAY_NAMES_EN = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+
+// Map activity keywords to icons for display
+const getActivityIcon = (activity: string) => {
+  const lower = activity.toLowerCase()
+  if (lower.includes('музика') || lower.includes('музикал') || lower.includes('песни')) return <Music className="h-12 w-12" />
+  if (lower.includes('творч') || lower.includes('рисуване') || lower.includes('изкуство')) return <Palette className="h-12 w-12" />
+  if (lower.includes('хранене') || lower.includes('обед') || lower.includes('закуска')) return <Utensils className="h-12 w-12" />
+  return <BookOpen className="h-12 w-12" />
+}
 
 export default function GroupPage() {
   const params = useParams()
@@ -266,6 +275,33 @@ export default function GroupPage() {
                   )
                 ))}
               </div>
+            </section>
+          )}
+
+          {/* Activities Section */}
+          {schedules.length > 0 && (
+            <section>
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold text-foreground">
+                  {language === 'bg' ? 'Основни дейности' : 'Main Activities'}
+                </h2>
+              </div>
+
+              {(() => {
+                // Extract unique activities from all schedules
+                const uniqueActivities = Array.from(new Set(schedules.map((s) => s.activity))).sort()
+
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {uniqueActivities.map((activity) => (
+                      <Card key={activity} className="overflow-hidden hover:shadow-lg transition-shadow flex flex-col items-center text-center p-8 bg-gradient-to-br from-blue-50 to-white border-0">
+                        <div className="text-primary mb-4">{getActivityIcon(activity)}</div>
+                        <CardTitle className="text-lg">{activity}</CardTitle>
+                      </Card>
+                    ))}
+                  </div>
+                )
+              })()}
             </section>
           )}
         </div>
