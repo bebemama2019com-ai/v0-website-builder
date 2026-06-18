@@ -99,19 +99,30 @@ export default function GroupSchedulePage() {
     try {
       const groupId = Array.isArray(params.id) ? params.id[0] : params.id
       
-      const { error } = await supabase.from("group_schedules").insert({
+      console.log("[v0] Adding activity:", {
+        group_id: groupId,
+        day_of_week: selectedDay,
+        time_period: selectedPeriod,
+        activity: newActivity,
+      })
+
+      // Create the insert object with explicit typing
+      const insertData = {
         group_id: groupId,
         day_of_week: selectedDay,
         time_period: selectedPeriod,
         activity: newActivity,
         order_index: schedules.filter((s) => s.day_of_week === selectedDay && s.time_period === selectedPeriod).length,
-      })
+      }
+
+      const { error, data } = await supabase.from("group_schedules").insert([insertData]).select()
 
       if (error) {
-        console.error("[v0] Error adding activity:", error)
+        console.error("[v0] Error adding activity - Full error:", error)
         throw new Error(`${error.message || "Failed to add activity"}`)
       }
       
+      console.log("[v0] Activity added successfully:", data)
       setNewActivity("")
       await fetchSchedules()
     } catch (error) {
