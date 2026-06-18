@@ -5,6 +5,9 @@ import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Users } from 'lucide-react'
+import { Header } from '@/components/header'
+import { Footer } from '@/components/footer'
+import { useLanguage } from '@/lib/i18n/language-context'
 
 interface Group {
   id: string
@@ -28,6 +31,7 @@ interface GroupTeacher {
 
 export default function GroupPage() {
   const params = useParams()
+  const { language } = useLanguage()
   const [group, setGroup] = useState<Group | null>(null)
   const [teachers, setTeachers] = useState<Teacher[]>([])
   const [loading, setLoading] = useState(true)
@@ -103,33 +107,43 @@ export default function GroupPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-          <p className="text-muted-foreground">Loading group...</p>
-        </div>
-      </div>
+      <>
+        <Header />
+        <main className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+            <p className="text-muted-foreground">{language === 'bg' ? 'Зареждане на групата...' : 'Loading group...'}</p>
+          </div>
+        </main>
+        <Footer />
+      </>
     )
   }
 
   if (error || !group) {
     return (
-      <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
-          <Card className="border-destructive/20 bg-destructive/5">
-            <CardHeader>
-              <CardTitle>Group Not Found</CardTitle>
-              <CardDescription>{error || 'The group you are looking for does not exist.'}</CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-      </div>
+      <>
+        <Header />
+        <main className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto">
+            <Card className="border-destructive/20 bg-destructive/5">
+              <CardHeader>
+                <CardTitle>{language === 'bg' ? 'Групата не е намерена' : 'Group Not Found'}</CardTitle>
+                <CardDescription>{error || (language === 'bg' ? 'Групата, която търсите, не съществува.' : 'The group you are looking for does not exist.')}</CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </main>
+        <Footer />
+      </>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+    <>
+      <Header />
+      <main className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
         {/* Group Header Card */}
         <Card className="mb-12 border-primary/20 bg-primary/5">
           <CardHeader>
@@ -152,7 +166,7 @@ export default function GroupPage() {
           <div className="space-y-6">
             <div className="flex items-center gap-2">
               <Users className="h-6 w-6 text-primary" />
-              <h2 className="text-3xl font-bold text-foreground">Teachers</h2>
+              <h2 className="text-3xl font-bold text-foreground">{language === 'bg' ? 'Педагози' : 'Teachers'}</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -178,11 +192,13 @@ export default function GroupPage() {
         {teachers.length === 0 && (
           <Card className="bg-muted/50">
             <CardContent className="pt-8 text-center">
-              <p className="text-muted-foreground">No teachers assigned to this group yet.</p>
+              <p className="text-muted-foreground">{language === 'bg' ? 'Няма назначени педагози за тази група.' : 'No teachers assigned to this group yet.'}</p>
             </CardContent>
           </Card>
         )}
-      </div>
-    </div>
+        </div>
+      </main>
+      <Footer />
+    </>
   )
 }
