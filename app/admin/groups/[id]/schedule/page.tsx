@@ -24,30 +24,28 @@ interface ScheduleItem {
 
 const DAYS = ["Понеделник", "Вторник", "Сряда", "Четвъртък", "Петък"]
 
-// Generate time periods from 09:00 to 16:00 in 30-minute intervals
-const TIME_PERIODS = [
-  "09:00 - 09:30",
-  "09:30 - 10:00",
-  "10:00 - 10:30",
-  "10:30 - 11:00",
-  "11:00 - 11:30",
-  "11:30 - 12:00",
-  "12:00 - 12:30",
-  "12:30 - 13:00",
-  "13:00 - 13:30",
-  "13:30 - 14:00",
-  "14:00 - 14:30",
-  "14:30 - 15:00",
-  "15:00 - 15:30",
-  "15:30 - 16:00",
-]
+// Time period mapping - database stores 'morning'/'afternoon' but we display ranges
+const TIME_PERIODS_MAP = {
+  morning: {
+    label: "Сутрин (Утро)",
+    displayName: "09:00 - 12:00",
+    dbValue: "morning",
+  },
+  afternoon: {
+    label: "Следобед",
+    displayName: "12:00 - 16:00",
+    dbValue: "afternoon",
+  },
+}
+
+const TIME_PERIODS = Object.values(TIME_PERIODS_MAP)
 
 export default function GroupSchedulePage() {
   const [group, setGroup] = useState<Group | null>(null)
   const [schedules, setSchedules] = useState<ScheduleItem[]>([])
   const [newActivity, setNewActivity] = useState("")
   const [selectedDay, setSelectedDay] = useState(1)
-  const [selectedPeriod, setSelectedPeriod] = useState(TIME_PERIODS[0])
+  const [selectedPeriod, setSelectedPeriod] = useState<"morning" | "afternoon">("morning")
   const params = useParams()
   const supabase = createClient()
 
@@ -98,36 +96,21 @@ export default function GroupSchedulePage() {
 
     try {
       const groupId = Array.isArray(params.id) ? params.id[0] : params.id
-      
-      console.log("[v0] Adding activity:", {
-        group_id: groupId,
-        day_of_week: selectedDay,
-        time_period: selectedPeriod,
-        activity: newActivity,
-      })
 
-      // Create the insert object with explicit typing
-      const insertData = {
+      const { error } = await supabase.from("group_schedules").insert({
         group_id: groupId,
         day_of_week: selectedDay,
         time_period: selectedPeriod,
         activity: newActivity,
         order_index: schedules.filter((s) => s.day_of_week === selectedDay && s.time_period === selectedPeriod).length,
-      }
+      })
 
-      const { error, data } = await supabase.from("group_schedules").insert([insertData]).select()
-
-      if (error) {
-        console.error("[v0] Error adding activity - Full error:", error)
-        throw new Error(`${error.message || "Failed to add activity"}`)
-      }
-      
-      console.log("[v0] Activity added successfully:", data)
+      if (error) throw error
       setNewActivity("")
-      await fetchSchedules()
+      fetchSchedules()
     } catch (error) {
-      console.error("[v0] Грешка при добавяне:", error)
-      alert(`Грешка при добавяне на дейност: ${error instanceof Error ? error.message : "Unknown error"}`)
+      console.error("Грешка при добавяне:", error)
+      alert("Грешка при добавяне на дейност")
     }
   }
 
@@ -181,12 +164,12 @@ export default function GroupSchedulePage() {
             </select>
             <select
               value={selectedPeriod}
-              onChange={(e) => setSelectedPeriod(e.target.value)}
+              onChange={(e) => setSelectedPeriod(e.target.value as "morning" | "afternoon")}
               className="border rounded px-3 py-2"
             >
               {TIME_PERIODS.map((period) => (
-                <option key={period} value={period}>
-                  {period}
+                <option key={period.dbValue} value={period.dbValue}>
+                  {period.label} ({period.displayName})
                 </option>
               ))}
             </select>
@@ -211,12 +194,15 @@ export default function GroupSchedulePage() {
               <CardTitle>{day}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {TIME_PERIODS.map((period) => (
-                  <div key={period} className="border rounded p-4">
-                    <h3 className="font-semibold mb-3 text-primary">{period}</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                {Object.entries(TIME_PERIODS_MAP).map(([key, period]) => (
+                  <div key={key}>
+                    <h3 className="font-semibold mb-3 text-primary">
+                      {period.label}
+                      <span className="text-sm text-muted-foreground ml-2">({period.displayName})</span>
+                    </h3>
                     <div className="space-y-2">
-                      {getScheduleForDay(dayIndex + 1, period).map((item) => (
+                      {getScheduleForDay(dayIndex + 1, key as "morning" | "afternoon").map((item) => (
                         <div key={item.id} className="flex items-center justify-between p-2 bg-muted rounded">
                           <span>{item.activity}</span>
                           <Button variant="ghost" size="sm" onClick={() => deleteActivity(item.id)}>
@@ -224,7 +210,7 @@ export default function GroupSchedulePage() {
                           </Button>
                         </div>
                       ))}
-                      {getScheduleForDay(dayIndex + 1, period).length === 0 && (
+                      {getScheduleForDay(dayIndex + 1, key as "morning" | "afternoon").length === 0 && (
                         <p className="text-sm text-muted-foreground">Няма дейности</p>
                       )}
                     </div>
