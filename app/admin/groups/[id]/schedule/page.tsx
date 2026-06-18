@@ -107,6 +107,10 @@ export default function GroupSchedulePage() {
   const [newActivity, setNewActivity] = useState("")
   const [selectedDay, setSelectedDay] = useState(1)
   const [selectedPeriod, setSelectedPeriod] = useState("09:00")
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editActivity, setEditActivity] = useState("")
+  const [editDay, setEditDay] = useState(1)
+  const [editPeriod, setEditPeriod] = useState("09:00")
   const params = useParams()
   const supabase = createClient()
 
@@ -200,6 +204,49 @@ export default function GroupSchedulePage() {
     }
   }
 
+  function startEdit(schedule: ScheduleItem) {
+    setEditingId(schedule.id)
+    setEditActivity(schedule.activity)
+    setEditDay(schedule.day_of_week)
+    // Find the corresponding period key from start_time
+    const periodKey = Object.entries(TIME_PERIODS_MAP).find(
+      ([_, period]) => period.start_time === schedule.start_time
+    )?.[0] || "09:00"
+    setEditPeriod(periodKey)
+  }
+
+  async function updateActivity() {
+    if (!editActivity.trim() || !editingId) return
+
+    try {
+      const period = TIME_PERIODS_MAP[editPeriod as keyof typeof TIME_PERIODS_MAP]
+
+      const { error } = await supabase
+        .from("group_schedules")
+        .update({
+          day_of_week: editDay,
+          start_time: period.start_time,
+          end_time: period.end_time,
+          activity: editActivity,
+        })
+        .eq("id", editingId)
+
+      if (error) throw error
+
+      setEditingId(null)
+      setEditActivity("")
+      await fetchSchedules()
+    } catch (error) {
+      console.error("[v0] Грешка при редактиране:", error)
+      alert("Грешка при редактиране на дейност")
+    }
+  }
+
+  function cancelEdit() {
+    setEditingId(null)
+    setEditActivity("")
+  }
+
   const getScheduleForDay = (day: number, period: string) => {
     return schedules.filter((s) => s.day_of_week === day && s.time_period === period)
   }
@@ -259,6 +306,53 @@ export default function GroupSchedulePage() {
         </CardContent>
       </Card>
 
+      {/* Edit Activity Form */}
+      {editingId && (
+        <Card className="mb-8 border-primary/50 bg-primary/5">
+          <CardHeader>
+            <CardTitle>Редактирай дейност</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4">
+              <select
+                value={editDay}
+                onChange={(e) => setEditDay(Number.parseInt(e.target.value))}
+                className="border rounded px-3 py-2"
+              >
+                {DAYS.map((day, index) => (
+                  <option key={index} value={index + 1}>
+                    {day}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={editPeriod}
+                onChange={(e) => setEditPeriod(e.target.value)}
+                className="border rounded px-3 py-2"
+              >
+                {Object.entries(TIME_PERIODS_MAP).map(([key, period]) => (
+                  <option key={key} value={key}>
+                    {period.label}
+                  </option>
+                ))}
+              </select>
+              <Input
+                value={editActivity}
+                onChange={(e) => setEditActivity(e.target.value)}
+                placeholder="Име на дейност"
+                className="flex-1"
+              />
+              <Button onClick={updateActivity} className="bg-primary">
+                Запази
+              </Button>
+              <Button onClick={cancelEdit} variant="outline">
+                Отмени
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Display added activities grouped by day */}
       {schedules.length > 0 ? (
         <div className="grid gap-6">
@@ -282,10 +376,11 @@ export default function GroupSchedulePage() {
                             <p className="text-foreground">{schedule.activity}</p>
                           </div>
                           <div className="flex gap-2 ml-4">
-                            <Button variant="ghost" size="sm" onClick={() => {
-                              // TODO: Implement edit functionality
-                              console.log("[v0] Edit clicked for:", schedule.id)
-                            }}>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              onClick={() => startEdit(schedule)}
+                            >
                               ✏️
                             </Button>
                             <Button variant="ghost" size="sm" onClick={() => deleteActivity(schedule.id)}>
