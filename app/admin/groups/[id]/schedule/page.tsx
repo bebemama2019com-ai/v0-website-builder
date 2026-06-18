@@ -96,8 +96,15 @@ export default function GroupSchedulePage() {
 
     try {
       const groupId = Array.isArray(params.id) ? params.id[0] : params.id
+      
+      console.log("[v0] Adding activity with:", {
+        group_id: groupId,
+        day_of_week: selectedDay,
+        time_period: selectedPeriod,
+        activity: newActivity,
+      })
 
-      const { error } = await supabase.from("group_schedules").insert({
+      const { error, data } = await supabase.from("group_schedules").insert({
         group_id: groupId,
         day_of_week: selectedDay,
         time_period: selectedPeriod,
@@ -105,12 +112,18 @@ export default function GroupSchedulePage() {
         order_index: schedules.filter((s) => s.day_of_week === selectedDay && s.time_period === selectedPeriod).length,
       })
 
-      if (error) throw error
+      if (error) {
+        console.error("[v0] Insert error:", error)
+        throw error
+      }
+      
+      console.log("[v0] Activity added successfully:", data)
       setNewActivity("")
       fetchSchedules()
     } catch (error) {
-      console.error("Грешка при добавяне:", error)
-      alert("Грешка при добавяне на дейност")
+      console.error("[v0] Грешка при добавяне:", error)
+      const errorMsg = error instanceof Error ? error.message : String(error)
+      alert(`Грешка: ${errorMsg}`)
     }
   }
 
