@@ -21,10 +21,20 @@ export async function POST(request: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
+    console.log("[v0] Env check:", { 
+      hasUrl: !!supabaseUrl,
+      urlLength: supabaseUrl?.length,
+      hasKey: !!supabaseServiceKey, 
+      keyLength: supabaseServiceKey?.length 
+    })
+
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error("[v0] Missing Supabase credentials")
+      console.error("[v0] Missing Supabase credentials", {
+        url: supabaseUrl ? "present" : "missing",
+        key: supabaseServiceKey ? "present" : "missing"
+      })
       return NextResponse.json(
-        { error: "Server configuration error" },
+        { error: "Server configuration error - missing credentials" },
         { status: 500 }
       )
     }
