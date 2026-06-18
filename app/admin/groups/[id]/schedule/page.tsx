@@ -35,54 +35,85 @@ export default function GroupSchedulePage() {
   const supabase = createClient()
 
   useEffect(() => {
-    fetchGroup()
-    fetchSchedules()
-  }, [])
+    if (params.id) {
+      fetchGroup()
+      fetchSchedules()
+    }
+  }, [params.id])
 
   async function fetchGroup() {
-    const { data } = await supabase.from("groups").select("id, name").eq("id", params.id).single()
-    setGroup(data)
+    try {
+      const groupId = Array.isArray(params.id) ? params.id[0] : params.id
+      const { data, error } = await supabase.from("groups").select("id, name").eq("id", groupId).single()
+      
+      if (error) {
+        console.error("[v0] Error fetching group:", error)
+      }
+      setGroup(data)
+    } catch (error) {
+      console.error("[v0] Exception fetching group:", error)
+    }
   }
 
   async function fetchSchedules() {
-    const { data } = await supabase
-      .from("group_schedules")
-      .select("*")
-      .eq("group_id", params.id)
-      .order("day_of_week")
-      .order("time_period")
-      .order("order_index")
-    setSchedules(data || [])
+    try {
+      const groupId = Array.isArray(params.id) ? params.id[0] : params.id
+      const { data, error } = await supabase
+        .from("group_schedules")
+        .select("*")
+        .eq("group_id", groupId)
+        .order("day_of_week")
+        .order("time_period")
+        .order("order_index")
+      
+      if (error && !error.message.includes("does not exist")) {
+        console.error("[v0] Error fetching schedules:", error)
+      }
+      
+      setSchedules(data || [])
+    } catch (error) {
+      console.error("[v0] Exception fetching schedules:", error)
+    }
   }
 
   async function addActivity() {
     if (!newActivity.trim()) return
 
     try {
+      const groupId = Array.isArray(params.id) ? params.id[0] : params.id
+      
       const { error } = await supabase.from("group_schedules").insert({
-        group_id: params.id,
+        group_id: groupId,
         day_of_week: selectedDay,
         time_period: selectedPeriod,
         activity: newActivity,
         order_index: schedules.filter((s) => s.day_of_week === selectedDay && s.time_period === selectedPeriod).length,
       })
 
-      if (error) throw error
+      if (error) {
+        console.error("[v0] Error adding activity:", error)
+        throw new Error(`${error.message || "Failed to add activity"}`)
+      }
+      
       setNewActivity("")
-      fetchSchedules()
+      await fetchSchedules()
     } catch (error) {
-      console.error("Грешка при добавяне:", error)
-      alert("Грешка при добавяне на дейност")
+      console.error("[v0] Грешка при добавяне:", error)
+      alert(`Грешка при добавяне на дейност: ${error instanceof Error ? error.message : "Unknown error"}`)
     }
   }
 
   async function deleteActivity(id: string) {
     try {
       const { error } = await supabase.from("group_schedules").delete().eq("id", id)
-      if (error) throw error
-      fetchSchedules()
+      if (error) {
+        console.error("[v0] Error deleting activity:", error)
+        throw error
+      }
+      await fetchSchedules()
     } catch (error) {
-      console.error("Грешка при изтриване:", error)
+      console.error("[v0] Грешка при изтриване:", error)
+      alert("Грешка при изтриване на дейност")
     }
   }
 
