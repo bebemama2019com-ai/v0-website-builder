@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Users } from 'lucide-react'
 
 interface Group {
@@ -104,16 +103,10 @@ export default function GroupPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
-          <Skeleton className="h-12 w-64 mb-8" />
-          <Skeleton className="h-6 w-48 mb-4" />
-          <Skeleton className="h-20 w-full mb-8" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[1, 2].map((i) => (
-              <Skeleton key={i} className="h-32 w-full" />
-            ))}
-          </div>
+      <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+          <p className="text-muted-foreground">Loading group...</p>
         </div>
       </div>
     )
