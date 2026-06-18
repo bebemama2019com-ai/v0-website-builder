@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Plus, Edit, Trash2, Calendar } from "lucide-react"
+import { Plus, Edit, Trash2, Calendar, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
 interface Group {
@@ -96,9 +96,16 @@ export default function GroupsAdminPage() {
   return (
     <div className="container mx-auto p-8">
       <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">Управление на групи</h1>
-          <p className="text-muted-foreground mt-2">Управлявайте групите и техните седмични програми</p>
+        <div className="flex items-center gap-4">
+          <Button variant="outline" size="icon" asChild>
+            <Link href="/admin">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold">Управление на групи</h1>
+            <p className="text-muted-foreground mt-2">Управлявайте групите и техните седмични програми</p>
+          </div>
         </div>
         <Button asChild>
           <Link href="/admin/groups/new">
