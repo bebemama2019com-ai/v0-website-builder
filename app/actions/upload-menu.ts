@@ -2,21 +2,26 @@
 
 import { createClient } from "@/lib/supabase/server"
 
-export async function uploadMenuFile(file: File, menuType: string) {
+export async function uploadMenuFile(
+  fileBytes: ArrayBuffer,
+  fileName: string,
+  menuType: string,
+  fileSize: number
+) {
   try {
-    if (!file || !menuType) {
+    if (!fileBytes || !menuType) {
       return { error: "File and menuType are required" }
     }
 
     const supabase = await createClient()
 
     // Upload file to storage
-    const fileName = `${menuType}-${Date.now()}.pdf`
-    const buffer = await file.arrayBuffer()
+    const uploadFileName = `${menuType}-${Date.now()}.pdf`
+    const buffer = fileBytes
     
     const { error: uploadError } = await supabase.storage
       .from("menu-files")
-      .upload(fileName, buffer, {
+      .upload(uploadFileName, buffer, {
         contentType: "application/pdf",
       })
 
@@ -25,16 +30,16 @@ export async function uploadMenuFile(file: File, menuType: string) {
     }
 
     // Get public URL
-    const { data: publicUrl } = supabase.storage.from("menu-files").getPublicUrl(fileName)
+    const { data: publicUrl } = supabase.storage.from("menu-files").getPublicUrl(uploadFileName)
 
     // Save to database
     const { error: dbError } = await supabase
       .from("weekly_menu_files")
       .upsert({
         menu_type: menuType,
-        file_name: file.name,
+        file_name: fileName,
         file_url: publicUrl.publicUrl,
-        file_size: file.size,
+        file_size: fileSize,
       }, {
         onConflict: "menu_type"
       })

@@ -76,7 +76,15 @@ export default function AdminWeeklyMenuPage() {
     setSuccess(null)
 
     try {
-      const result = await uploadMenuFile(file, menuType)
+      // Read file as bytes on client side
+      const fileBytes = await file.arrayBuffer()
+      
+      const result = await uploadMenuFile(
+        fileBytes,
+        file.name,
+        menuType,
+        file.size
+      )
 
       if (result.error) {
         throw new Error(result.error)
