@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { uploadMenuFile } from "@/app/actions/upload-menu"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { createClient } from "@/lib/supabase/client"
@@ -76,18 +75,19 @@ export default function AdminWeeklyMenuPage() {
     setSuccess(null)
 
     try {
-      // Read file as bytes on client side
-      const fileBytes = await file.arrayBuffer()
-      
-      const result = await uploadMenuFile(
-        fileBytes,
-        file.name,
-        menuType,
-        file.size
-      )
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("menuType", menuType)
 
-      if (result.error) {
-        throw new Error(result.error)
+      const response = await fetch("/api/menu-upload", {
+        method: "POST",
+        body: formData,
+      })
+
+      const result = await response.json()
+
+      if (!response.ok || result.error) {
+        throw new Error(result.error || "Upload failed")
       }
 
       setSuccess(`Файлът за ${menuType === "kindergarten" ? "детската градина" : "яслите"} беше успешно качен`)
