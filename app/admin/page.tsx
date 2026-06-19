@@ -49,7 +49,7 @@ export default async function AdminDashboard() {
   }
 
   try {
-    const { count: menuCount } = await supabase.from("weekly_menus").select("*", { count: "exact", head: true })
+    const { count: menuCount } = await supabase.from("weekly_menu_files").select("*", { count: "exact", head: true })
     menusCount = menuCount || 0
   } catch (error) {
     // Menus table doesn't exist yet
