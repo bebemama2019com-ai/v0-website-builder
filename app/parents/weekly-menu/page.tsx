@@ -27,7 +27,11 @@ export default function WeeklyMenuPage() {
   }, [])
 
   function handleViewMenu(menuFile: MenuFile) {
-    window.open(menuFile.file_url, "_blank")
+    // Add ?dl=false to force Supabase to return Content-Disposition: inline (preview) instead of attachment (download)
+    const previewUrl = menuFile.file_url.includes("?") 
+      ? `${menuFile.file_url}&dl=false`
+      : `${menuFile.file_url}?dl=false`
+    window.open(previewUrl, "_blank")
   }
 
   async function handleDownload(menuFile: MenuFile) {
