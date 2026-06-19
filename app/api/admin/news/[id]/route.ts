@@ -18,6 +18,7 @@ export async function PUT(
         title: body.title,
         slug: slug,
         content: body.content,
+        category: body.category || "announcement",
         news_date: body.news_date,
         news_hour: body.news_hour,
         from_text: body.from_text,

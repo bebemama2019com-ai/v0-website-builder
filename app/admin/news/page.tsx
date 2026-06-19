@@ -17,10 +17,18 @@ interface NewsPost {
   news_date: string
   news_hour: string
   from_text: string
+  category: string
   is_active: boolean
   created_at: string
   updated_at: string
 }
+
+const NEWS_CATEGORIES = [
+  { value: "announcement", label: "Съобщение" },
+  { value: "event", label: "Събитие" },
+  { value: "update", label: "Актуализация" },
+  { value: "activity", label: "Активност" },
+]
 
 export default function AdminNewsPage() {
   const [newsPosts, setNewsPosts] = useState<NewsPost[]>([])
@@ -35,6 +43,7 @@ export default function AdminNewsPage() {
     news_date: format(new Date(), "yyyy-MM-dd"),
     news_hour: format(new Date(), "HH:mm"),
     from_text: "",
+    category: "announcement",
     is_active: true,
   })
 
@@ -107,6 +116,7 @@ export default function AdminNewsPage() {
       news_date: post.news_date,
       news_hour: post.news_hour,
       from_text: post.from_text,
+      category: post.category,
       is_active: post.is_active,
     })
     setEditingId(post.id)
@@ -121,6 +131,7 @@ export default function AdminNewsPage() {
       news_date: format(new Date(), "yyyy-MM-dd"),
       news_hour: format(new Date(), "HH:mm"),
       from_text: "",
+      category: "announcement",
       is_active: true,
     })
     setEditingId(null)
@@ -168,6 +179,23 @@ export default function AdminNewsPage() {
                 placeholder="Заглавие на новина"
                 className="mt-1"
               />
+            </div>
+
+            {/* Category */}
+            <div>
+              <Label htmlFor="category">Категория *</Label>
+              <select
+                id="category"
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                {NEWS_CATEGORIES.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Content */}
