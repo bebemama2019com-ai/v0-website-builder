@@ -103,7 +103,8 @@ export function Header() {
             />
           </Link>
         </div>
-        <div className="flex lg:hidden">
+        <div className="flex lg:hidden gap-2">
+          <LanguageSelector />
           <button
             type="button"
             className="-m-2.5 inline-flex items-center justify-center rounded-xl p-2.5 text-primary hover:bg-primary/10 transition-colors"
@@ -152,10 +153,6 @@ export function Header() {
       </nav>
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-t-2 border-primary/20 max-h-[calc(100vh-80px)] overflow-y-auto">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-primary/10">
-            <span className="text-xs font-semibold uppercase text-muted-foreground">Language / Език</span>
-            <LanguageSelector />
-          </div>
           <div className="space-y-1 px-4 pb-3 pt-2">
             {navigation.map((item, index) =>
               item.dropdown ? (
