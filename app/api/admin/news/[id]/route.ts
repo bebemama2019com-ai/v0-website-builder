@@ -13,7 +13,6 @@ export async function PUT(
       .from("news_posts")
       .update({
         title: body.title,
-        description: body.description,
         content: body.content,
         news_date: body.news_date,
         news_hour: body.news_hour,

@@ -18,7 +18,6 @@ interface NewsFile {
 interface NewsPost {
   id: string
   title: string
-  description: string
   content: string
   news_date: string
   news_hour: string
@@ -118,10 +117,7 @@ export default function NewsPage() {
                       </div>
 
                       {/* Title */}
-                      <h2 className="mb-3 text-2xl font-bold text-foreground">{post.title}</h2>
-
-                      {/* Description */}
-                      <p className="mb-4 text-lg leading-relaxed text-muted-foreground">{post.description}</p>
+                      <h2 className="mb-4 text-2xl font-bold text-foreground">{post.title}</h2>
 
                       {/* Content */}
                       <p className="mb-6 whitespace-pre-wrap text-base leading-relaxed text-muted-foreground">

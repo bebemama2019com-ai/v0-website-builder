@@ -13,7 +13,6 @@ import { bg } from "date-fns/locale"
 interface NewsPost {
   id: string
   title: string
-  description: string
   content: string
   news_date: string
   news_hour: string
@@ -32,7 +31,6 @@ export default function AdminNewsPage() {
   const [error, setError] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     title: "",
-    description: "",
     content: "",
     news_date: format(new Date(), "yyyy-MM-dd"),
     news_hour: format(new Date(), "HH:mm"),
@@ -105,7 +103,6 @@ export default function AdminNewsPage() {
   function handleEdit(post: NewsPost) {
     setFormData({
       title: post.title,
-      description: post.description,
       content: post.content,
       news_date: post.news_date,
       news_hour: post.news_hour,
@@ -120,7 +117,6 @@ export default function AdminNewsPage() {
   function resetForm() {
     setFormData({
       title: "",
-      description: "",
       content: "",
       news_date: format(new Date(), "yyyy-MM-dd"),
       news_hour: format(new Date(), "HH:mm"),
@@ -171,18 +167,6 @@ export default function AdminNewsPage() {
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder="Заглавие на новина"
                 className="mt-1"
-              />
-            </div>
-
-            {/* Description */}
-            <div>
-              <Label htmlFor="description">Кратко описание *</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Кратко описание на новина"
-                className="mt-1 h-24"
               />
             </div>
 
@@ -304,7 +288,7 @@ export default function AdminNewsPage() {
                           {post.is_active ? "Публикувано" : "Чернова"}
                         </span>
                       </div>
-                      <CardDescription className="line-clamp-2 mt-2">{post.description}</CardDescription>
+                      <CardDescription className="line-clamp-3 mt-2">{post.content}</CardDescription>
                     </div>
                     <div className="flex gap-2 ml-4">
                       <Button

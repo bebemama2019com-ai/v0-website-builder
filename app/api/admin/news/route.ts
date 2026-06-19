@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
       .from("news_posts")
       .insert({
         title: body.title,
-        description: body.description,
         content: body.content,
         news_date: body.news_date,
         news_hour: body.news_hour,
