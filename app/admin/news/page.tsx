@@ -6,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Plus, Edit2, Trash2, Save, X, Calendar, Clock, User, Loader2 } from "lucide-react"
+import { Plus, Edit2, Trash2, Save, X, Calendar, Clock, User, Loader2, ArrowLeft } from "lucide-react"
 import { format } from "date-fns"
 import { bg } from "date-fns/locale"
+import Link from "next/link"
 
 interface NewsPost {
   id: string
@@ -142,6 +143,10 @@ export default function AdminNewsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
+          <Link href="/admin" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-3">
+            <ArrowLeft className="h-4 w-4" />
+            Назад към таблото
+          </Link>
           <h1 className="text-3xl font-bold">Управление на Новини</h1>
           <p className="text-muted-foreground mt-2">Създаване, редактиране и управление на новини</p>
         </div>
