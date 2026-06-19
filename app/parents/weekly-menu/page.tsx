@@ -4,7 +4,7 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { FileText, Download, Baby, GraduationCap } from "lucide-react"
+import { FileText, Download, Baby, GraduationCap, Eye } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { useState, useEffect } from "react"
 
@@ -25,6 +25,14 @@ export default function WeeklyMenuPage() {
   useEffect(() => {
     fetchMenuFiles()
   }, [])
+
+  function handleViewMenu(menuFile: MenuFile) {
+    // Add ?dl=false to force Supabase to return Content-Disposition: inline (preview) instead of attachment (download)
+    const previewUrl = menuFile.file_url.includes("?") 
+      ? `${menuFile.file_url}&dl=false`
+      : `${menuFile.file_url}?dl=false`
+    window.open(previewUrl, "_blank")
+  }
 
   async function handleDownload(menuFile: MenuFile) {
     try {
@@ -133,24 +141,34 @@ export default function WeeklyMenuPage() {
                   <CardContent className="space-y-4">
                     <p className="text-muted-foreground">{menuInfo.description}</p>
 
-                    {/* Download Button */}
+                    {/* View and Download Buttons */}
                     {loading ? (
                       <Button disabled className="w-full rounded-xl" size="lg">
                         {language === "bg" ? "Зареждане..." : "Loading..."}
                       </Button>
                     ) : menuFile ? (
-                      <Button 
-                        onClick={() => handleDownload(menuFile)}
-                        disabled={downloading === menuFile.menu_type}
-                        variant="outline" 
-                        className="w-full rounded-xl" 
-                        size="lg"
-                      >
-                        <Download className="mr-2 h-5 w-5" />
-                        {downloading === menuFile.menu_type 
-                          ? (language === "bg" ? "Изтеглянето..." : "Downloading...")
-                          : (language === "bg" ? "Изтегли меню" : "Download Menu")}
-                      </Button>
+                      <div className="space-y-3">
+                        <Button 
+                          onClick={() => handleViewMenu(menuFile)}
+                          className="w-full rounded-xl" 
+                          size="lg"
+                        >
+                          <Eye className="mr-2 h-5 w-5" />
+                          {language === "bg" ? "Виж меню" : "View Menu"}
+                        </Button>
+                        <Button 
+                          onClick={() => handleDownload(menuFile)}
+                          disabled={downloading === menuFile.menu_type}
+                          variant="outline" 
+                          className="w-full rounded-xl" 
+                          size="lg"
+                        >
+                          <Download className="mr-2 h-5 w-5" />
+                          {downloading === menuFile.menu_type 
+                            ? (language === "bg" ? "Изтеглянето..." : "Downloading...")
+                            : (language === "bg" ? "Изтегли меню" : "Download Menu")}
+                        </Button>
+                      </div>
                     ) : (
                       <Button disabled variant="outline" className="w-full rounded-xl" size="lg">
                         {language === "bg" ? "Няма налична версия" : "Not available"}
