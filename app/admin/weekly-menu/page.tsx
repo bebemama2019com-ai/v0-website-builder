@@ -76,11 +76,7 @@ export default function AdminWeeklyMenuPage() {
     setSuccess(null)
 
     try {
-      const formData = new FormData()
-      formData.append("file", file)
-      formData.append("menuType", menuType)
-
-      const result = await uploadMenuFile(formData)
+      const result = await uploadMenuFile(file, menuType)
 
       if (result.error) {
         throw new Error(result.error)
