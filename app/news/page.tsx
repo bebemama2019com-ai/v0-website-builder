@@ -1,216 +1,141 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Calendar, ArrowRight } from "lucide-react"
-import { useLanguage } from "@/lib/i18n/language-context"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
+import { Download, Calendar, Clock, User } from "lucide-react"
+import { useState, useEffect } from "react"
+import { format } from "date-fns"
+import { bg } from "date-fns/locale"
+
+interface NewsFile {
+  id: string
+  file_name: string
+  file_url: string
+}
+
+interface NewsPost {
+  id: string
+  title: string
+  description: string
+  content: string
+  news_date: string
+  news_hour: string
+  from_text: string
+  news_files: NewsFile[]
+}
 
 export default function NewsPage() {
-  const { t } = useLanguage()
-  const [newsPosts, setNewsPosts] = useState([])
+  const [newsPosts, setNewsPosts] = useState<NewsPost[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Fetch news posts from API
-    fetch("/api/news")
-      .then((res) => res.json())
-      .then((data) => setNewsPosts(data))
-      .catch(() => {
-        // Use fallback data
-        setNewsPosts(fallbackPosts)
-      })
+    fetchNews()
   }, [])
 
-  const fallbackPosts = [
-    {
-      _id: "1",
-      title: "Welcome to Our New School Year!",
-      slug: { current: "welcome-new-school-year" },
-      excerpt:
-        "We're excited to welcome all our returning families and new students to Little Sprouts for another amazing year of learning and growth.",
-      image: "/news-school-year.jpg?height=600&width=800&query=happy children first day of school",
-      category: "News",
-      publishedAt: "2024-09-01T08:00:00Z",
-    },
-    {
-      _id: "2",
-      title: "Fall Festival Coming Soon",
-      slug: { current: "fall-festival-coming-soon" },
-      excerpt:
-        "Join us for our annual Fall Festival on October 15th! There will be games, activities, pumpkin decorating, and more family fun.",
-      image: "/news-fall-festival.jpg?height=600&width=800&query=fall festival with pumpkins and children",
-      category: "Events",
-      publishedAt: "2024-09-15T10:00:00Z",
-    },
-    {
-      _id: "3",
-      title: "New Art Studio Opening",
-      slug: { current: "new-art-studio-opening" },
-      excerpt:
-        "We're thrilled to announce the opening of our brand new art studio, complete with easels, supplies, and plenty of space for creativity.",
-      image: "/news-art-studio.jpg?height=600&width=800&query=children's art studio with supplies",
-      category: "News",
-      publishedAt: "2024-08-20T09:00:00Z",
-    },
-    {
-      _id: "4",
-      title: "Parent-Teacher Conferences",
-      slug: { current: "parent-teacher-conferences" },
-      excerpt:
-        "Fall parent-teacher conferences will be held the week of October 20th. Sign up for your time slot in the parent portal.",
-      image: "/news-conferences.jpg?height=600&width=800&query=teacher meeting with parents",
-      category: "Events",
-      publishedAt: "2024-10-01T08:00:00Z",
-    },
-    {
-      _id: "5",
-      title: "Garden Project Success",
-      slug: { current: "garden-project-success" },
-      excerpt:
-        "Our students have been busy tending to our school garden! We've harvested tomatoes, cucumbers, and herbs that we used in our cooking activities.",
-      image: "/news-garden.jpg?height=600&width=800&query=children harvesting vegetables in garden",
-      category: "Activities",
-      publishedAt: "2024-09-25T11:00:00Z",
-    },
-    {
-      _id: "6",
-      title: "Music Program Expansion",
-      slug: { current: "music-program-expansion" },
-      excerpt:
-        "We're expanding our music program with new instruments and weekly music classes for all age groups. Students will explore rhythm, melody, and movement.",
-      image: "/news-music.jpg?height=600&width=800&query=children playing musical instruments",
-      category: "News",
-      publishedAt: "2024-08-10T10:00:00Z",
-    },
-  ]
-
-  const displayPosts = newsPosts.length > 0 ? newsPosts : fallbackPosts
-
-  // Sort posts by date (newest first)
-  const sortedPosts = [...displayPosts].sort(
-    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
-  )
-
-  // Get featured post (most recent)
-  const featuredPost = sortedPosts[0]
-  const otherPosts = sortedPosts.slice(1)
+  async function fetchNews() {
+    try {
+      const response = await fetch("/api/news")
+      const data = await response.json()
+      setNewsPosts(data)
+    } catch (error) {
+      console.error("Error fetching news:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <>
       <Header />
-
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-accent/20 px-4 py-20 lg:py-32">
-        <div className="mx-auto max-w-7xl text-center">
-          <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-foreground lg:text-5xl">
-            {t.news.hero.title}
-          </h1>
-          <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
-            {t.news.hero.description}
-          </p>
-        </div>
-      </section>
-
-      {/* Featured Post */}
-      {featuredPost && (
-        <section className="px-4 py-16 lg:py-24">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-6">
-              <span className="inline-block rounded-full bg-primary px-4 py-1 text-sm font-semibold text-primary-foreground">
-                {t.news.featured}
-              </span>
-            </div>
-            <Card className="overflow-hidden rounded-3xl border-2">
-              <div className="grid gap-8 lg:grid-cols-2">
-                <div className="aspect-[4/3] overflow-hidden lg:aspect-auto">
-                  <img
-                    src={featuredPost.image || "/placeholder.svg"}
-                    alt={featuredPost.title}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <CardContent className="flex flex-col justify-center p-8 lg:p-12">
-                  <div className="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
-                    <span className="inline-block rounded-full bg-primary/10 px-3 py-1 font-semibold text-primary">
-                      {featuredPost.category}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
-                      {new Date(featuredPost.publishedAt).toLocaleDateString("en-US", {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </div>
-                  <h2 className="mb-4 text-balance text-3xl font-bold text-foreground lg:text-4xl">
-                    {featuredPost.title}
-                  </h2>
-                  <p className="mb-6 text-pretty leading-relaxed text-muted-foreground lg:text-lg">
-                    {featuredPost.excerpt}
-                  </p>
-                  <div>
-                    <Button asChild className="rounded-full">
-                      <Link href={`/news/${featuredPost.slug.current}`}>
-                        {t.news.readMore}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </div>
-            </Card>
+      <main className="min-h-screen bg-background">
+        {/* Page Header */}
+        <section className="bg-gradient-to-r from-primary to-primary/80 text-white py-12">
+          <div className="container mx-auto px-4">
+            <h1 className="text-4xl font-bold mb-2">Новини и събития</h1>
+            <p className="text-lg opacity-90">Останете информирани за последните новини и събития</p>
           </div>
         </section>
-      )}
 
-      {/* Other Posts Grid */}
-      <section className="bg-muted/50 px-4 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {otherPosts.map((post) => (
-              <Card key={post._id} className="overflow-hidden rounded-3xl border-2 transition-shadow hover:shadow-lg">
-                <Link href={`/news/${post.slug.current}`}>
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <img
-                      src={post.image || "/placeholder.svg"}
-                      alt={post.title}
-                      className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                    />
-                  </div>
-                  <CardContent className="p-6">
-                    <div className="mb-3 flex items-center gap-3 text-sm text-muted-foreground">
-                      <span className="inline-block rounded-full bg-primary/10 px-3 py-1 font-semibold text-primary">
-                        {post.category}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
+        {/* News List */}
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto space-y-6">
+              {loading ? (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">Зареждане...</p>
+                </div>
+              ) : newsPosts.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground text-lg">Все още няма публикувани новини</p>
+                </div>
+              ) : (
+                newsPosts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="bg-card border border-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <div className="p-6">
+                      {/* Header */}
+                      <h2 className="text-2xl font-bold mb-3 text-foreground">{post.title}</h2>
+
+                      {/* Meta Information */}
+                      <div className="flex flex-wrap gap-4 mb-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4" />
+                          <span>{format(new Date(post.news_date), "d MMMM yyyy", { locale: bg })}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4" />
+                          <span>{post.news_hour}</span>
+                        </div>
+                        {post.from_text && (
+                          <div className="flex items-center gap-2">
+                            <User className="w-4 h-4" />
+                            <span>{post.from_text}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-foreground mb-4 leading-relaxed">{post.description}</p>
+
+                      {/* Full Content */}
+                      <div className="prose prose-sm max-w-none mb-6 whitespace-pre-wrap text-muted-foreground">
+                        {post.content}
+                      </div>
+
+                      {/* Files */}
+                      {post.news_files && post.news_files.length > 0 && (
+                        <div className="bg-muted/50 rounded-lg p-4">
+                          <h3 className="font-semibold mb-3 flex items-center gap-2">
+                            <Download className="w-4 h-4" />
+                            Прикачени файлове
+                          </h3>
+                          <div className="space-y-2">
+                            {post.news_files.map((file) => (
+                              <a
+                                key={file.id}
+                                href={file.file_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                              >
+                                <Download className="w-4 h-4" />
+                                <span className="underline">{file.file_name}</span>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <h3 className="mb-2 text-balance text-xl font-bold text-foreground">{post.title}</h3>
-                    <p className="mb-4 line-clamp-3 text-pretty leading-relaxed text-muted-foreground">
-                      {post.excerpt}
-                    </p>
-                    <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
-                      {t.news.readMore}
-                      <ArrowRight className="h-4 w-4" />
-                    </span>
-                  </CardContent>
-                </Link>
-              </Card>
-            ))}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
-        </div>
-      </section>
-
+        </section>
+      </main>
       <Footer />
-    </div>
+    </>
   )
 }

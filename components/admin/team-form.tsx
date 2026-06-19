@@ -9,6 +9,13 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { createBrowserClient } from "@/lib/supabase/client"
 
 interface TeamFormProps {
@@ -19,6 +26,7 @@ interface TeamFormProps {
     bio: string
     image_url?: string
     order_index: number
+    category?: string
   }
 }
 
@@ -32,6 +40,7 @@ export default function TeamForm({ member }: TeamFormProps) {
     bio: member?.bio || "",
     image_url: member?.image_url || "",
     order_index: member?.order_index || 0,
+    category: member?.category || "other",
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,18 +48,31 @@ export default function TeamForm({ member }: TeamFormProps) {
     setLoading(true)
 
     try {
+      // Prepare form data - include category field
+      const submitData = {
+        name: formData.name,
+        role: formData.role,
+        bio: formData.bio,
+        image_url: formData.image_url || null,
+        order_index: formData.order_index,
+        category: formData.category,
+      }
+
       if (member) {
-        const { error } = await supabase.from("team_members").update(formData).eq("id", member.id)
+        const { error } = await supabase.from("team_members").update(submitData).eq("id", member.id)
         if (error) throw error
       } else {
-        const { error } = await supabase.from("team_members").insert([formData])
+        const { error } = await supabase.from("team_members").insert([submitData])
         if (error) throw error
       }
 
       router.push("/admin/team")
       router.refresh()
+
+      // Force revalidation of team data on frontend
+      fetch("/api/team", { cache: "no-store" })
     } catch (error) {
-      console.error("Грешка при запазване на член на екипа:", error)
+      console.error("[v0] Грешка при запазване на член на екипа:", error)
       alert("Грешка при запазване на член на екипа. Моля, опитайте отново.")
     } finally {
       setLoading(false)
@@ -71,13 +93,30 @@ export default function TeamForm({ member }: TeamFormProps) {
         </div>
 
         <div>
-          <Label htmlFor="role">Длъжност *</Label>
+          <Label htmlFor="role">Длъжност/Позиция *</Label>
           <Input
             id="role"
             value={formData.role}
             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+            placeholder="например: Учител, Директор, Счетоводител"
             required
           />
+        </div>
+
+        <div>
+          <Label htmlFor="category">Категория *</Label>
+          <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+            <SelectTrigger id="category">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="pedagogical">Педагогически персонал</SelectItem>
+              <SelectItem value="medical">Медицински специалисти</SelectItem>
+              <SelectItem value="other">Друг персонал</SelectItem>
+              <SelectItem value="security">Охрана</SelectItem>
+            </SelectContent>
+          </Select>
+          <p className="text-sm text-muted-foreground mt-1">Изберете групата, към която принадлежи членът на персонала</p>
         </div>
 
         <div>

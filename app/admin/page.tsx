@@ -3,7 +3,7 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Newspaper, ImageIcon, LogOut, AlertCircle, Calendar } from "lucide-react"
+import { Users, Newspaper, ImageIcon, LogOut, AlertCircle, Calendar, UtensilsCrossed } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 export default async function AdminDashboard() {
@@ -24,6 +24,7 @@ export default async function AdminDashboard() {
   let documentsCount = 0
   let parentsCount = 0
   let groupsCount = 0
+  let menusCount = 0
   let tablesExist = true
 
   try {
@@ -45,6 +46,13 @@ export default async function AdminDashboard() {
     groupsCount = grpCount || 0
   } catch (error) {
     // Groups table doesn't exist yet
+  }
+
+  try {
+    const { count: menuCount } = await supabase.from("weekly_menu_files").select("*", { count: "exact", head: true })
+    menusCount = menuCount || 0
+  } catch (error) {
+    // Menus table doesn't exist yet
   }
 
   return (
@@ -141,6 +149,17 @@ export default async function AdminDashboard() {
               <p className="text-xs text-muted-foreground">Групи със седмични програми</p>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Седмични менюта</CardTitle>
+              <UtensilsCrossed className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{menusCount || 0}</div>
+              <p className="text-xs text-muted-foreground">Менюта за ясла и детската градина</p>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -198,7 +217,7 @@ export default async function AdminDashboard() {
               <CardDescription>Управление на нормативни документи и бюджетни файлове</CardDescription>
             </CardHeader>
             <CardContent>
-              <Link href="/admin/documents">
+              <Link href="/admin/documents-new">
                 <Button className="w-full">Управление на документи</Button>
               </Link>
             </CardContent>
@@ -212,6 +231,18 @@ export default async function AdminDashboard() {
             <CardContent>
               <Link href="/admin/parents">
                 <Button className="w-full">Управление на съдържание</Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle>Седмични менюта</CardTitle>
+              <CardDescription>Управление на PDF файлове за ясла и детската градина</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/admin/weekly-menu">
+                <Button className="w-full">Управление на менюта</Button>
               </Link>
             </CardContent>
           </Card>

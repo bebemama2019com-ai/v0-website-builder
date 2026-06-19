@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { useLanguage } from "@/lib/i18n/language-context"
+import { useFetchWithFallback } from "@/hooks/use-fetch-with-fallback"
 
 // Move fallbackImages outside component to ensure it's available when useEffect runs
 const fallbackImages = [
@@ -95,25 +95,10 @@ const fallbackImages = [
 
 export default function GalleryPage() {
   const { t } = useLanguage()
-  const [galleryImages, setGalleryImages] = useState(fallbackImages)
-
-  useEffect(() => {
-    // Fetch gallery images from API
-    fetch("/api/gallery")
-      .then((res) => {
-        if (!res.ok) throw new Error("API error")
-        return res.json()
-      })
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setGalleryImages(data)
-        }
-        // If API returns empty array, keep using fallbackImages (already set as initial state)
-      })
-      .catch(() => {
-        // On error, keep using fallbackImages (already set as initial state)
-      })
-  }, [])
+  const { data: galleryImages } = useFetchWithFallback({
+    endpoint: "/api/gallery",
+    fallbackData: fallbackImages,
+  })
 
 
   return (

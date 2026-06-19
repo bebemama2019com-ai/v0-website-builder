@@ -10,19 +10,22 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
 interface TeamMember {
   id: string
   name: string
+  role: string
+  bio: string
 }
 
 export default function EditGroupPage() {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const [responsibleTeacherId, setResponsibleTeacherId] = useState("")
+  const [age, setAge] = useState("")
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([])
   const [orderIndex, setOrderIndex] = useState("0")
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
   const [loading, setLoading] = useState(false)
@@ -32,23 +35,71 @@ export default function EditGroupPage() {
 
   useEffect(() => {
     fetchTeamMembers()
-    fetchGroup()
   }, [])
 
+  useEffect(() => {
+    if (params.id) {
+      fetchGroup()
+    }
+  }, [params.id])
+
   async function fetchTeamMembers() {
-    const { data } = await supabase.from("team_members").select("id, name").order("name")
-    setTeamMembers(data || [])
+    try {
+      const { data, error } = await supabase.from("team_members").select("id, name, role, bio").order("name")
+      if (error) {
+        console.error("[v0] Error fetching team members:", error)
+        return
+      }
+      setTeamMembers(data || [])
+    } catch (error) {
+      console.error("[v0] Exception fetching team members:", error)
+    }
   }
 
   async function fetchGroup() {
-    const { data } = await supabase.from("groups").select("*").eq("id", params.id).single()
+    try {
+      const id = Array.isArray(params.id) ? params.id[0] : params.id
+      if (!id) {
+        console.error("[v0] No group ID provided")
+        return
+      }
 
-    if (data) {
-      setName(data.name)
-      setDescription(data.description || "")
-      setResponsibleTeacherId(data.responsible_teacher_id || "none")
-      setOrderIndex(data.order_index.toString())
+      const { data, error } = await supabase.from("groups").select("*").eq("id", id).single()
+
+      if (error) {
+        console.error("[v0] Error fetching group:", error)
+        return
+      }
+
+      if (data) {
+        setName(data.name)
+        setDescription(data.description || "")
+        setAge(data.age || "")
+        setOrderIndex(data.order_index.toString())
+      }
+
+      // Fetch teachers for this group
+      const { data: teachersData, error: teachersError } = await supabase
+        .from("group_teachers")
+        .select("teacher_id")
+        .eq("group_id", id)
+        .order("order_index")
+
+      // If the error is about missing table (Migration 009 not run yet), just skip it
+      if (teachersError && teachersError.message && !teachersError.message.includes("does not exist")) {
+        console.error("[v0] Error fetching group teachers:", teachersError)
+      } else if (teachersData) {
+        setSelectedTeachers(teachersData.map((t) => t.teacher_id))
+      }
+    } catch (error) {
+      console.error("[v0] Exception fetching group:", error)
     }
+  }
+
+  const toggleTeacher = (teacherId: string) => {
+    setSelectedTeachers((prev) =>
+      prev.includes(teacherId) ? prev.filter((id) => id !== teacherId) : [...prev, teacherId]
+    )
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -56,21 +107,57 @@ export default function EditGroupPage() {
     setLoading(true)
 
     try {
-      const { error } = await supabase
+      const id = Array.isArray(params.id) ? params.id[0] : params.id
+      if (!id) {
+        throw new Error("No group ID provided")
+      }
+
+      // Update group
+      const { error: updateError } = await supabase
         .from("groups")
         .update({
           name,
           description: description || null,
-          responsible_teacher_id: responsibleTeacherId === "none" ? null : responsibleTeacherId,
+          age: age || null,
           order_index: Number.parseInt(orderIndex),
         })
-        .eq("id", params.id)
+        .eq("id", id)
 
-      if (error) throw error
+      if (updateError) {
+        console.error("[v0] Error updating group:", updateError)
+        throw new Error(`Грешка при актуализация на групата: ${updateError.message}`)
+      }
+
+      // Only try to manage teachers if the group_teachers table exists
+      // Delete existing teachers
+      const { error: deleteError } = await supabase.from("group_teachers").delete().eq("group_id", id)
+      
+      // If table doesn't exist, skip teacher management (Migration 009 not run yet)
+      if (deleteError && deleteError.message && !deleteError.message.includes("does not exist")) {
+        console.error("[v0] Error deleting teachers:", deleteError)
+        throw new Error(`Грешка при изтриване на учители: ${deleteError.message}`)
+      }
+
+      // Insert new teachers only if table exists
+      if (selectedTeachers.length > 0 && !deleteError?.message?.includes("does not exist")) {
+        const groupTeachers = selectedTeachers.map((teacherId, index) => ({
+          group_id: id,
+          teacher_id: teacherId,
+          order_index: index,
+        }))
+
+        const { error: teacherError } = await supabase.from("group_teachers").insert(groupTeachers)
+        if (teacherError) {
+          console.error("[v0] Error inserting teachers:", teacherError)
+          throw new Error(`Грешка при добавяне на учители: ${teacherError.message}`)
+        }
+      }
+
       router.push("/admin/groups")
     } catch (error) {
-      console.error("Грешка при актуализация:", error)
-      alert("Грешка при актуализация на групата")
+      console.error("[v0] Error saving group:", error)
+      const errorMessage = error instanceof Error ? error.message : "Грешка при съхраняване на групата"
+      alert(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -107,20 +194,35 @@ export default function EditGroupPage() {
             </div>
 
             <div>
-              <Label htmlFor="teacher">Отговорен учител</Label>
-              <Select value={responsibleTeacherId} onValueChange={setResponsibleTeacherId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Изберете учител" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Без отговорник</SelectItem>
-                  {teamMembers.map((member) => (
-                    <SelectItem key={member.id} value={member.id}>
-                      {member.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor="age">Възраст</Label>
+              <Input id="age" value={age} onChange={(e) => setAge(e.target.value)} placeholder="например: 2-3 години" />
+            </div>
+
+            <div>
+              <Label>Отговорни учители</Label>
+              <div className="space-y-2 max-h-60 overflow-y-auto border rounded-md p-4">
+                {teamMembers.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Няма налични учители</p>
+                ) : (
+                  teamMembers.map((member) => (
+                    <div key={member.id} className="flex items-start gap-3">
+                      <Checkbox
+                        id={member.id}
+                        checked={selectedTeachers.includes(member.id)}
+                        onCheckedChange={() => toggleTeacher(member.id)}
+                      />
+                      <label htmlFor={member.id} className="flex-1 cursor-pointer">
+                        <div className="font-medium">{member.name}</div>
+                        <div className="text-sm text-muted-foreground">{member.role}</div>
+                        {member.bio && <div className="text-xs text-muted-foreground line-clamp-2">{member.bio}</div>}
+                      </label>
+                    </div>
+                  ))
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                Избрани: {selectedTeachers.length} {selectedTeachers.length === 1 ? "учител" : "учители"}
+              </p>
             </div>
 
             <div>

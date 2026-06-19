@@ -1,31 +1,60 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Menu, X, ChevronDown } from "lucide-react"
 import { LanguageSelector } from "@/components/language-selector"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
 
+interface Group {
+  id: string
+  name: string
+  slug?: string
+}
+
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [groups, setGroups] = useState<Group[]>([])
+  const [groupsLoading, setGroupsLoading] = useState(true)
   const { t, isHydrated } = useLanguage()
+
+  useEffect(() => {
+    fetchGroups()
+  }, [])
+
+  async function fetchGroups() {
+    try {
+      const response = await fetch("/api/groups")
+      const data = await response.json()
+      if (Array.isArray(data)) {
+        setGroups(data)
+      }
+    } catch (error) {
+      console.error("[v0] Error fetching groups:", error)
+    } finally {
+      setGroupsLoading(false)
+    }
+  }
+
+  const groupsDropdown = [
+    ...groups.map((group) => ({
+      name: group.name,
+      href: `/groups/${group.id}`,
+    })),
+    {
+      name: "ДОД",
+      href: "/dod",
+    },
+  ]
 
   const navigation = [
     { name: t.nav.about, href: "/about" },
     { name: t.nav.team, href: "/team" },
     {
       name: t.nav.groups,
-      dropdown: [
-        { name: t.nav.lavcheta, href: "/groups/lavcheta" },
-        { name: t.nav.zvanche, href: "/groups/zvanche" },
-        { name: t.nav.slanchitse, href: "/groups/slanchitse" },
-        { name: t.nav.pepelyashka, href: "/groups/pepelyashka" },
-        { name: t.nav.snezhanka, href: "/groups/snezhanka" },
-        { name: t.nav.sarchitse, href: "/groups/sarchitse" },
-        { name: t.nav.dod, href: "/groups/dod" },
-      ],
+      dropdown: groupsDropdown.length > 0 ? groupsDropdown : [{ name: "Групи", href: "#" }],
     },
     { name: t.nav.gallery, href: "/gallery" },
     {

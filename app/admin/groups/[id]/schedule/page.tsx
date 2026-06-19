@@ -17,73 +17,234 @@ interface Group {
 interface ScheduleItem {
   id: string
   day_of_week: number
-  time_period: string
+  start_time: string
+  end_time: string
   activity: string
   order_index: number
 }
 
 const DAYS = ["Понеделник", "Вторник", "Сряда", "Четвъртък", "Петък"]
-const TIME_PERIODS = { morning: "Сутрин", afternoon: "Следобед" }
+
+// Time period mapping with start and end times
+const TIME_PERIODS_MAP = {
+  "09:00": {
+    label: "09:00 - 09:30",
+    start_time: "09:00",
+    end_time: "09:30",
+  },
+  "09:30": {
+    label: "09:30 - 10:00",
+    start_time: "09:30",
+    end_time: "10:00",
+  },
+  "10:00": {
+    label: "10:00 - 10:30",
+    start_time: "10:00",
+    end_time: "10:30",
+  },
+  "10:30": {
+    label: "10:30 - 11:00",
+    start_time: "10:30",
+    end_time: "11:00",
+  },
+  "11:00": {
+    label: "11:00 - 11:30",
+    start_time: "11:00",
+    end_time: "11:30",
+  },
+  "11:30": {
+    label: "11:30 - 12:00",
+    start_time: "11:30",
+    end_time: "12:00",
+  },
+  "12:00": {
+    label: "12:00 - 12:30",
+    start_time: "12:00",
+    end_time: "12:30",
+  },
+  "12:30": {
+    label: "12:30 - 13:00",
+    start_time: "12:30",
+    end_time: "13:00",
+  },
+  "13:00": {
+    label: "13:00 - 13:30",
+    start_time: "13:00",
+    end_time: "13:30",
+  },
+  "13:30": {
+    label: "13:30 - 14:00",
+    start_time: "13:30",
+    end_time: "14:00",
+  },
+  "14:00": {
+    label: "14:00 - 14:30",
+    start_time: "14:00",
+    end_time: "14:30",
+  },
+  "14:30": {
+    label: "14:30 - 15:00",
+    start_time: "14:30",
+    end_time: "15:00",
+  },
+  "15:00": {
+    label: "15:00 - 15:30",
+    start_time: "15:00",
+    end_time: "15:30",
+  },
+  "15:30": {
+    label: "15:30 - 16:00",
+    start_time: "15:30",
+    end_time: "16:00",
+  },
+}
+
+const TIME_PERIODS = Object.values(TIME_PERIODS_MAP)
 
 export default function GroupSchedulePage() {
   const [group, setGroup] = useState<Group | null>(null)
   const [schedules, setSchedules] = useState<ScheduleItem[]>([])
   const [newActivity, setNewActivity] = useState("")
   const [selectedDay, setSelectedDay] = useState(1)
-  const [selectedPeriod, setSelectedPeriod] = useState<"morning" | "afternoon">("morning")
+  const [selectedPeriod, setSelectedPeriod] = useState("09:00")
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editActivity, setEditActivity] = useState("")
+  const [editDay, setEditDay] = useState(1)
+  const [editPeriod, setEditPeriod] = useState("09:00")
   const params = useParams()
   const supabase = createClient()
 
   useEffect(() => {
-    fetchGroup()
-    fetchSchedules()
-  }, [])
+    if (params.id) {
+      fetchGroup()
+      fetchSchedules()
+    }
+  }, [params.id])
 
   async function fetchGroup() {
-    const { data } = await supabase.from("groups").select("id, name").eq("id", params.id).single()
-    setGroup(data)
+    try {
+      const groupId = Array.isArray(params.id) ? params.id[0] : params.id
+      const { data, error } = await supabase.from("groups").select("id, name").eq("id", groupId).single()
+      
+      if (error) {
+        console.error("[v0] Error fetching group:", error)
+      }
+      setGroup(data)
+    } catch (error) {
+      console.error("[v0] Exception fetching group:", error)
+    }
   }
 
   async function fetchSchedules() {
-    const { data } = await supabase
-      .from("group_schedules")
-      .select("*")
-      .eq("group_id", params.id)
-      .order("day_of_week")
-      .order("time_period")
-      .order("order_index")
-    setSchedules(data || [])
+    try {
+      const groupId = Array.isArray(params.id) ? params.id[0] : params.id
+      const { data, error } = await supabase
+        .from("group_schedules")
+        .select("*")
+        .eq("group_id", groupId)
+        .order("day_of_week")
+        .order("start_time")
+        .order("order_index")
+      
+      if (error) {
+        console.error("[v0] Error fetching schedules:", error)
+      }
+      
+      setSchedules(data || [])
+    } catch (error) {
+      console.error("[v0] Exception fetching schedules:", error)
+    }
   }
 
   async function addActivity() {
     if (!newActivity.trim()) return
 
     try {
-      const { error } = await supabase.from("group_schedules").insert({
-        group_id: params.id,
-        day_of_week: selectedDay,
-        time_period: selectedPeriod,
-        activity: newActivity,
-        order_index: schedules.filter((s) => s.day_of_week === selectedDay && s.time_period === selectedPeriod).length,
-      })
+      const groupId = Array.isArray(params.id) ? params.id[0] : params.id
+      const period = TIME_PERIODS_MAP[selectedPeriod as keyof typeof TIME_PERIODS_MAP]
+      
+      console.log("[v0] Adding activity:", { groupId, selectedDay, period, newActivity })
 
-      if (error) throw error
+      const { error, data } = await supabase.from("group_schedules").insert({
+        group_id: groupId,
+        day_of_week: selectedDay,
+        start_time: period.start_time,
+        end_time: period.end_time,
+        activity: newActivity,
+        order_index: schedules.filter((s) => s.day_of_week === selectedDay && s.start_time === period.start_time).length,
+      }).select()
+
+      console.log("[v0] Insert response:", { error, data })
+
+      if (error) {
+        console.error("[v0] Insert error:", error)
+        throw error
+      }
+      
+      console.log("[v0] Activity added successfully, refreshing list")
       setNewActivity("")
-      fetchSchedules()
+      await fetchSchedules()
     } catch (error) {
-      console.error("Грешка при добавяне:", error)
-      alert("Грешка при добавяне на дейност")
+      console.error("[v0] Грешка при добавяне:", error)
+      alert(`Грешка при добавяне на дейност: ${error instanceof Error ? error.message : "Unknown error"}`)
     }
   }
 
   async function deleteActivity(id: string) {
     try {
       const { error } = await supabase.from("group_schedules").delete().eq("id", id)
-      if (error) throw error
-      fetchSchedules()
+      if (error) {
+        console.error("[v0] Error deleting activity:", error)
+        throw error
+      }
+      await fetchSchedules()
     } catch (error) {
-      console.error("Грешка при изтриване:", error)
+      console.error("[v0] Грешка при изтриване:", error)
+      alert("Грешка при изтриване на дейност")
     }
+  }
+
+  function startEdit(schedule: ScheduleItem) {
+    setEditingId(schedule.id)
+    setEditActivity(schedule.activity)
+    setEditDay(schedule.day_of_week)
+    // Find the corresponding period key from start_time
+    const periodKey = Object.entries(TIME_PERIODS_MAP).find(
+      ([_, period]) => period.start_time === schedule.start_time
+    )?.[0] || "09:00"
+    setEditPeriod(periodKey)
+  }
+
+  async function updateActivity() {
+    if (!editActivity.trim() || !editingId) return
+
+    try {
+      const period = TIME_PERIODS_MAP[editPeriod as keyof typeof TIME_PERIODS_MAP]
+
+      const { error } = await supabase
+        .from("group_schedules")
+        .update({
+          day_of_week: editDay,
+          start_time: period.start_time,
+          end_time: period.end_time,
+          activity: editActivity,
+        })
+        .eq("id", editingId)
+
+      if (error) throw error
+
+      setEditingId(null)
+      setEditActivity("")
+      await fetchSchedules()
+    } catch (error) {
+      console.error("[v0] Грешка при редактиране:", error)
+      alert("Грешка при редактиране на дейност")
+    }
+  }
+
+  function cancelEdit() {
+    setEditingId(null)
+    setEditActivity("")
   }
 
   const getScheduleForDay = (day: number, period: string) => {
@@ -122,11 +283,14 @@ export default function GroupSchedulePage() {
             </select>
             <select
               value={selectedPeriod}
-              onChange={(e) => setSelectedPeriod(e.target.value as "morning" | "afternoon")}
+              onChange={(e) => setSelectedPeriod(e.target.value)}
               className="border rounded px-3 py-2"
             >
-              <option value="morning">Сутрин</option>
-              <option value="afternoon">Следобед</option>
+              {Object.entries(TIME_PERIODS_MAP).map(([key, period]) => (
+                <option key={key} value={key}>
+                  {period.label}
+                </option>
+              ))}
             </select>
             <Input
               value={newActivity}
@@ -142,37 +306,102 @@ export default function GroupSchedulePage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-6">
-        {DAYS.map((day, dayIndex) => (
-          <Card key={dayIndex}>
-            <CardHeader>
-              <CardTitle>{day}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-2 gap-6">
-                {(["morning", "afternoon"] as const).map((period) => (
-                  <div key={period}>
-                    <h3 className="font-semibold mb-3">{TIME_PERIODS[period]}</h3>
-                    <div className="space-y-2">
-                      {getScheduleForDay(dayIndex + 1, period).map((item) => (
-                        <div key={item.id} className="flex items-center justify-between p-2 bg-muted rounded">
-                          <span>{item.activity}</span>
-                          <Button variant="ghost" size="sm" onClick={() => deleteActivity(item.id)}>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+      {/* Edit Activity Form */}
+      {editingId && (
+        <Card className="mb-8 border-primary/50 bg-primary/5">
+          <CardHeader>
+            <CardTitle>Редактирай дейност</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4">
+              <select
+                value={editDay}
+                onChange={(e) => setEditDay(Number.parseInt(e.target.value))}
+                className="border rounded px-3 py-2"
+              >
+                {DAYS.map((day, index) => (
+                  <option key={index} value={index + 1}>
+                    {day}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={editPeriod}
+                onChange={(e) => setEditPeriod(e.target.value)}
+                className="border rounded px-3 py-2"
+              >
+                {Object.entries(TIME_PERIODS_MAP).map(([key, period]) => (
+                  <option key={key} value={key}>
+                    {period.label}
+                  </option>
+                ))}
+              </select>
+              <Input
+                value={editActivity}
+                onChange={(e) => setEditActivity(e.target.value)}
+                placeholder="Име на дейност"
+                className="flex-1"
+              />
+              <Button onClick={updateActivity} className="bg-primary">
+                Запази
+              </Button>
+              <Button onClick={cancelEdit} variant="outline">
+                Отмени
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Display added activities grouped by day */}
+      {schedules.length > 0 ? (
+        <div className="grid gap-6">
+          {DAYS.map((day, dayIndex) => {
+            const dayActivities = schedules.filter((s) => s.day_of_week === dayIndex + 1)
+            if (dayActivities.length === 0) return null
+            
+            return (
+              <Card key={dayIndex}>
+                <CardHeader>
+                  <CardTitle>{day}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {dayActivities
+                      .sort((a, b) => a.start_time.localeCompare(b.start_time))
+                      .map((schedule) => (
+                        <div key={schedule.id} className="flex items-center justify-between p-4 bg-muted rounded-lg border border-border hover:border-primary transition-colors">
+                          <div className="flex-1">
+                            <p className="font-semibold text-primary">{schedule.start_time} - {schedule.end_time}</p>
+                            <p className="text-foreground">{schedule.activity}</p>
+                          </div>
+                          <div className="flex gap-2 ml-4">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              onClick={() => startEdit(schedule)}
+                            >
+                              ✏️
+                            </Button>
+                            <Button variant="ghost" size="sm" onClick={() => deleteActivity(schedule.id)}>
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       ))}
-                      {getScheduleForDay(dayIndex + 1, period).length === 0 && (
-                        <p className="text-sm text-muted-foreground">Няма дейности</p>
-                      )}
-                    </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+      ) : (
+        <Card className="bg-muted/50 border-dashed">
+          <CardContent className="pt-8 text-center">
+            <p className="text-muted-foreground">Няма добавени дейности. Добави дейност с формата по-горе.</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

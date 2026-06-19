@@ -23,7 +23,11 @@ export default async function AdminNewsPage() {
     redirect("/admin/login")
   }
 
-  const { data: newsPosts } = await supabase.from("news_posts").select("*").order("published_at", { ascending: false })
+  const { data: newsPosts } = await supabase
+    .from("news_posts")
+    .select("*")
+    .order("news_date", { ascending: false })
+    .order("news_hour", { ascending: false })
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,45 +54,37 @@ export default async function AdminNewsPage() {
         <div className="space-y-4">
           {newsPosts?.map((post) => (
             <Card key={post.id} className="p-6">
-              <div className="flex gap-6">
-                {post.image_url && (
-                  <img
-                    src={post.image_url || "/placeholder.svg"}
-                    alt={post.title}
-                    className="w-32 h-32 rounded-lg object-cover"
-                  />
-                )}
-                <div className="flex-1">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold text-xl mb-2">{post.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        {format(new Date(post.published_at), "MMMM d, yyyy")}
-                      </p>
-                      <p className="text-sm mb-4 line-clamp-2">{post.excerpt}</p>
-                      <div className="flex gap-2">
-                        <span className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-xs">
-                          {post.category}
-                        </span>
-                        {post.featured && (
-                          <span className="inline-block px-3 py-1 bg-accent text-accent-foreground rounded-full text-xs">
-                            Препоръчано
-                          </span>
-                        )}
-                      </div>
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-xl">{post.title}</h3>
+                      <span
+                        className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
+                          post.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {post.is_active ? "Активна" : "Неактивна"}
+                      </span>
                     </div>
-                    <div className="flex gap-2">
-                      <Link href={`/admin/news/${post.id}/edit`}>
-                        <Button variant="outline" size="sm">
-                          <Pencil className="w-4 h-4" />
-                        </Button>
-                      </Link>
-                      <form action={`/api/admin/news/${post.id}/delete`} method="POST">
-                        <Button variant="destructive" size="sm" type="submit">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </form>
+                    <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+                      <span>📅 {post.news_date}</span>
+                      <span>🕐 {post.news_hour}</span>
+                      <span>👤 {post.from_text}</span>
                     </div>
+                    <p className="text-sm mt-3 line-clamp-2">{post.description}</p>
+                  </div>
+                  <div className="flex gap-2 ml-4">
+                    <a href={`/admin/news/${post.id}/edit`}>
+                      <Button variant="outline" size="sm">
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                    </a>
+                    <form action={`/api/admin/news/${post.id}/delete`} method="POST">
+                      <Button variant="destructive" size="sm" type="submit">
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </form>
                   </div>
                 </div>
               </div>

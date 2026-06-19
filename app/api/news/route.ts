@@ -1,14 +1,26 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 
+// Revalidate every 5 seconds for fresh data
+export const revalidate = 5
+
 export async function GET() {
   try {
     const supabase = await createClient()
 
     const { data: newsPosts, error } = await supabase
       .from("news_posts")
-      .select("*")
-      .order("published_at", { ascending: false })
+      .select(`
+        *,
+        news_files (
+          id,
+          file_name,
+          file_url
+        )
+      `)
+      .eq("is_active", true)
+      .order("news_date", { ascending: false })
+      .order("news_hour", { ascending: false })
 
     if (error) {
       console.error("[v0] Error fetching news posts:", error)

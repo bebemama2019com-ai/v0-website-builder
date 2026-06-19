@@ -10,19 +10,22 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { ArrowLeft, X } from "lucide-react"
 import Link from "next/link"
 
 interface TeamMember {
   id: string
   name: string
+  role: string
+  bio: string
 }
 
 export default function NewGroupPage() {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const [responsibleTeacherId, setResponsibleTeacherId] = useState("no-responsible")
+  const [age, setAge] = useState("")
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([])
   const [orderIndex, setOrderIndex] = useState("0")
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
   const [loading, setLoading] = useState(false)
@@ -34,8 +37,22 @@ export default function NewGroupPage() {
   }, [])
 
   async function fetchTeamMembers() {
-    const { data } = await supabase.from("team_members").select("id, name").order("name")
-    setTeamMembers(data || [])
+    try {
+      const { data, error } = await supabase.from("team_members").select("id, name, role, bio").order("name")
+      if (error) {
+        console.error("[v0] Error fetching team members:", error)
+        return
+      }
+      setTeamMembers(data || [])
+    } catch (error) {
+      console.error("[v0] Exception fetching team members:", error)
+    }
+  }
+
+  const toggleTeacher = (teacherId: string) => {
+    setSelectedTeachers((prev) =>
+      prev.includes(teacherId) ? prev.filter((id) => id !== teacherId) : [...prev, teacherId]
+    )
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -43,18 +60,51 @@ export default function NewGroupPage() {
     setLoading(true)
 
     try {
-      const { error } = await supabase.from("groups").insert({
-        name,
-        description: description || null,
-        responsible_teacher_id: responsibleTeacherId === "no-responsible" ? null : responsibleTeacherId,
-        order_index: Number.parseInt(orderIndex),
-      })
+      // Insert group
+      const { data: groupData, error: groupError } = await supabase
+        .from("groups")
+        .insert({
+          name,
+          description: description || null,
+          age: age || null,
+          order_index: Number.parseInt(orderIndex),
+        })
+        .select()
 
-      if (error) throw error
+      if (groupError) {
+        console.error("[v0] Error creating group:", groupError)
+        throw new Error(`Грешка при създаване на групата: ${groupError.message}`)
+      }
+
+      const groupId = groupData?.[0]?.id
+      if (!groupId) {
+        throw new Error("Не беше възможно да се създаде групата")
+      }
+
+      // Insert group_teachers relationships only if table exists (Migration 009 run)
+      if (selectedTeachers.length > 0) {
+        const groupTeachers = selectedTeachers.map((teacherId, index) => ({
+          group_id: groupId,
+          teacher_id: teacherId,
+          order_index: index,
+        }))
+
+        const { error: teacherError } = await supabase.from("group_teachers").insert(groupTeachers)
+        
+        // If table doesn't exist, log warning but don't fail - group was created successfully
+        if (teacherError && teacherError.message && teacherError.message.includes("does not exist")) {
+          console.warn("[v0] group_teachers table not found - Migration 009 not run yet. Group created but teachers not assigned.")
+        } else if (teacherError) {
+          console.error("[v0] Error adding teachers to group:", teacherError)
+          throw new Error(`Грешка при добавяне на учители: ${teacherError.message}`)
+        }
+      }
+
       router.push("/admin/groups")
     } catch (error) {
-      console.error("Грешка при създаване:", error)
-      alert("Грешка при създаване на групата")
+      console.error("[v0] Error saving group:", error)
+      const errorMessage = error instanceof Error ? error.message : "Грешка при съхраняване на групата"
+      alert(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -92,20 +142,35 @@ export default function NewGroupPage() {
             </div>
 
             <div>
-              <Label htmlFor="teacher">Отговорен учител</Label>
-              <Select value={responsibleTeacherId} onValueChange={setResponsibleTeacherId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Изберете учител" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="no-responsible">Без отговорник</SelectItem>
-                  {teamMembers.map((member) => (
-                    <SelectItem key={member.id} value={member.id}>
-                      {member.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor="age">Възраст</Label>
+              <Input id="age" value={age} onChange={(e) => setAge(e.target.value)} placeholder="например: 2-3 години" />
+            </div>
+
+            <div>
+              <Label>Отговорни учители</Label>
+              <div className="space-y-2 max-h-60 overflow-y-auto border rounded-md p-4">
+                {teamMembers.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Няма налични учители</p>
+                ) : (
+                  teamMembers.map((member) => (
+                    <div key={member.id} className="flex items-start gap-3">
+                      <Checkbox
+                        id={member.id}
+                        checked={selectedTeachers.includes(member.id)}
+                        onCheckedChange={() => toggleTeacher(member.id)}
+                      />
+                      <label htmlFor={member.id} className="flex-1 cursor-pointer">
+                        <div className="font-medium">{member.name}</div>
+                        <div className="text-sm text-muted-foreground">{member.role}</div>
+                        {member.bio && <div className="text-xs text-muted-foreground line-clamp-2">{member.bio}</div>}
+                      </label>
+                    </div>
+                  ))
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                Избрани: {selectedTeachers.length} {selectedTeachers.length === 1 ? "учител" : "учители"}
+              </p>
             </div>
 
             <div>

@@ -5,18 +5,21 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Plus, Edit, Trash2, Calendar } from "lucide-react"
+import { Plus, Edit, Trash2, Calendar, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
 interface Group {
   id: string
   name: string
   description: string | null
-  responsible_teacher_id: string | null
+  age: string | null
   order_index: number
-  team_members: {
-    name: string
-  } | null
+  group_teachers: Array<{
+    team_members: {
+      name: string
+      role: string
+    }
+  }>
 }
 
 export default function GroupsAdminPage() {
@@ -35,14 +38,39 @@ export default function GroupsAdminPage() {
         .from("groups")
         .select(`
           *,
-          team_members:responsible_teacher_id (name)
+          group_teachers (
+            team_members:teacher_id (name, role)
+          )
         `)
         .order("order_index", { ascending: true })
 
-      if (error) throw error
-      setGroups(data || [])
+      // If the error is about missing relationship (Migration 009 not run yet),
+      // fall back to fetching just groups without teachers
+      if (error && error.message && error.message.includes("relationship")) {
+        console.warn("[v0] group_teachers table not found, fetching groups without teachers")
+        
+        const { data: groupsOnly, error: groupsError } = await supabase
+          .from("groups")
+          .select("*")
+          .order("order_index", { ascending: true })
+
+        if (groupsError) throw groupsError
+        
+        // Add empty group_teachers array to maintain consistent structure
+        const groupsWithEmpty = groupsOnly?.map(group => ({
+          ...group,
+          group_teachers: []
+        })) || []
+        
+        setGroups(groupsWithEmpty)
+      } else if (error) {
+        throw error
+      } else {
+        setGroups(data || [])
+      }
     } catch (error) {
-      console.error("Грешка при зареждане на групи:", error)
+      console.error("[v0] Error fetching groups:", error)
+      alert("Грешка при зареждане на групи")
     } finally {
       setLoading(false)
     }
@@ -68,9 +96,16 @@ export default function GroupsAdminPage() {
   return (
     <div className="container mx-auto p-8">
       <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">Управление на групи</h1>
-          <p className="text-muted-foreground mt-2">Управлявайте групите и техните седмични програми</p>
+        <div className="flex items-center gap-4">
+          <Button variant="outline" size="icon" asChild>
+            <Link href="/admin">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold">Управление на групи</h1>
+            <p className="text-muted-foreground mt-2">Управлявайте групите и техните седмични програми</p>
+          </div>
         </div>
         <Button asChild>
           <Link href="/admin/groups/new">
@@ -89,10 +124,22 @@ export default function GroupsAdminPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {group.team_members && (
+                {group.age && (
                   <div className="text-sm">
-                    <span className="font-medium">Отговорник: </span>
-                    {group.team_members.name}
+                    <span className="font-medium">Възраст: </span>
+                    {group.age}
+                  </div>
+                )}
+                {group.group_teachers && group.group_teachers.length > 0 && (
+                  <div className="text-sm">
+                    <span className="font-medium">Отговорни учители: </span>
+                    <div className="mt-1 space-y-1">
+                      {group.group_teachers.map((gt, index) => (
+                        <div key={index} className="text-xs">
+                          {gt.team_members?.name} ({gt.team_members?.role})
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
                 <div className="flex gap-2">

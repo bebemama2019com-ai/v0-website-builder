@@ -3,7 +3,7 @@
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
-import { Users, Heart, GraduationCap, Building2 } from "lucide-react"
+import { GraduationCap, Heart, Building2, Users } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 
 export default function AboutPage() {
@@ -53,27 +53,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Staff Section */}
-      <section className="px-4 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-            <div className="relative order-2 lg:order-1">
-              <div className="aspect-[4/3] overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 to-accent/20">
-                <img src="/happy-kindergarten-teachers-with-children.jpg" alt="Нашият екип" className="h-full w-full object-cover" />
-              </div>
-            </div>
-            <div className="flex flex-col justify-center order-1 lg:order-2">
-              <div className="mb-6 inline-flex rounded-2xl bg-primary/10 p-4 w-fit">
-                <Users className="h-8 w-8 text-primary" />
-              </div>
-              <h2 className="mb-6 text-balance text-3xl font-bold text-foreground lg:text-4xl">
-                {t.about.staff.title}
-              </h2>
-              <p className="text-pretty text-lg leading-relaxed text-muted-foreground">{t.about.staff.description}</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Staff Section - Moved to /team page */}
 
       {/* Groups Section */}
       <section className="bg-muted/50 px-4 py-16 lg:py-24">
