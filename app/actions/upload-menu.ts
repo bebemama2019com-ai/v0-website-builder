@@ -17,11 +17,13 @@ export async function uploadMenuFile(
 
     // Upload file to storage
     const uploadFileName = `${menuType}-${Date.now()}.pdf`
-    const buffer = fileBytes
+    
+    // Convert ArrayBuffer to Blob for Supabase
+    const blob = new Blob([fileBytes], { type: "application/pdf" })
     
     const { error: uploadError } = await supabase.storage
       .from("menu-files")
-      .upload(uploadFileName, buffer, {
+      .upload(uploadFileName, blob, {
         contentType: "application/pdf",
       })
 
