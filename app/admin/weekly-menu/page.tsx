@@ -23,7 +23,7 @@ const MENU_TYPES = [
 ]
 
 export default function AdminWeeklyMenuPage() {
-  const supabase = createClient()
+  const [supabase] = useState(() => createClient())
   const [files, setFiles] = useState<MenuFile[]>([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState<string | null>(null)
@@ -32,7 +32,8 @@ export default function AdminWeeklyMenuPage() {
 
   useEffect(() => {
     fetchFiles()
-  }, [])
+    // Disable real-time subscriptions to prevent stack overflow
+  }, [supabase])
 
   async function fetchFiles() {
     try {
