@@ -21,10 +21,31 @@ export default function WeeklyMenuPage() {
   const { language } = useLanguage()
   const [menuFiles, setMenuFiles] = useState<MenuFile[]>([])
   const [loading, setLoading] = useState(true)
+  const [downloading, setDownloading] = useState<string | null>(null)
 
   useEffect(() => {
     fetchMenuFiles()
   }, [])
+
+  async function handleDownload(menuFile: MenuFile) {
+    try {
+      setDownloading(menuFile.menu_type)
+      const response = await fetch(menuFile.file_url)
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = menuFile.file_name
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      console.error("[v0] Error downloading file:", error)
+    } finally {
+      setDownloading(null)
+    }
+  }
 
   async function fetchMenuFiles() {
     try {
@@ -126,11 +147,17 @@ export default function WeeklyMenuPage() {
                         {language === "bg" ? "Зареждане..." : "Loading..."}
                       </Button>
                     ) : menuFile ? (
-                      <Button asChild variant="outline" className="w-full rounded-xl" size="lg">
-                        <a href={menuFile.file_url} download={menuFile.file_name} target="_blank" rel="noopener noreferrer">
-                          <Download className="mr-2 h-5 w-5" />
-                          {language === "bg" ? "Изтегли PDF" : "Download PDF"}
-                        </a>
+                      <Button 
+                        onClick={() => handleDownload(menuFile)}
+                        disabled={downloading === menuFile.menu_type}
+                        variant="outline" 
+                        className="w-full rounded-xl" 
+                        size="lg"
+                      >
+                        <Download className="mr-2 h-5 w-5" />
+                        {downloading === menuFile.menu_type 
+                          ? (language === "bg" ? "Изтеглянето..." : "Downloading...")
+                          : (language === "bg" ? "Изтегли меню" : "Download Menu")}
                       </Button>
                     ) : (
                       <Button disabled variant="outline" className="w-full rounded-xl" size="lg">
