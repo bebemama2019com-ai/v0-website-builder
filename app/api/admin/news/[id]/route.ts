@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { generateSlug } from "@/lib/utils/slug"
 
 export async function PUT(
   request: NextRequest,
@@ -9,10 +10,13 @@ export async function PUT(
     const supabase = await createClient()
     const body = await request.json()
 
+    const slug = generateSlug(body.title)
+
     const { data: updatedPost, error } = await supabase
       .from("news_posts")
       .update({
         title: body.title,
+        slug: slug,
         content: body.content,
         news_date: body.news_date,
         news_hour: body.news_hour,
