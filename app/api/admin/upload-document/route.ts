@@ -33,12 +33,27 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create unique filename with timestamp to prevent overwrites
-    const timestamp = Date.now()
+    // Create filename based on document type (will overwrite on re-upload)
     const ext = file.name.split(".").pop()
-    // Format: documentType-originalName-timestamp.ext (e.g., budget-report-myfile-1234567890.pdf)
-    const originalName = file.name.split(".")[0].replace(/\s+/g, "-").toLowerCase()
-    const fileName = `${documentType}-${originalName}-${timestamp}.${ext}`
+    
+    // Map document types to consistent filenames
+    const fileNameMap: Record<string, string> = {
+      budget: `otchet-byudzhet-2025.${ext}`,
+      "eco-education": `programa-ekologichno-vazpitanie.${ext}`,
+      "child-protection": `vansni-pravila-za-zaschita.${ext}`,
+      "personal-data": `vansni-pravila-za-zaschita-na-lichni-dani.${ext}`,
+      "godishen-plan": `godishen-plan-2025-2026.${ext}`,
+      "sistema-programa": `programa-sistema.${ext}`,
+      "pravilnik-propuskatelni": `pravilnik-za-propuskatelni-rejim.${ext}`,
+      "pravila-dejstvie-terorizam": `pravila-za-dejstvie-pri-terorizam.${ext}`,
+      "plan-programa-bdp": `plan-programa-bdp.${ext}`,
+      "mehanizam-dete-risk": `mehanizam-za-dete-v-risk.${ext}`,
+      "etichen-kodeks-dete": `etichen-kodeks-za-rabota-s-dete.${ext}`,
+      "etichen-kodeks-dg-202": `etichen-kodeks-dg-202.${ext}`,
+      "model-adaptacija": `model-za-adaptacija.${ext}`,
+    }
+    
+    const fileName = fileNameMap[documentType] || `document-${documentType}.${ext}`
 
     // Ensure directory exists
     const docsPath = join(process.cwd(), "public", "documents")
