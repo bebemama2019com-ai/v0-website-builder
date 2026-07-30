@@ -1,6 +1,6 @@
 "use client"
 
-// Force rebuild - remove Icon reference
+import { useEffect, useState } from "react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Download, FileText } from "lucide-react"
@@ -36,6 +36,30 @@ export function DocumentPageMulti({
   files,
   sections,
 }: DocumentPageMultiProps) {
+  const [availableFiles, setAvailableFiles] = useState<Set<string>>(new Set())
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    async function checkFilesExist() {
+      const available = new Set<string>()
+      
+      for (const file of files) {
+        try {
+          const response = await fetch(file.path, { method: "HEAD" })
+          if (response.ok) {
+            available.add(file.path)
+          }
+        } catch (error) {
+          console.log(`[v0] File not available: ${file.path}`)
+        }
+      }
+      
+      setAvailableFiles(available)
+      setIsLoading(false)
+    }
+
+    checkFilesExist()
+  }, [files])
 
 
   return (
@@ -111,12 +135,18 @@ export function DocumentPageMulti({
                         </div>
                       </div>
                       <div className="flex-shrink-0">
-                        <a href={file.path} download>
-                          <Button size="sm" className="gap-2">
-                            <Download className="w-4 h-4" />
-                            Свали
-                          </Button>
-                        </a>
+                        {availableFiles.has(file.path) ? (
+                          <a href={file.path} download>
+                            <Button size="sm" className="gap-2">
+                              <Download className="w-4 h-4" />
+                              Свали
+                            </Button>
+                          </a>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">
+                            Не е налично
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -161,12 +191,24 @@ export function DocumentPageMulti({
                 </p>
                 <div className="flex flex-wrap gap-3 justify-center">
                   {files.map((file, index) => (
-                    <a key={index} href={file.path} download>
-                      <Button variant="outline" className="gap-2">
-                        <Download className="w-4 h-4" />
+                    availableFiles.has(file.path) ? (
+                      <a key={index} href={file.path} download>
+                        <Button variant="outline" className="gap-2">
+                          <Download className="w-4 h-4" />
+                          {file.name}
+                        </Button>
+                      </a>
+                    ) : (
+                      <Button
+                        key={index}
+                        variant="outline"
+                        disabled
+                        className="gap-2 opacity-50 cursor-not-allowed"
+                      >
+                        <FileText className="w-4 h-4" />
                         {file.name}
                       </Button>
-                    </a>
+                    )
                   ))}
                 </div>
               </div>
