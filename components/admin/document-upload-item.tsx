@@ -46,20 +46,25 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
     try {
       // If there's an existing file, delete it
       if (currentFile?.file_path) {
+        console.log("[v0] Deleting existing file:", currentFile.file_path)
         await supabase.storage.from("documents").remove([currentFile.file_path])
       }
 
       // Upload new file
       const fileName = `${documentType}/${Date.now()}-${file.name}`
+      console.log("[v0] Uploading file to:", fileName)
       const { error: uploadError } = await supabase.storage.from("documents").upload(fileName, file)
 
-      if (uploadError) throw uploadError
+      if (uploadError) {
+        console.error("[v0] Storage upload error:", uploadError)
+        throw uploadError
+      }
 
-      // Get public URL
-      const { data: publicUrl } = supabase.storage.from("documents").getPublicUrl(fileName)
+      console.log("[v0] File uploaded successfully")
 
       // Update or create document record
       if (currentFile) {
+        console.log("[v0] Updating document record:", currentFile.id)
         const { error: updateError } = await supabase
           .from("documents")
           .update({
@@ -70,22 +75,58 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
           })
           .eq("id", currentFile.id)
 
-        if (updateError) throw updateError
+        if (updateError) {
+          console.error("[v0] Database update error:", updateError)
+          throw updateError
+        }
       } else {
+        console.log("[v0] Creating or updating document record for type:", documentType)
+        
+        // Try to insert first
         const { error: insertError } = await supabase.from("documents").insert({
           document_type: documentType,
           file_name: file.name,
           file_path: fileName,
           file_size: file.size,
-        })
+        }).select()
 
-        if (insertError) throw insertError
+        if (insertError) {
+          console.log("[v0] Insert failed (likely duplicate), attempting update:", insertError.code)
+          
+          // If insert fails due to unique constraint, try to update
+          if (insertError.code === "23505") {
+            const { error: updateError } = await supabase
+              .from("documents")
+              .update({
+                file_name: file.name,
+                file_path: fileName,
+                file_size: file.size,
+                updated_at: new Date().toISOString(),
+              })
+              .eq("document_type", documentType)
+
+            if (updateError) {
+              console.error("[v0] Database update error:", updateError)
+              throw updateError
+            }
+            console.log("[v0] Document updated successfully")
+          } else {
+            console.error("[v0] Database insert error:", insertError)
+            console.error("[v0] Insert error code:", insertError.code)
+            console.error("[v0] Insert error details:", insertError.details)
+            throw insertError
+          }
+        } else {
+          console.log("[v0] Document inserted successfully")
+        }
       }
 
+      console.log("[v0] Upload complete, calling onFileUploaded")
       onFileUploaded()
     } catch (error) {
       console.error("[v0] Error uploading file:", error)
-      alert("Грешка при зареждане на файл. Моля, опитайте отново.")
+      const errorMsg = error instanceof Error ? error.message : String(error)
+      alert(`Грешка при зареждане на файл: ${errorMsg}`)
     } finally {
       setUploading(false)
     }
