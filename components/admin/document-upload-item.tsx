@@ -6,7 +6,6 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText, Download, Trash2, Upload } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
 
 interface DocumentItemProps {
   documentType: string
@@ -23,7 +22,6 @@ interface DocumentItemProps {
 
 export default function DocumentUploadItem({ documentType, displayName, currentFile, onFileUploaded }: DocumentItemProps) {
   const [uploading, setUploading] = useState(false)
-  const supabase = createClient()
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -44,84 +42,22 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
 
     setUploading(true)
     try {
-      // If there's an existing file, delete it
-      if (currentFile?.file_path) {
-        console.log("[v0] Deleting existing file:", currentFile.file_path)
-        await supabase.storage.from("documents").remove([currentFile.file_path])
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("documentType", documentType)
+
+      const response = await fetch("/api/admin/upload-document", {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || "Upload failed")
       }
 
-      // Upload new file
-      const fileName = `${documentType}/${Date.now()}-${file.name}`
-      console.log("[v0] Uploading file to:", fileName)
-      const { error: uploadError } = await supabase.storage.from("documents").upload(fileName, file)
-
-      if (uploadError) {
-        console.error("[v0] Storage upload error:", uploadError)
-        throw uploadError
-      }
-
-      console.log("[v0] File uploaded successfully")
-
-      // Update or create document record
-      if (currentFile) {
-        console.log("[v0] Updating document record:", currentFile.id)
-        const { error: updateError } = await supabase
-          .from("documents")
-          .update({
-            file_name: file.name,
-            file_path: fileName,
-            file_size: file.size,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", currentFile.id)
-
-        if (updateError) {
-          console.error("[v0] Database update error:", updateError)
-          throw updateError
-        }
-      } else {
-        console.log("[v0] Creating or updating document record for type:", documentType)
-        
-        // Try to insert first
-        const { error: insertError } = await supabase.from("documents").insert({
-          document_type: documentType,
-          file_name: file.name,
-          file_path: fileName,
-          file_size: file.size,
-        }).select()
-
-        if (insertError) {
-          console.log("[v0] Insert failed (likely duplicate), attempting update:", insertError.code)
-          
-          // If insert fails due to unique constraint, try to update
-          if (insertError.code === "23505") {
-            const { error: updateError } = await supabase
-              .from("documents")
-              .update({
-                file_name: file.name,
-                file_path: fileName,
-                file_size: file.size,
-                updated_at: new Date().toISOString(),
-              })
-              .eq("document_type", documentType)
-
-            if (updateError) {
-              console.error("[v0] Database update error:", updateError)
-              throw updateError
-            }
-            console.log("[v0] Document updated successfully")
-          } else {
-            console.error("[v0] Database insert error:", insertError)
-            console.error("[v0] Insert error code:", insertError.code)
-            console.error("[v0] Insert error details:", insertError.details)
-            throw insertError
-          }
-        } else {
-          console.log("[v0] Document inserted successfully")
-        }
-      }
-
-      console.log("[v0] Upload complete, calling onFileUploaded")
+      const result = await response.json()
+      console.log("[v0] File uploaded successfully:", result.path)
       onFileUploaded()
     } catch (error) {
       console.error("[v0] Error uploading file:", error)
@@ -137,11 +73,15 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
     if (!confirm("Сигурни ли сте, че искате да изтриете този файл?")) return
 
     try {
-      // Delete from storage
-      await supabase.storage.from("documents").remove([currentFile.file_path])
+      const response = await fetch("/api/admin/delete-document", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ documentType }),
+      })
 
-      // Delete from database
-      await supabase.from("documents").delete().eq("id", currentFile.id)
+      if (!response.ok) {
+        throw new Error("Delete failed")
+      }
 
       onFileUploaded()
     } catch (error) {
