@@ -1,6 +1,24 @@
 # Storage Setup Instructions
 
-## Creating the menu-files Storage Bucket
+This project requires two storage buckets in Supabase:
+- **menu-files** - For weekly menu PDFs
+- **documents** - For administrative documents (budget reports, etc.)
+
+## Quick Setup
+
+Run this command to create both buckets automatically:
+
+```bash
+node scripts/create-storage-buckets.mjs
+```
+
+Requires environment variables:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+## Creating Storage Buckets Manually
+
+### Creating the menu-files Storage Bucket
 
 The file upload feature requires a "menu-files" storage bucket in Supabase. Follow these steps:
 
@@ -19,6 +37,7 @@ The file upload feature requires a "menu-files" storage bucket in Supabase. Foll
 
 ```bash
 supabase storage create-bucket menu-files --public
+supabase storage create-bucket documents --public
 ```
 
 ### Option 3: Supabase API
@@ -27,7 +46,22 @@ supabase storage create-bucket menu-files --public
 const { data, error } = await supabase.storage.createBucket('menu-files', {
   public: true,
 })
+
+const { data: docs, error: docsError } = await supabase.storage.createBucket('documents', {
+  public: true,
+})
 ```
+
+### Creating the documents Storage Bucket
+
+The documents bucket stores administrative documents like budget reports:
+
+1. Go to your Supabase project dashboard
+2. Navigate to **Storage** (left sidebar)
+3. Click **Create a new bucket**
+4. Enter the bucket name: `documents`
+5. Choose visibility: **Public**
+6. Click **Create bucket**
 
 ## Setting Up Row Level Security (RLS) Policies
 
@@ -52,12 +86,30 @@ Once the bucket is created, you may need to set up RLS policies:
 - Permissions: `DELETE`
 - With check: `bucket_id = 'menu-files' AND auth.role() = 'authenticated'`
 
+**For documents bucket, repeat the same steps but replace `menu-files` with `documents`:**
+
+**Allow Public Read (documents):**
+- Target roles: `anon`, `authenticated`
+- Permissions: `SELECT`
+- With check: `bucket_id = 'documents'`
+
+**Allow Authenticated Upload (documents):**
+- Target roles: `authenticated`
+- Permissions: `INSERT`
+- With check: `bucket_id = 'documents' AND auth.role() = 'authenticated'`
+
+**Allow Authenticated Delete (documents):**
+- Target roles: `authenticated`
+- Permissions: `DELETE`
+- With check: `bucket_id = 'documents' AND auth.role() = 'authenticated'`
+
 ## Troubleshooting
 
 ### "Bucket not found" error
-- Make sure the bucket is named exactly: `menu-files`
-- Verify the bucket exists in your Supabase dashboard
+- Make sure both buckets exist: `menu-files` and `documents`
+- Verify the buckets exist in your Supabase dashboard under Storage
 - Check that you're connected to the correct Supabase project
+- Try running: `node scripts/create-storage-buckets.mjs` to create them
 
 ### File upload fails silently
 - Check RLS policies are correctly configured
@@ -70,9 +122,14 @@ Once the bucket is created, you may need to set up RLS policies:
 
 ## Verifying the Setup
 
-After creating the bucket, test it by:
+After creating both buckets, test them by:
 
 1. Going to the admin panel
-2. Navigate to **Управление на Седмично меню** (Weekly Menu Management)
-3. Try uploading a PDF file
-4. You should see success message: "Файлът за детската градина беше успешно качен"
+2. For menu-files bucket:
+   - Navigate to **Управление на Седмично меню** (Weekly Menu Management)
+   - Try uploading a PDF file for kindergarten or nursery
+   - You should see success message: "Файлът беше успешно качен"
+3. For documents bucket:
+   - Navigate to **Отчет Бюджет 2025** (Budget Report 2025)
+   - Try uploading a document file
+   - You should see success message: "Файлът беше успешно качен"

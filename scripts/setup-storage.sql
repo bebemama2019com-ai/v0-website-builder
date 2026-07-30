@@ -37,3 +37,36 @@ CREATE POLICY "Allow authenticated delete" ON storage.objects
     bucket_id = 'menu-files'
     AND auth.role() = 'authenticated'
   );
+
+-- Create documents storage bucket
+-- This bucket stores administrative documents like budget reports
+
+-- To create the documents bucket via CLI:
+-- supabase storage create-bucket documents --public
+
+-- To create the bucket via dashboard:
+-- 1. Go to Supabase Dashboard
+-- 2. Select your project
+-- 3. Go to Storage
+-- 4. Click "Create a new bucket"
+-- 5. Name: documents
+-- 6. Make it Public
+
+-- After creating the bucket, set up RLS policies:
+CREATE POLICY "Allow public read documents" ON storage.objects
+  FOR SELECT
+  USING (bucket_id = 'documents');
+
+CREATE POLICY "Allow authenticated upload documents" ON storage.objects
+  FOR INSERT
+  WITH CHECK (
+    bucket_id = 'documents'
+    AND auth.role() = 'authenticated'
+  );
+
+CREATE POLICY "Allow authenticated delete documents" ON storage.objects
+  FOR DELETE
+  USING (
+    bucket_id = 'documents'
+    AND auth.role() = 'authenticated'
+  );
