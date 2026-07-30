@@ -39,7 +39,7 @@ export function DocumentPage({
   useEffect(() => {
     async function checkFileExists() {
       try {
-        const response = await fetch("/api/admin/documents")
+        const response = await fetch("/api/admin/documents?minimal=true")
         if (!response.ok) throw new Error("Failed to fetch documents")
         
         const documents: Array<{ file_path: string }> = await response.json()

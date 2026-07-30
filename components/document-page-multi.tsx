@@ -45,7 +45,7 @@ export function DocumentPageMulti({
       
       try {
         // Fetch available documents from database
-        const response = await fetch("/api/admin/documents")
+        const response = await fetch("/api/admin/documents?minimal=true")
         if (!response.ok) {
           console.error("[v0] Failed to fetch documents from database")
           setIsLoading(false)
