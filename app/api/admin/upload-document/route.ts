@@ -110,27 +110,56 @@ export async function POST(request: NextRequest) {
       .from("documents")
       .getPublicUrl(fileName)
 
-    // Save file info to database
-    const { error: upsertError } = await supabase
+    // Save file info to database - try update first, then insert
+    const { data: existingDoc, error: selectError } = await supabase
       .from("documents")
-      .upsert({
-        document_type: documentType,
-        file_name: file.name,
-        file_path: fileName,
-        file_size: file.size,
-      }, {
-        onConflict: "document_type"
-      })
+      .select("id")
+      .eq("document_type", documentType)
+      .single()
 
-    if (upsertError) {
-      console.error("[v0] Database upsert error:", upsertError)
+    let dbError = null
+
+    if (existingDoc) {
+      // Update existing record
+      const { error: updateError } = await supabase
+        .from("documents")
+        .update({
+          file_name: file.name,
+          file_path: fileName,
+          file_size: file.size,
+        })
+        .eq("document_type", documentType)
+      
+      dbError = updateError
+      if (!dbError) {
+        console.log("[v0] Document record updated in database")
+      }
+    } else {
+      // Insert new record
+      const { error: insertError } = await supabase
+        .from("documents")
+        .insert({
+          document_type: documentType,
+          file_name: file.name,
+          file_path: fileName,
+          file_size: file.size,
+        })
+      
+      dbError = insertError
+      if (!dbError) {
+        console.log("[v0] Document record inserted into database")
+      }
+    }
+
+    if (dbError) {
+      console.error("[v0] Database error:", dbError)
       return NextResponse.json(
-        { error: upsertError.message || "Failed to save document record" },
+        { error: dbError.message || "Failed to save document record" },
         { status: 500 }
       )
     }
 
-    console.log("[v0] Document record saved to database")
+
 
     return NextResponse.json({
       success: true,
