@@ -20,6 +20,7 @@ export const translations = {
       regulations: "Regulations",
       budget: "Budget",
       budgetReport2025: "Budget Report 2025",
+      budgetReport2026: "Budget Report 2026",
       ecoEducationProgram: "Ecological Education Program",
       dataProtectionRules: "Internal Rules for Personal Data Protection",
       godishenPlan: "Annual Plan 2025/2026",
@@ -606,9 +607,10 @@ export const translations = {
       team: "Екип",
       gallery: "Галерия",
       documents: "Документи",
-      regulations: "Нормативна уредба",
+      regulations: "Правила и норми",
       budget: "Бюджет",
       budgetReport2025: "Отчет Бюджет 2025",
+      budgetReport2026: "Отчет Бюджет 2026",
       ecoEducationProgram: "Програма екологично възпитание",
       dataProtectionRules: "Вътрешни правила за защита на личните данни",
       godishenPlan: "Годишен План 2025/2026",
@@ -691,7 +693,7 @@ export const translations = {
       gallery: {
         title: "Един ден в Детска Градина 202",
         subtitle: "Надникнете в нашите оживени класни стаи и открити пространства, където ученето оживява.",
-        viewFull: "Вижте пълната галерия",
+        viewFull: "Вижте пъ��ната галерия",
       },
       cta: {
         title: "Готови ли сте да се присъедините към нашето семейство?",
@@ -1139,7 +1141,7 @@ export const translations = {
       faq: {
         title: "Често задавани въпроси",
         q1: {
-          question: "Какви възрасти приемате?",
+          question: "Какви възрасти пр��емате?",
           answer:
             "Приемаме деца от 18 месеца до 5 години, с програми, съобразени с ясла, предучилищна и подготвителна група.",
         },

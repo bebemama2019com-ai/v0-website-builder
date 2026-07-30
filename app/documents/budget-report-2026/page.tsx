@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { DocumentPageMulti } from "@/components/document-page-multi"
-import { Banknote } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Отчет Бюджет 2026 - ДГ 202",
@@ -15,7 +14,6 @@ export default function BudgetReport2026Page() {
       orderInfo="Отчети по тримесечия за 2026 година"
       orderDetails="Детайлни преглед на финансовите приходи и разходи на ДГ 202 разделени по тримесечия на 2026 година."
       approvedBy="Петя Янкова - Директор на ДГ № 202"
-      icon={Banknote}
       files={[
         {
           name: "Отчет за първо тримесечие 2026",

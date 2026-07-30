@@ -4,7 +4,6 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Download, FileText, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import type { LucideIcon } from "lucide-react"
 
 interface DocumentFile {
   name: string
@@ -24,7 +23,6 @@ interface DocumentPageMultiProps {
   orderDetails: string
   approvedBy: string
   files: DocumentFile[]
-  icon: LucideIcon
   sections: DocumentSection[]
 }
 
@@ -35,7 +33,6 @@ export function DocumentPageMulti({
   orderDetails,
   approvedBy,
   files,
-  icon: Icon,
   sections,
 }: DocumentPageMultiProps) {
   const handlePreview = (path: string) => {
@@ -51,7 +48,8 @@ export function DocumentPageMulti({
         <section className="bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/10 py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <div className="inline-block bg-primary/10 rounded-full px-6 py-2 mb-6">
+              <div className="inline-block bg-primary/10 rounded-full px-6 py-2 mb-6 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
                 <span className="text-primary font-semibold">{subtitle}</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">

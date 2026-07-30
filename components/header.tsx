@@ -62,6 +62,7 @@ export function Header() {
       dropdown: [
         { name: t.nav.budget, href: "/documents/budget" },
         { name: t.nav.budgetReport2025, href: "/documents/budget-report-2025" },
+        { name: t.nav.budgetReport2026, href: "/documents/budget-report-2026" },
         { name: t.nav.ecoEducationProgram, href: "/documents/eco-education-program" },
         { name: t.nav.dataProtectionRules, href: "/documents/data-protection-rules" },
         { name: t.nav.godishenPlan, href: "/documents/godishen-plan" },
