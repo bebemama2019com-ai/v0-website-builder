@@ -43,15 +43,28 @@ export function DocumentPageMulti({
     async function checkFilesExist() {
       const available = new Set<string>()
       
-      for (const file of files) {
-        try {
-          const response = await fetch(file.path, { method: "HEAD" })
-          if (response.ok) {
+      try {
+        // Fetch available documents from database
+        const response = await fetch("/api/admin/documents")
+        if (!response.ok) {
+          console.error("[v0] Failed to fetch documents from database")
+          setIsLoading(false)
+          return
+        }
+        
+        const documents: Array<{ file_path: string }> = await response.json()
+        const uploadedFileNames = new Set(documents.map(doc => doc.file_path))
+        
+        // Check which of our expected files are in the database
+        for (const file of files) {
+          // Extract filename from path (e.g., "/documents/otchet-byudzhet-2026-q1.pdf" -> "otchet-byudzhet-2026-q1.pdf")
+          const fileName = file.path.split("/").pop()
+          if (fileName && uploadedFileNames.has(fileName)) {
             available.add(file.path)
           }
-        } catch (error) {
-          console.log(`[v0] File not available: ${file.path}`)
         }
+      } catch (error) {
+        console.error(`[v0] Error checking available files:`, error)
       }
       
       setAvailableFiles(available)
