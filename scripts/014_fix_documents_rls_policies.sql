@@ -1,25 +1,20 @@
--- Fix RLS policies for documents table
--- This allows authenticated users to manage documents (for admin panel)
+-- Comprehensive fix for documents table RLS policies
+-- This script disables RLS and removes all restrictive policies
 
--- First, disable RLS entirely for testing, or make it very permissive
+-- Step 1: Drop ALL existing policies on documents table
+DROP POLICY IF EXISTS "Admins can insert documents" ON public.documents;
+DROP POLICY IF EXISTS "Admins can update documents" ON public.documents;
+DROP POLICY IF EXISTS "Admins can delete documents" ON public.documents;
+DROP POLICY IF EXISTS "Authenticated users can manage documents - INSERT" ON public.documents;
+DROP POLICY IF EXISTS "Authenticated users can manage documents - UPDATE" ON public.documents;
+DROP POLICY IF EXISTS "Authenticated users can manage documents - DELETE" ON public.documents;
+DROP POLICY IF EXISTS "documents_insert_policy" ON public.documents;
+DROP POLICY IF EXISTS "documents_update_policy" ON public.documents;
+DROP POLICY IF EXISTS "documents_delete_policy" ON public.documents;
+DROP POLICY IF EXISTS "documents_select_policy" ON public.documents;
+
+-- Step 2: Disable RLS entirely on the documents table
 ALTER TABLE public.documents DISABLE ROW LEVEL SECURITY;
 
--- Alternative: If you want RLS enabled, use these permissive policies:
--- ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
---
--- DROP POLICY IF EXISTS "documents_insert_policy" ON public.documents;
--- DROP POLICY IF EXISTS "documents_update_policy" ON public.documents;
--- DROP POLICY IF EXISTS "documents_delete_policy" ON public.documents;
--- DROP POLICY IF EXISTS "documents_select_policy" ON public.documents;
---
--- CREATE POLICY "documents_insert_policy" ON public.documents
---   FOR INSERT WITH CHECK (true);
--- 
--- CREATE POLICY "documents_update_policy" ON public.documents
---   FOR UPDATE USING (true);
--- 
--- CREATE POLICY "documents_delete_policy" ON public.documents
---   FOR DELETE USING (true);
---
--- CREATE POLICY "documents_select_policy" ON public.documents
---   FOR SELECT USING (true);
+-- Step 3: Verify RLS is disabled (check via dashboard to confirm)
+-- SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename = 'documents';

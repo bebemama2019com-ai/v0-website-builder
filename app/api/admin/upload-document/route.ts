@@ -152,9 +152,11 @@ export async function POST(request: NextRequest) {
     }
 
     if (dbError) {
-      console.error("[v0] Database error:", dbError)
+      console.error("[v0] Database error:", JSON.stringify(dbError, null, 2))
+      console.error("[v0] Error code:", dbError.code)
+      console.error("[v0] Error message:", dbError.message)
       return NextResponse.json(
-        { error: dbError.message || "Failed to save document record" },
+        { error: dbError.message || "Failed to save document record", code: dbError.code },
         { status: 500 }
       )
     }
