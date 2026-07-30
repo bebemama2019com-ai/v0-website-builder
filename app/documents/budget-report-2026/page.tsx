@@ -25,16 +25,6 @@ export default function BudgetReport2026Page() {
           path: "/documents/otchet-byudzhet-2026-q2.pdf",
           description: "Финансов отчет за април-юни 2026",
         },
-        {
-          name: "Отчет за трето тримесечие 2026",
-          path: "/documents/otchet-byudzhet-2026-q3.pdf",
-          description: "Финансов отчет за юли-септември 2026",
-        },
-        {
-          name: "Отчет за четвърто тримесечие 2026",
-          path: "/documents/otchet-byudzhet-2026-q4.pdf",
-          description: "Финансов отчет за октомври-декември 2026",
-        },
       ]}
       sections={[
         {

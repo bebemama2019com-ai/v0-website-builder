@@ -3,7 +3,7 @@
 // Force rebuild - remove Icon reference
 import Header from "@/components/header"
 import Footer from "@/components/footer"
-import { Download, FileText, Eye } from "lucide-react"
+import { Download, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface DocumentFile {
@@ -36,10 +36,7 @@ export function DocumentPageMulti({
   files,
   sections,
 }: DocumentPageMultiProps) {
-  const handlePreview = (path: string) => {
-    const previewUrl = path.includes("?") ? `${path}&dl=false` : `${path}?dl=false`
-    window.open(previewUrl, "_blank")
-  }
+
 
   return (
     <>
@@ -113,16 +110,7 @@ export function DocumentPageMulti({
                           )}
                         </div>
                       </div>
-                      <div className="flex gap-2 flex-shrink-0">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handlePreview(file.path)}
-                          className="gap-2"
-                        >
-                          <Eye className="w-4 h-4" />
-                          Виж
-                        </Button>
+                      <div className="flex-shrink-0">
                         <a href={file.path} download>
                           <Button size="sm" className="gap-2">
                             <Download className="w-4 h-4" />
