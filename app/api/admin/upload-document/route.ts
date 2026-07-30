@@ -32,10 +32,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create filename
+    // Create unique filename with timestamp to prevent overwrites
     const timestamp = Date.now()
     const ext = file.name.split(".").pop()
-    const fileName = `${documentType}-${timestamp}.${ext}`
+    // Format: documentType-originalName-timestamp.ext (e.g., budget-report-myfile-1234567890.pdf)
+    const originalName = file.name.split(".")[0].replace(/\s+/g, "-").toLowerCase()
+    const fileName = `${documentType}-${originalName}-${timestamp}.${ext}`
 
     // Ensure directory exists
     const docsPath = join(process.cwd(), "public", "documents")
@@ -45,6 +47,8 @@ export async function POST(request: NextRequest) {
     const filePath = join(docsPath, fileName)
     const buffer = await file.arrayBuffer()
     await writeFile(filePath, Buffer.from(buffer))
+
+    console.log("[v0] Document uploaded successfully:", fileName)
 
     return NextResponse.json({
       success: true,
