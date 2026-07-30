@@ -1,10 +1,10 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
-import { Download, FileText, Eye } from "lucide-react"
+import { Download, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import type { LucideIcon } from "lucide-react"
 
 interface DocumentFile {
   name: string
@@ -24,7 +24,6 @@ interface DocumentPageMultiProps {
   orderDetails: string
   approvedBy: string
   files: DocumentFile[]
-  icon: LucideIcon
   sections: DocumentSection[]
 }
 
@@ -35,13 +34,33 @@ export function DocumentPageMulti({
   orderDetails,
   approvedBy,
   files,
-  icon: Icon,
   sections,
 }: DocumentPageMultiProps) {
-  const handlePreview = (path: string) => {
-    const previewUrl = path.includes("?") ? `${path}&dl=false` : `${path}?dl=false`
-    window.open(previewUrl, "_blank")
-  }
+  const [availableFiles, setAvailableFiles] = useState<Set<string>>(new Set())
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    async function checkFilesExist() {
+      const available = new Set<string>()
+      
+      for (const file of files) {
+        try {
+          const response = await fetch(file.path, { method: "HEAD" })
+          if (response.ok) {
+            available.add(file.path)
+          }
+        } catch (error) {
+          console.log(`[v0] File not available: ${file.path}`)
+        }
+      }
+      
+      setAvailableFiles(available)
+      setIsLoading(false)
+    }
+
+    checkFilesExist()
+  }, [files])
+
 
   return (
     <>
@@ -51,7 +70,8 @@ export function DocumentPageMulti({
         <section className="bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/10 py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <div className="inline-block bg-primary/10 rounded-full px-6 py-2 mb-6">
+              <div className="inline-block bg-primary/10 rounded-full px-6 py-2 mb-6 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
                 <span className="text-primary font-semibold">{subtitle}</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
@@ -88,7 +108,7 @@ export function DocumentPageMulti({
             <div className="max-w-4xl mx-auto">
               <div className="flex items-center gap-3 mb-8">
                 <div className="bg-primary/10 rounded-full p-3">
-                  <Icon className="w-6 h-6 text-primary" />
+                  <FileText className="w-6 h-6 text-primary" />
                 </div>
                 <h2 className="text-2xl font-bold">Налични документи</h2>
               </div>
@@ -114,22 +134,19 @@ export function DocumentPageMulti({
                           )}
                         </div>
                       </div>
-                      <div className="flex gap-2 flex-shrink-0">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handlePreview(file.path)}
-                          className="gap-2"
-                        >
-                          <Eye className="w-4 h-4" />
-                          Виж
-                        </Button>
-                        <a href={file.path} download>
-                          <Button size="sm" className="gap-2">
-                            <Download className="w-4 h-4" />
-                            Свали
-                          </Button>
-                        </a>
+                      <div className="flex-shrink-0">
+                        {availableFiles.has(file.path) ? (
+                          <a href={file.path} download>
+                            <Button size="sm" className="gap-2">
+                              <Download className="w-4 h-4" />
+                              Свали
+                            </Button>
+                          </a>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">
+                            Не е налично
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -146,7 +163,7 @@ export function DocumentPageMulti({
               <div className="max-w-4xl mx-auto">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="bg-primary/10 rounded-full p-3">
-                    <Icon className="w-6 h-6 text-primary" />
+                    <FileText className="w-6 h-6 text-primary" />
                   </div>
                   <h2 className="text-2xl font-bold">{section.title}</h2>
                 </div>
@@ -174,12 +191,24 @@ export function DocumentPageMulti({
                 </p>
                 <div className="flex flex-wrap gap-3 justify-center">
                   {files.map((file, index) => (
-                    <a key={index} href={file.path} download>
-                      <Button variant="outline" className="gap-2">
-                        <Download className="w-4 h-4" />
+                    availableFiles.has(file.path) ? (
+                      <a key={index} href={file.path} download>
+                        <Button variant="outline" className="gap-2">
+                          <Download className="w-4 h-4" />
+                          {file.name}
+                        </Button>
+                      </a>
+                    ) : (
+                      <Button
+                        key={index}
+                        variant="outline"
+                        disabled
+                        className="gap-2 opacity-50 cursor-not-allowed"
+                      >
+                        <FileText className="w-4 h-4" />
                         {file.name}
                       </Button>
-                    </a>
+                    )
                   ))}
                 </div>
               </div>
