@@ -1,5 +1,6 @@
 "use client"
 
+// Force rebuild - remove Icon reference
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Download, FileText, Eye } from "lucide-react"
