@@ -110,16 +110,14 @@ export async function POST(request: NextRequest) {
       .from("documents")
       .getPublicUrl(fileName)
 
-    // Save file info to database with public URL
+    // Save file info to database
     const { error: upsertError } = await supabase
       .from("documents")
       .upsert({
         document_type: documentType,
         file_name: file.name,
         file_path: fileName,
-        file_url: publicUrl.publicUrl,
         file_size: file.size,
-        updated_at: new Date().toISOString(),
       }, {
         onConflict: "document_type"
       })
