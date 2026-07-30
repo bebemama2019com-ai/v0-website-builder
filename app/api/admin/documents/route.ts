@@ -1,34 +1,36 @@
-import { createClient } from "@/lib/supabase/server"
+import { createServerClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 
-export async function GET() {
+export const revalidate = 0
+
+export async function GET(request: Request) {
   try {
-    const supabase = await createClient()
+    const url = new URL(request.url)
+    const minimal = url.searchParams.get("minimal")
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+    const supabase = await createServerClient()
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (minimal === "true") {
+      // Lightweight response for file availability checks
+      const { data: documents, error } = await supabase
+        .from("documents")
+        .select("file_path")
+        .order("document_type", { ascending: true })
+
+      if (error) throw error
+      return NextResponse.json(documents || [])
+    } else {
+      // Full response for admin panel with all document details
+      const { data: documents, error } = await supabase
+        .from("documents")
+        .select("id, document_type, file_name, file_path, file_size, updated_at")
+        .order("document_type", { ascending: true })
+
+      if (error) throw error
+      return NextResponse.json(documents || [])
     }
-
-    const { data: isAdmin } = await supabase.from("admin_users").select("id").eq("id", user.id).single()
-
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-    }
-
-    const { data: documents, error } = await supabase
-      .from("documents")
-      .select("id, document_type, file_name, file_path, file_size, updated_at")
-      .order("document_type", { ascending: true })
-
-    if (error) throw error
-
-    return NextResponse.json(documents || [])
   } catch (error) {
-    console.error("[v0] Error fetching admin documents:", error)
+    console.error("[v0] Error fetching documents:", error)
     return NextResponse.json({ error: "Failed to fetch documents" }, { status: 500 })
   }
 }
