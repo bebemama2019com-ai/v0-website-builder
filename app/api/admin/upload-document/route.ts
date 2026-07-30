@@ -1,5 +1,3 @@
-import { writeFile, mkdir } from "fs/promises"
-import { join } from "path"
 import { NextRequest, NextResponse } from "next/server"
 import { createServerClient } from "@/lib/supabase/server"
 
@@ -33,7 +31,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create filename based on document type (will overwrite on re-upload)
+    // Create filename based on document type
     const ext = file.name.split(".").pop()
     
     // Map document types to consistent filenames
@@ -59,46 +57,76 @@ export async function POST(request: NextRequest) {
     
     const fileName = fileNameMap[documentType] || `document-${documentType}.${ext}`
 
-    // Ensure directory exists
-    const docsPath = join(process.cwd(), "public", "documents")
-    await mkdir(docsPath, { recursive: true })
-
-    // Write file to public/documents
-    const filePath = join(docsPath, fileName)
+    const supabase = await createServerClient()
     const buffer = await file.arrayBuffer()
-    await writeFile(filePath, Buffer.from(buffer))
 
-    console.log("[v0] Document uploaded successfully:", fileName)
+    // Get existing file to delete
+    const { data: existingFile } = await supabase
+      .from("documents")
+      .select("file_path")
+      .eq("document_type", documentType)
+      .single()
 
-    // Save file info to database
-    try {
-      const supabase = await createServerClient()
-      const { error: upsertError } = await supabase
-        .from("documents")
-        .upsert({
-          document_type: documentType,
-          file_name: file.name,
-          file_path: fileName,
-          file_size: file.size,
-          updated_at: new Date().toISOString(),
-        }, {
-          onConflict: "document_type"
-        })
-
-      if (upsertError) {
-        console.error("[v0] Database upsert error:", upsertError)
-      } else {
-        console.log("[v0] Document record saved to database")
+    // Delete old file from storage if it exists
+    if (existingFile?.file_path) {
+      const oldFileName = existingFile.file_path.split("/").pop()
+      if (oldFileName) {
+        console.log("[v0] Deleting old file:", oldFileName)
+        await supabase.storage.from("documents").remove([oldFileName])
       }
-    } catch (dbError) {
-      console.error("[v0] Error saving document to database:", dbError)
-      // Continue anyway - file is already uploaded
     }
+
+    // Upload new file to Supabase Storage
+    const { error: uploadError } = await supabase.storage
+      .from("documents")
+      .upload(fileName, buffer, {
+        contentType: file.type,
+        upsert: true,
+      })
+
+    if (uploadError) {
+      console.error("[v0] Upload error:", uploadError)
+      return NextResponse.json(
+        { error: uploadError.message || "Failed to upload file to storage" },
+        { status: 500 }
+      )
+    }
+
+    console.log("[v0] Document uploaded to storage successfully:", fileName)
+
+    // Get public URL
+    const { data: publicUrl } = supabase.storage
+      .from("documents")
+      .getPublicUrl(fileName)
+
+    // Save file info to database with public URL
+    const { error: upsertError } = await supabase
+      .from("documents")
+      .upsert({
+        document_type: documentType,
+        file_name: file.name,
+        file_path: fileName,
+        file_url: publicUrl.publicUrl,
+        file_size: file.size,
+        updated_at: new Date().toISOString(),
+      }, {
+        onConflict: "document_type"
+      })
+
+    if (upsertError) {
+      console.error("[v0] Database upsert error:", upsertError)
+      return NextResponse.json(
+        { error: upsertError.message || "Failed to save document record" },
+        { status: 500 }
+      )
+    }
+
+    console.log("[v0] Document record saved to database")
 
     return NextResponse.json({
       success: true,
       fileName: fileName,
-      path: `/documents/${fileName}`,
+      path: publicUrl.publicUrl,
     })
   } catch (error) {
     console.error("[v0] Error uploading document:", error)
