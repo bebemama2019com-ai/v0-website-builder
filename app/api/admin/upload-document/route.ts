@@ -39,6 +39,10 @@ export async function POST(request: NextRequest) {
     // Map document types to consistent filenames
     const fileNameMap: Record<string, string> = {
       budget: `otchet-byudzhet-2025.${ext}`,
+      "budget-2026-q1": `otchet-byudzhet-2026-q1.${ext}`,
+      "budget-2026-q2": `otchet-byudzhet-2026-q2.${ext}`,
+      "budget-2026-q3": `otchet-byudzhet-2026-q3.${ext}`,
+      "budget-2026-q4": `otchet-byudzhet-2026-q4.${ext}`,
       "eco-education": `programa-ekologichno-vazpitanie.${ext}`,
       "child-protection": `vansni-pravila-za-zaschita.${ext}`,
       "personal-data": `vansni-pravila-za-zaschita-na-lichni-dani.${ext}`,
