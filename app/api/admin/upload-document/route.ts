@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createServerClient } from "@/lib/supabase/server"
+import { createServerClient, createAdminClient } from "@/lib/supabase/server"
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,11 +57,12 @@ export async function POST(request: NextRequest) {
     
     const fileName = fileNameMap[documentType] || `document-${documentType}.${ext}`
 
-    const supabase = await createServerClient()
+    const userClient = await createServerClient()
+    const adminClient = createAdminClient()
     const buffer = await file.arrayBuffer()
 
     // Get existing file to delete
-    const { data: existingFile } = await supabase
+    const { data: existingFile } = await userClient
       .from("documents")
       .select("file_path")
       .eq("document_type", documentType)
@@ -72,12 +73,12 @@ export async function POST(request: NextRequest) {
       const oldFileName = existingFile.file_path.split("/").pop()
       if (oldFileName) {
         console.log("[v0] Deleting old file:", oldFileName)
-        await supabase.storage.from("documents").remove([oldFileName])
+        await userClient.storage.from("documents").remove([oldFileName])
       }
     }
 
     // Upload new file to Supabase Storage
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await userClient.storage
       .from("documents")
       .upload(fileName, buffer, {
         contentType: file.type,
@@ -95,12 +96,12 @@ export async function POST(request: NextRequest) {
     console.log("[v0] Document uploaded to storage successfully:", fileName)
 
     // Get public URL
-    const { data: publicUrl } = supabase.storage
+    const { data: publicUrl } = userClient.storage
       .from("documents")
       .getPublicUrl(fileName)
 
-    // Save file info to database with public URL
-    const { error: upsertError } = await supabase
+    // Save file info to database with public URL using admin client (bypasses RLS)
+    const { error: upsertError } = await adminClient
       .from("documents")
       .upsert({
         document_type: documentType,
