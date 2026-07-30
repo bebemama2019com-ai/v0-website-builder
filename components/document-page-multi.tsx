@@ -86,7 +86,7 @@ export function DocumentPageMulti({
             <div className="max-w-4xl mx-auto">
               <div className="flex items-center gap-3 mb-8">
                 <div className="bg-primary/10 rounded-full p-3">
-                  <Icon className="w-6 h-6 text-primary" />
+                  <FileText className="w-6 h-6 text-primary" />
                 </div>
                 <h2 className="text-2xl font-bold">Налични документи</h2>
               </div>
@@ -144,7 +144,7 @@ export function DocumentPageMulti({
               <div className="max-w-4xl mx-auto">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="bg-primary/10 rounded-full p-3">
-                    <Icon className="w-6 h-6 text-primary" />
+                    <FileText className="w-6 h-6 text-primary" />
                   </div>
                   <h2 className="text-2xl font-bold">{section.title}</h2>
                 </div>
