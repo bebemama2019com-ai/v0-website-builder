@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createServerClient, createAdminClient } from "@/lib/supabase/server"
+import { createServerClient } from "@/lib/supabase/server"
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,12 +57,22 @@ export async function POST(request: NextRequest) {
     
     const fileName = fileNameMap[documentType] || `document-${documentType}.${ext}`
 
-    const userClient = await createServerClient()
-    const adminClient = createAdminClient()
+    const supabase = await createServerClient()
     const buffer = await file.arrayBuffer()
 
+    // Check if user is authenticated
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    console.log("[v0] User uploading document:", user.id)
+
     // Get existing file to delete
-    const { data: existingFile } = await userClient
+    const { data: existingFile } = await supabase
       .from("documents")
       .select("file_path")
       .eq("document_type", documentType)
@@ -73,12 +83,12 @@ export async function POST(request: NextRequest) {
       const oldFileName = existingFile.file_path.split("/").pop()
       if (oldFileName) {
         console.log("[v0] Deleting old file:", oldFileName)
-        await userClient.storage.from("documents").remove([oldFileName])
+        await supabase.storage.from("documents").remove([oldFileName])
       }
     }
 
     // Upload new file to Supabase Storage
-    const { error: uploadError } = await userClient.storage
+    const { error: uploadError } = await supabase.storage
       .from("documents")
       .upload(fileName, buffer, {
         contentType: file.type,
@@ -96,12 +106,12 @@ export async function POST(request: NextRequest) {
     console.log("[v0] Document uploaded to storage successfully:", fileName)
 
     // Get public URL
-    const { data: publicUrl } = userClient.storage
+    const { data: publicUrl } = supabase.storage
       .from("documents")
       .getPublicUrl(fileName)
 
-    // Save file info to database with public URL using admin client (bypasses RLS)
-    const { error: upsertError } = await adminClient
+    // Save file info to database with public URL
+    const { error: upsertError } = await supabase
       .from("documents")
       .upsert({
         document_type: documentType,
