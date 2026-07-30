@@ -1,3 +1,6 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Download, FileText } from "lucide-react"
@@ -30,6 +33,29 @@ export function DocumentPage({
   icon: Icon,
   sections,
 }: DocumentPageProps) {
+  const [fileAvailable, setFileAvailable] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    async function checkFileExists() {
+      try {
+        const response = await fetch("/api/admin/documents")
+        if (!response.ok) throw new Error("Failed to fetch documents")
+        
+        const documents: Array<{ file_path: string }> = await response.json()
+        const fileName = pdfPath.split("/").pop()
+        
+        const exists = documents.some(doc => doc.file_path === fileName)
+        setFileAvailable(exists)
+      } catch (error) {
+        console.error("[v0] Error checking file availability:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    checkFileExists()
+  }, [pdfPath])
   return (
     <>
       <Header />
@@ -44,12 +70,18 @@ export function DocumentPage({
               <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
                 {title}
               </h1>
-              <a href={pdfPath} download>
-                <Button size="lg" className="gap-2 text-lg px-8 py-6 rounded-xl mt-4">
-                  <Download className="w-5 h-5" />
-                  Свали PDF документа
-                </Button>
-              </a>
+              {fileAvailable ? (
+                <a href={pdfPath} download>
+                  <Button size="lg" className="gap-2 text-lg px-8 py-6 rounded-xl mt-4">
+                    <Download className="w-5 h-5" />
+                    Свали PDF документа
+                  </Button>
+                </a>
+              ) : (
+                <div className="mt-4 text-muted-foreground">
+                  Документът не е наличен
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -105,12 +137,18 @@ export function DocumentPage({
                 <p className="text-muted-foreground mb-6">
                   Свалете официалния PDF документ
                 </p>
-                <a href={pdfPath} download>
-                  <Button size="lg" className="gap-2 rounded-xl">
-                    <Download className="w-5 h-5" />
-                    Свали PDF
-                  </Button>
-                </a>
+                {fileAvailable ? (
+                  <a href={pdfPath} download>
+                    <Button size="lg" className="gap-2 rounded-xl">
+                      <Download className="w-5 h-5" />
+                      Свали PDF
+                    </Button>
+                  </a>
+                ) : (
+                  <div className="text-muted-foreground">
+                    Документът не е наличен
+                  </div>
+                )}
               </div>
             </div>
           </div>
