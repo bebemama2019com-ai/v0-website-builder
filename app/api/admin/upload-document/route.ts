@@ -110,54 +110,37 @@ export async function POST(request: NextRequest) {
       .from("documents")
       .getPublicUrl(fileName)
 
-    // Save file info to database - try update first, then insert
-    const { data: existingDoc, error: selectError } = await supabase
+    // Save file info to database - just try insert (RLS should be disabled)
+    console.log("[v0] Inserting document:", { documentType, file_name: file.name, file_path: fileName, file_size: file.size })
+    
+    const { error: dbError } = await supabase
       .from("documents")
-      .select("id")
-      .eq("document_type", documentType)
-      .single()
-
-    let dbError = null
-
-    if (existingDoc) {
-      // Update existing record
-      const { error: updateError } = await supabase
-        .from("documents")
-        .update({
-          file_name: file.name,
-          file_path: fileName,
-          file_size: file.size,
-        })
-        .eq("document_type", documentType)
-      
-      dbError = updateError
-      if (!dbError) {
-        console.log("[v0] Document record updated in database")
-      }
-    } else {
-      // Insert new record
-      const { error: insertError } = await supabase
-        .from("documents")
-        .insert({
-          document_type: documentType,
-          file_name: file.name,
-          file_path: fileName,
-          file_size: file.size,
-        })
-      
-      dbError = insertError
-      if (!dbError) {
-        console.log("[v0] Document record inserted into database")
-      }
-    }
+      .insert({
+        document_type: documentType,
+        file_name: file.name,
+        file_path: fileName,
+        file_size: file.size,
+      })
 
     if (dbError) {
-      console.error("[v0] Database error:", dbError)
+      console.error("[v0] Database error details:")
+      console.error("[v0] Message:", dbError.message)
+      console.error("[v0] Code:", dbError.code)
+      console.error("[v0] Hint:", (dbError as any).hint)
+      console.error("[v0] Details:", (dbError as any).details)
+      console.error("[v0] Full error:", JSON.stringify(dbError, null, 2))
+      
       return NextResponse.json(
-        { error: dbError.message || "Failed to save document record" },
+        { 
+          error: dbError.message || "Failed to save document record",
+          code: dbError.code,
+          hint: (dbError as any).hint
+        },
         { status: 500 }
       )
     }
+
+    console.log("[v0] Document record inserted into database")
 
 
 
