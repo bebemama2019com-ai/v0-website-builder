@@ -1,5 +1,3 @@
-import { writeFile, mkdir } from "fs/promises"
-import { join } from "path"
 import { NextRequest, NextResponse } from "next/server"
 import { createServerClient } from "@/lib/supabase/server"
 
@@ -59,26 +57,40 @@ export async function POST(request: NextRequest) {
     
     const fileName = fileNameMap[documentType] || `document-${documentType}.${ext}`
 
-    // Ensure directory exists
-    const docsPath = join(process.cwd(), "public", "documents")
-    await mkdir(docsPath, { recursive: true })
-
-    // Write file to public/documents
-    const filePath = join(docsPath, fileName)
+    // Upload to Supabase storage
+    const supabase = await createServerClient()
     const buffer = await file.arrayBuffer()
-    await writeFile(filePath, Buffer.from(buffer))
+    
+    const { error: uploadError } = await supabase.storage
+      .from("documents")
+      .upload(`public/${fileName}`, Buffer.from(buffer), {
+        upsert: true,
+        contentType: file.type,
+      })
 
-    console.log("[v0] Document uploaded successfully:", fileName)
+    if (uploadError) {
+      console.error("[v0] Supabase storage upload error:", uploadError)
+      return NextResponse.json(
+        { error: uploadError.message || "Failed to upload file to storage" },
+        { status: 500 }
+      )
+    }
+
+    console.log("[v0] Document uploaded to Supabase successfully:", fileName)
+
+    // Get public URL
+    const { data: publicUrlData } = supabase.storage
+      .from("documents")
+      .getPublicUrl(`public/${fileName}`)
 
     // Save file info to database
     try {
-      const supabase = await createServerClient()
       const { error: upsertError } = await supabase
         .from("documents")
         .upsert({
           document_type: documentType,
           file_name: file.name,
-          file_path: fileName,
+          file_path: publicUrlData.publicUrl,
           file_size: file.size,
           updated_at: new Date().toISOString(),
         }, {
@@ -92,18 +104,17 @@ export async function POST(request: NextRequest) {
       }
     } catch (dbError) {
       console.error("[v0] Error saving document to database:", dbError)
-      // Continue anyway - file is already uploaded
     }
 
     return NextResponse.json({
       success: true,
       fileName: fileName,
-      path: `/documents/${fileName}`,
+      path: publicUrlData.publicUrl,
     })
   } catch (error) {
     console.error("[v0] Error uploading document:", error)
     return NextResponse.json(
-      { error: "Failed to upload document" },
+      { error: error instanceof Error ? error.message : "Failed to upload document" },
       { status: 500 }
     )
   }
