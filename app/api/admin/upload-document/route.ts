@@ -1,6 +1,7 @@
 import { writeFile, mkdir } from "fs/promises"
 import { join } from "path"
 import { NextRequest, NextResponse } from "next/server"
+import { createServerClient } from "@/lib/supabase/server"
 
 export async function POST(request: NextRequest) {
   try {
@@ -49,6 +50,31 @@ export async function POST(request: NextRequest) {
     await writeFile(filePath, Buffer.from(buffer))
 
     console.log("[v0] Document uploaded successfully:", fileName)
+
+    // Save file info to database
+    try {
+      const supabase = await createServerClient()
+      const { error: upsertError } = await supabase
+        .from("documents")
+        .upsert({
+          document_type: documentType,
+          file_name: file.name,
+          file_path: fileName,
+          file_size: file.size,
+          updated_at: new Date().toISOString(),
+        }, {
+          onConflict: "document_type"
+        })
+
+      if (upsertError) {
+        console.error("[v0] Database upsert error:", upsertError)
+      } else {
+        console.log("[v0] Document record saved to database")
+      }
+    } catch (dbError) {
+      console.error("[v0] Error saving document to database:", dbError)
+      // Continue anyway - file is already uploaded
+    }
 
     return NextResponse.json({
       success: true,
