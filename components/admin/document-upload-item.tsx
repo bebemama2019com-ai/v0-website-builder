@@ -66,7 +66,6 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
             file_name: file.name,
             file_path: fileName,
             file_size: file.size,
-            file_url: publicUrl.publicUrl,
             updated_at: new Date().toISOString(),
           })
           .eq("id", currentFile.id)
@@ -75,13 +74,9 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
       } else {
         const { error: insertError } = await supabase.from("documents").insert({
           document_type: documentType,
-          title: displayName,
           file_name: file.name,
           file_path: fileName,
           file_size: file.size,
-          file_url: publicUrl.publicUrl,
-          category: "normative",
-          order_index: 0,
         })
 
         if (insertError) throw insertError
