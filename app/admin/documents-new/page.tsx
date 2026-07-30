@@ -11,6 +11,8 @@ import { useState, useEffect } from "react"
 // List of all documents from the screenshot
 const DOCUMENT_TYPES = [
   { id: "budget", label: "Отчет Бюджет 2025" },
+  { id: "budget-2026-q1", label: "Отчет Бюджет 2026 - Първо тримесечие" },
+  { id: "budget-2026-q2", label: "Отчет Бюджет 2026 - Второ тримесечие" },
   { id: "eco-education", label: "Програма екологично възпитание" },
   { id: "data-protection", label: "Външни правила за защита на личните данни" },
   { id: "annual-plan", label: "Годишен План 2025/2026" },
