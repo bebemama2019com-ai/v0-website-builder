@@ -1,11 +1,9 @@
-"use client"
-
-import { useEffect, useState } from "react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Download, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { LucideIcon } from "lucide-react"
+import { createServerClient } from "@/lib/supabase/server"
 
 interface DocumentSection {
   title: string
@@ -23,7 +21,7 @@ interface DocumentPageProps {
   sections: DocumentSection[]
 }
 
-export function DocumentPage({
+export async function DocumentPage({
   title,
   subtitle,
   orderInfo,
@@ -33,29 +31,19 @@ export function DocumentPage({
   icon: Icon,
   sections,
 }: DocumentPageProps) {
-  const [fileAvailable, setFileAvailable] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    async function checkFileExists() {
-      try {
-        const response = await fetch("/api/admin/documents?minimal=true")
-        if (!response.ok) throw new Error("Failed to fetch documents")
-        
-        const documents: Array<{ file_path: string }> = await response.json()
-        const fileName = pdfPath.split("/").pop()
-        
-        const exists = documents.some(doc => doc.file_path === fileName)
-        setFileAvailable(exists)
-      } catch (error) {
-        console.error("[v0] Error checking file availability:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    checkFileExists()
-  }, [pdfPath])
+  // Check if file exists server-side
+  let fileAvailable = false
+  try {
+    const supabase = await createServerClient()
+    const fileName = pdfPath.split("/").pop()
+    const { data: documents } = await supabase
+      .from("documents")
+      .select("file_path")
+    
+    fileAvailable = documents?.some(doc => doc.file_path === fileName) ?? false
+  } catch (error) {
+    console.error("[v0] Error checking file availability:", error)
+  }
   return (
     <>
       <Header />
