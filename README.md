@@ -1,137 +1,124 @@
-# Little Sprouts Kindergarten Website
+# ДГ 202 — Website
 
-A modern, responsive kindergarten website built with Next.js and Sanity CMS.
+Public website for Детска градина 202 with public information, parent resources, administrative documents, weekly menus, gallery content, and news.
 
-## Features
+## Technology
 
-- **Responsive Design**: Mobile-first design with warm, child-friendly aesthetics
-- **Content Management**: Easy-to-use Sanity CMS for managing all content
-- **Dynamic Pages**: Home, About, Team, Curriculum, Gallery, News/Events, Contact
-- **Photo Gallery**: Filterable image gallery with lightbox view
-- **Blog System**: News and events with rich text content
-- **Contact Form**: Integrated contact form with validation
-- **SEO Optimized**: Built with Next.js for excellent performance and SEO
+- **Framework:** Next.js 15 App Router
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4 and shadcn/ui
+- **Content:** Sanity CMS
+- **Backend and storage:** Supabase Auth, database, and Storage
+- **Icons:** Lucide React
+- **Deployment:** Vercel
 
-## Tech Stack
+## Main areas
 
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS v4
-- **CMS**: Sanity
-- **UI Components**: shadcn/ui
-- **Fonts**: Nunito (Google Fonts)
-- **Deployment**: Vercel
+- Public homepage and informational pages
+- Parent resources under `/parents`
+- Administrative documents under `/documents`
+- Admin dashboard under `/admin`
+- Weekly menu management under `/admin/weekly-menu`
+- Document management under `/admin/documents-new`
+- Gallery and news content powered by Sanity
 
-## Getting Started
+## Local development
 
-### Prerequisites
+### Requirements
 
-- Node.js 18+ installed
-- A Sanity account and project
+- Node.js 18+
+- Access to the project's Sanity project
+- Access to the project's Supabase project
 
-### Installation
+### Install and run
 
-1. **Clone the repository**
-   \`\`\`bash
-   git clone <repository-url>
-   cd kindergarten-website
-   \`\`\`
+```bash
+npm install
+npm run dev
+```
 
-2. **Install dependencies**
-   \`\`\`bash
-   npm install
-   \`\`\`
+Open [http://localhost:3000](http://localhost:3000).
 
-3. **Set up environment variables**
-   
-   Create a \`.env.local\` file in the root directory:
-   \`\`\`
-   NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
-   NEXT_PUBLIC_SANITY_DATASET=production
-   \`\`\`
+### Environment variables
 
-4. **Set up Sanity CMS**
-   
-   Follow the instructions in \`SANITY_SETUP.md\` to configure your Sanity project.
+Configure the project variables in the Vercel project or in `.env.local` for local development. The application uses the following integrations:
 
-5. **Run the development server**
-   \`\`\`bash
-   npm run dev
-   \`\`\`
+```text
+NEXT_PUBLIC_SANITY_PROJECT_ID
+NEXT_PUBLIC_SANITY_DATASET
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+```
 
-6. **Open your browser**
-   
-   Visit [http://localhost:3000](http://localhost:3000)
+Do not commit `.env` files or expose the service-role key in client-side code.
 
-## Project Structure
+## Supabase setup
 
-\`\`\`
-├── app/                    # Next.js app directory
-│   ├── about/             # About page
-│   ├── contact/           # Contact page
-│   ├── curriculum/        # Curriculum page
-│   ├── gallery/           # Gallery page
-│   ├── news/              # News listing and posts
-│   ├── team/              # Team page
-│   ├── layout.tsx         # Root layout
-│   ├── page.tsx           # Home page
-│   └── globals.css        # Global styles
-├── components/            # React components
-│   ├── ui/               # UI components (shadcn)
-│   ├── header.tsx        # Site header
-│   ├── footer.tsx        # Site footer
-│   └── ...               # Other components
-├── lib/                   # Utility functions
-│   ├── sanity.ts         # Sanity client
-│   └── sanity-queries.ts # CMS queries
-├── public/               # Static assets
-└── sanity-schema.json    # Sanity schema definition
-\`\`\`
+The application uses two public Storage buckets:
 
-## Content Management
+- `menu-files` — weekly menu PDFs
+- `documents` — administrative documents such as budget reports and policies
 
-Administrators can manage all website content through Sanity Studio:
+Create both buckets before testing uploads. See [`STORAGE_SETUP.md`](./STORAGE_SETUP.md) for dashboard, CLI, API, and Storage policy instructions.
 
-- **Team Members**: Add/edit teacher profiles
-- **News & Events**: Create blog posts and announcements
-- **Gallery**: Upload and organize photos
-- **Pages**: Edit page content
+Database setup and document-related migrations are in [`scripts/`](./scripts), including:
 
-See \`ADMIN_GUIDE.md\` for detailed instructions.
+- `003_add_documents_and_parents_tables.sql`
+- `005_add_quarter_to_documents.sql`
+- `012_refactor_documents_system.sql`
+- `014_fix_documents_rls_policies.sql`
 
-## Deployment
+Run the applicable SQL scripts against the connected Supabase project before using the admin upload pages. Confirm the `documents` table schema and Storage policies in the production Supabase project; local migrations do not automatically change production.
 
-### Deploy to Vercel
+## Admin workflows
 
-1. Push your code to GitHub
-2. Import the project in Vercel
-3. Add environment variables in Vercel dashboard
-4. Deploy
+### Weekly menus
 
-The site will automatically redeploy when you push changes to your repository.
+Use **Управление на Седмично меню** to upload or replace weekly menu PDFs for the nursery and kindergarten. Files are stored in the `menu-files` bucket.
 
-## Customization
+### Administrative documents
 
-### Colors
+Use `/admin/documents-new` to upload or replace PDF, DOC, and DOCX files. Files are stored in the `documents` bucket and tracked in the `documents` database table. Public document pages use the database record to determine whether a download is available.
 
-Edit the color palette in \`app/globals.css\`:
-- Primary: Warm coral/peach
-- Secondary: Soft mint green
-- Accent: Soft sky blue
+### Content management
 
-### Fonts
+Sanity manages the site's editable content, including news, gallery images, team information, and page content. Refer to [`ADMIN_GUIDE.md`](./ADMIN_GUIDE.md) for the content-management workflow.
 
-Change fonts in \`app/layout.tsx\` by importing different Google Fonts.
+## Production deployment
 
-### Content
+1. Push the branch to GitHub.
+2. Confirm all required environment variables are configured in Vercel.
+3. Confirm both Supabase Storage buckets exist and have the required policies.
+4. Apply database migrations to the production Supabase project.
+5. Deploy through Vercel.
 
-All text content can be edited through Sanity CMS without code changes.
+Runtime uploads must use Supabase Storage. The Vercel filesystem and the project's `public` directory are not writable for persistent production uploads.
 
-## Support
+## Troubleshooting uploads
 
-- **Setup Issues**: See \`SANITY_SETUP.md\`
-- **Admin Help**: See \`ADMIN_GUIDE.md\`
-- **Technical Support**: Contact your developer
+- **Bucket not found:** Create or verify the `documents` or `menu-files` bucket.
+- **Row-level security error:** Check the active database and Storage policies in the production Supabase project, not only the local SQL files.
+- **File is uploaded but no download appears:** Confirm the matching record exists in the `documents` table and that its `file_path` matches the expected filename.
+- **Authentication error:** Confirm the admin session is active and the Supabase redirect URL is configured.
+- **Large file failure:** PDF, DOC, and DOCX uploads are limited to 50 MB.
+
+## Useful commands
+
+```bash
+npm run dev
+npm run build
+npm run start
+```
+
+## Related documentation
+
+- [`ADMIN_GUIDE.md`](./ADMIN_GUIDE.md)
+- [`STORAGE_SETUP.md`](./STORAGE_SETUP.md)
+- [`SETUP_DOCUMENTS_AND_PARENTS.md`](./SETUP_DOCUMENTS_AND_PARENTS.md)
 
 ## License
 
-Copyright © 2025 Little Sprouts Kindergarten. All rights reserved.
+Private project for ДГ 202.
+
+Copyright © 2026 ДГ 202. All rights reserved.
