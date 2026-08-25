@@ -33,7 +33,7 @@ export const translations = {
       etichenKodeksDg202: "Ethics Code DG 202",
       modelAdaptatsia: "Adaptation Model",
       forParents: "For Parents",
-      news: "News & Events",
+      news: "News",
       dailySchedule: "Daily Schedule",
       weeklyMenu: "Weekly Menu",
       publicCouncil: "Public Council",
@@ -41,6 +41,7 @@ export const translations = {
       contact: "Contact",
       enrollNow: "Enroll Now",
       curriculum: "Curriculum",
+      news: "News & Events",
     },
     // Home Page
     home: {
@@ -131,9 +132,9 @@ export const translations = {
         focusPoints: [
           "Education and upbringing are in harmony with current achievements in early and preschool age pedagogy",
           "Quality healthcare for children",
-          "Active communication with parents and involving them in helping our common cause - to raise healthy, happy, knowledgeable, and capable children",
+          "Active communication with parents and involving them in helping our common cause - to raise healthy, happy, knowledgeable, and capable children"
         ],
-        welcome: "Welcome to us!",
+        welcome: "Welcome to us!"
       },
       focus: {
         title: "Main Focus of Our Kindergarten",
@@ -315,6 +316,16 @@ export const translations = {
           departure: "Free Play & Departure",
         },
       },
+      facilities: {
+        title: "Our Facilities",
+        subtitle: "Bright, spacious classrooms and safe outdoor areas designed for exploration and learning.",
+        brightClassrooms: "Bright Classrooms",
+        outdoorPlayground: "Outdoor Playground",
+        artStudio: "Art Studio",
+        readingCorner: "Reading Corner",
+        musicRoom: "Music Room",
+        gardenArea: "Garden Area",
+      },
     },
     // Team Page
     team: {
@@ -478,13 +489,13 @@ export const translations = {
         description: "Explore moments of joy, learning, and discovery at Kindergarten 202.",
       },
       filters: {
-        all: "All Photos",
-        classroom: "Classroom",
-        outdoor: "Outdoor Play",
-        activities: "Activities",
-        events: "Events",
-        building: "Building",
-        facilities: "Facilities",
+      all: "All Photos",
+      classroom: "Classroom",
+      outdoor: "Outdoor Play",
+      activities: "Activities",
+      events: "Events",
+      building: "Building",
+      facilities: "Facilities",
       },
     },
     // News Page
@@ -612,7 +623,7 @@ export const translations = {
       etichenKodeksDg202: "Етичен Кодекс ДГ 202",
       modelAdaptatsia: "Модел за адаптация",
       forParents: "За Родители",
-      news: "Новини и събития",
+      news: "Новини",
       dailySchedule: "Дневен режим",
       weeklyMenu: "Седмично меню",
       publicCouncil: "Обществен съвет",
@@ -620,6 +631,7 @@ export const translations = {
       contact: "Контакти",
       enrollNow: "Запишете се сега",
       curriculum: "Учебна програма",
+      news: "Новини и събития",
     },
     // Home Page
     home: {
@@ -681,12 +693,12 @@ export const translations = {
       gallery: {
         title: "Един ден в Детска Градина 202",
         subtitle: "Надникнете в нашите оживени класни стаи и открити пространства, където ученето оживява.",
-        viewFull: "Вижте пълната галерия",
+        viewFull: "Вижте пъ��ната галерия",
       },
       cta: {
         title: "Готови ли сте да се присъедините към нашето семейство?",
         description:
-          "Запазете обиколка, за да видите нашите съоръжения, да се запознаете с нашите учители и да откриете защо семействата обичат Детска Градина 202.",
+          "Запазете обиколка, за да видите нашите съоръжения, да се запоз��аете с нашите учители и да откриете защо семействата обичат Детска Градина 202.",
         button: "Запазете вашето посещение днес",
       },
     },
@@ -695,9 +707,9 @@ export const translations = {
       hero: {
         title: "За нас",
         description1:
-          "Добре дошли в Детска градина № 202! Новооткрита детска градина в столицата. Намира се в ж.к. „Младост“ 1. Разполага с просторни, естетически оформени помещения, отговарящи на всички изисквания за обучение и възпитание на деца от предучилищна възраст.",
+          'Добре дошли в Детска градинина № 202! Новооткрита детска градина в столицата. Намира се в ж.к "Младост" 1. Разполага с просторни, естетически оформени помещения, отговарящи на всички изисквания за обучение и възпитание на деца от предучилищна възраст.',
         description2:
-          "За игри и спорт на открито има голям и красив озеленен и обезопасен двор с площадки, оборудвани със съвременни паркови мебели, противоударна настилка, катерушки, пейки, пързалки, люлки.",
+          "За игри и спорт на открито има голям и красив озеленен и обезопасен двор с площадки, оборудвани със съвременни парко-мебели, противоударна настилка, катерушки, пейки, пързалки, люлки.",
       },
       staff: {
         title: "Нашият екип",
@@ -711,9 +723,9 @@ export const translations = {
         focusPoints: [
           "Възпитанието и обучението са в унисон с актуалните постижения на педагогиката на ранната и предучилищна възраст",
           "Качествена здравна грижа за децата",
-          "Активното комуникиране с родителите и привличането им в помощ на общата кауза - да отгледаме здрави, щастливи, знаещи и можещи деца",
+          "Активното комуникиране с родителите и привличането им в помощ на общата кауза - да отгледаме здрави, щастливи, знаещи и можещи деца"
         ],
-        welcome: "Добре дошли при нас!",
+        welcome: "Добре дошли при нас!"
       },
       focus: {
         title: "Основен акцент в дейността на детската градина",
@@ -780,9 +792,9 @@ export const translations = {
           description: "Подборът на педагогически кадри се осъществява по следните критерии:",
           criteria: [
             "Професионализъм и педагогическо майсторство",
-            "Инициативност и творчество",
+            "Инициативност и т��орчество",
             "Умение за общуване с децата",
-            "Умение за работа в екип",
+            "У��ение за работа в екип",
             "Любов към децата и професията",
           ],
         },
@@ -864,7 +876,7 @@ export const translations = {
         playBased: {
           title: "Подход, базиран на игра",
           description:
-            "Играта е основата на ученето. Чрез структурирана и свободна игра децата развиват социални, емоционални, когнитивни и физически умения естествено и радостно.",
+            "Играта е основата на ученето. Чрез структурирана и свободна игра децата развиват социални, емоционални, ко��нитивни и физически умения естествено и радостно.",
         },
         family: {
           title: "Партньорство със семейството",
@@ -882,12 +894,12 @@ export const translations = {
         subtitle:
           "Нашата структурирана, но гъвкава дневна рутина осигурява последователност, като същевременно позволява спонтанни моменти на учене.",
         times: {
-          arrival: "Пристигане и свободна игра",
+          arrival: "Прис��игане и свободна игра",
           circle: "Сутрешен кръг и календарно време",
           centers: "Учебни центрове и дейности",
           snack: "Време за закуска и приказки",
           outdoor: "Игра на открито и изследване",
-          lunch: "Обяд и тихо време",
+          lunch: "Обяд и тихо вре����е",
           rest: "Време за почивка / Тихи дейности",
           arts: "Творчески изкуства и музика",
           afternoon: "Следобедна закуска",
@@ -952,8 +964,9 @@ export const translations = {
           description: "Развиване на ритъм, координация и музикална оценка чрез песни, танци и инструменти.",
         },
         social: {
-          title: "Социални умения",
-          description: "Учене на сътрудничество, споделяне, емпатия и разрешаване на конфликти чрез групови дейности и игра.",
+          title: "Социал��и умения",
+          description:
+            "Учене на сътрудн��чество, споделяне, емпатия и разрешаване на конфликти чрез групови дейности и игра.",
         },
         emotional: {
           title: "Емоционално развитие",
@@ -1063,13 +1076,13 @@ export const translations = {
         description: "Разгледайте моменти на радост, учене и откриване в Детска Градина 202.",
       },
       filters: {
-        all: "Всички снимки",
-        classroom: "Класна стая",
-        outdoor: "Игра на открито",
-        activities: "Дейности",
-        events: "Събития",
-        building: "Сграда",
-        facilities: "Помещения",
+      all: "Всички снимки",
+      classroom: "Класна стая",
+      outdoor: "Игра на открито",
+      activities: "Дейности",
+      events: "Събития",
+      building: "Сграда",
+      facilities: "Помещения",
       },
     },
     // News Page
@@ -1128,14 +1141,14 @@ export const translations = {
       faq: {
         title: "Често задавани въпроси",
         q1: {
-          question: "Какви възрасти приемате?",
+          question: "Какви възрасти пр��емате?",
           answer:
             "Приемаме деца от 18 месеца до 5 години, с програми, съобразени с ясла, предучилищна и подготвителна група.",
         },
         q2: {
           question: "Какво е вашето работно време?",
           answer:
-            "Отворени сме от понеделник до петък от 7:00 до 19:00. Предлагаме както целодневни, така и полудневни програми, за да отговорим на различните семейни графици.",
+            "Отворени сме от понеделник до петък от 7:00 до 19:00. Предлагаме както целодневни, така и полудневни програми, за да отговорим ��а различните семейни графици.",
         },
         q3: {
           question: "Какво е съотношението учител-ученик?",
@@ -1166,3 +1179,5 @@ export const translations = {
     },
   },
 }
+
+export type TranslationKeys = typeof translations.en
