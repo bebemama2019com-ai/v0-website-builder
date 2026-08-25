@@ -1166,5 +1166,3 @@ export const translations = {
     },
   },
 }
-
-export type TranslationKeys = typeof translations.en
