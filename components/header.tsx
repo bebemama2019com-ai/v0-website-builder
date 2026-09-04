@@ -95,11 +95,11 @@ export function Header() {
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-3 transition-transform hover:scale-105">
             <Image
-              src="/images/design-mode/Screenshot_1.jpg"
+              src="/logo.jpg"
               alt="ДГ 202 Logo"
-              width={160}
-              height={80}
-              className="h-16 w-auto object-contain shadow-lg mx-[-7px] rounded-sm"
+              width={190}
+              height={95}
+              className="h-20 w-auto object-contain shadow-lg mx-[-7px] rounded-sm"
               priority
             />
           </Link>
