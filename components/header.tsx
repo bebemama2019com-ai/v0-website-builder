@@ -97,9 +97,9 @@ export function Header() {
             <Image
               src="/logo.jpg"
               alt="ДГ 202 Logo"
-              width={190}
-              height={95}
-              className="h-20 w-auto object-contain shadow-lg mx-[-7px] rounded-sm"
+              width={230}
+              height={115}
+              className="h-24 w-auto object-contain shadow-lg mx-[-7px] rounded-sm"
               priority
             />
           </Link>
