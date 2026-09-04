@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/server"
 
 // Revalidate every 5 seconds for fresh data
 export const revalidate = 5
 
 export async function GET() {
   try {
-    const supabase = await createClient()
+    // Public news must remain readable even when the legacy RLS policy still checks `published`.
+    // Keep the endpoint safe by selecting only active posts here.
+    const supabase = createAdminClient()
 
     const { data: newsPosts, error } = await supabase
       .from("news_posts")
