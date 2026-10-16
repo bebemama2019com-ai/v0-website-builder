@@ -6,16 +6,28 @@ import { FileText } from "lucide-react"
 import DocumentUploadItem from "@/components/admin/document-upload-item"
 import { useState, useEffect } from "react"
 import { DOCUMENTS } from "@/lib/documents"
+import type { DocumentPageInfo } from "@/components/admin/document-header-editor"
 
 const DOCUMENT_TYPES = DOCUMENTS.map((d) => ({ id: d.type, label: d.label }))
 
 export default function DocumentsManagementPage() {
   const [documents, setDocuments] = useState<Record<string, any>>({})
   const [loading, setLoading] = useState(true)
+  const [pages, setPages] = useState<(DocumentPageInfo & { documentTypes: string[] })[]>([])
 
   useEffect(() => {
     fetchDocuments()
+    fetchPages()
   }, [])
+
+  async function fetchPages() {
+    try {
+      const response = await fetch("/api/admin/document-pages", { cache: "no-store" })
+      if (response.ok) setPages(await response.json())
+    } catch (error) {
+      console.error("Error fetching page text:", error)
+    }
+  }
 
   async function fetchDocuments() {
     try {
@@ -52,7 +64,7 @@ export default function DocumentsManagementPage() {
             ← Назад към таблото
           </Link>
           <h1 className="text-3xl font-bold mt-2">Управление на документи</h1>
-          <p className="text-muted-foreground mt-1">Качете PDF или DOCX файлове за всяка категория документи</p>
+          <p className="text-muted-foreground mt-1">Качете PDF, DOC или DOCX файлове и редактирайте текста в началото на всяка страница</p>
         </div>
       </div>
 
@@ -72,6 +84,8 @@ export default function DocumentsManagementPage() {
                   displayName={docType.label}
                   currentFile={documents[docType.id]}
                   onFileUploaded={fetchDocuments}
+                  page={pages.find((p) => p.documentTypes.includes(docType.id))}
+                  onPageSaved={fetchPages}
                 />
               ))}
             </div>

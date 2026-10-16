@@ -12,9 +12,7 @@ export default function GodishenPlanPage() {
     <DocumentPage
       title="Годишен План 2025/2026"
       subtitle="ДГ 202 - Учебна 2025/2026 г."
-      orderInfo="Заповед № 27/10.10.2025 г."
-      orderDetails="На основание чл. 259 ал.1 от ЗПУО, Наредба № 5/03.06.2016г. за предучилищно образование и решение на ПС с Протокол № 1 от 10.10.2025г."
-      approvedBy="Петя Янкова - ВрИД Директор на ДГ № 202"
+      pageKey="godishen-plan"
       pdfPath="/documents/godishen-plan-2025-2026.pdf"
       icon={CalendarDays}
       sections={[

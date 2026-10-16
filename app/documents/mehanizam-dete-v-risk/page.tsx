@@ -12,9 +12,7 @@ export default function MehanizamDeteVRiskPage() {
     <DocumentPage
       title="Механизъм за дете в риск"
       subtitle="ДГ 202"
-      orderInfo="Механизъм за взаимодействие при сигнал за дете, жертва на насилие или в риск от насилие"
-      orderDetails="ДГ № 202, гр. София"
-      approvedBy="Петя Янкова - Директор на ДГ № 202"
+      pageKey="mehanizam-dete-v-risk"
       pdfPath="/documents/mehanizam-dete-v-risk.pdf"
       icon={HeartHandshake}
       sections={[

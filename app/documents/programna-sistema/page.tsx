@@ -12,9 +12,7 @@ export default function ProgramnaSistemaPage() {
     <DocumentPage
       title="Програмна Система"
       subtitle="ДГ 202 - Учебна 2026/2027 г."
-      orderInfo="Заповед № 104/21.09.2026 г."
-      orderDetails="На основание чл. 259 ал.1 от ЗПУО, Наредба № 5/03.06.2016г. за предучилищно образование и решение на ПС с Протокол № 1 от 16.09.2026г."
-      approvedBy="Петя Янкова - ВрИД Директор на ДГ № 202"
+      pageKey="programna-sistema"
       pdfPath="/documents/programna-sistema.pdf"
       icon={BookOpen}
       sections={[

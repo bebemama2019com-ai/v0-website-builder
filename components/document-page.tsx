@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import type { LucideIcon } from "lucide-react"
 import { createServerClient } from "@/lib/supabase/server"
 import { getDocumentByPath, getDocumentUrl } from "@/lib/documents"
+import { getDocumentPageHeader } from "@/lib/document-page-content"
+import { RichText } from "@/components/rich-text"
 
 interface DocumentSection {
   title: string
@@ -14,9 +16,8 @@ interface DocumentSection {
 interface DocumentPageProps {
   title: string
   subtitle: string
-  orderInfo: string
-  orderDetails: string
-  approvedBy: string
+  /** Key of this page in lib/document-pages.ts; its header box is editable in the admin panel */
+  pageKey: string
   pdfPath: string
   icon: LucideIcon
   sections: DocumentSection[]
@@ -25,13 +26,13 @@ interface DocumentPageProps {
 export async function DocumentPage({
   title,
   subtitle,
-  orderInfo,
-  orderDetails,
-  approvedBy,
+  pageKey,
   pdfPath,
   icon: Icon,
   sections,
 }: DocumentPageProps) {
+  const header = await getDocumentPageHeader(pageKey)
+
   // A document is downloadable when it has a row in the `documents` table.
   // The row decides whether parents get an admin-uploaded file or the original one.
   let downloadUrl: string | null = null
@@ -88,9 +89,9 @@ export async function DocumentPage({
                 <div className="flex items-start gap-3">
                   <FileText className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-lg mb-1">{orderInfo}</p>
-                    <p className="text-muted-foreground">{orderDetails}</p>
-                    <p className="text-sm text-muted-foreground mt-2 italic">{approvedBy}</p>
+                    <p className="font-semibold text-lg mb-1"><RichText text={header.orderInfo} /></p>
+                    <p className="text-muted-foreground"><RichText text={header.orderDetails} /></p>
+                    <p className="text-sm text-muted-foreground mt-2 italic"><RichText text={header.approvedBy} /></p>
                   </div>
                 </div>
               </div>

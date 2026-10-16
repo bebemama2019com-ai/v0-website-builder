@@ -12,9 +12,7 @@ export default function EcoEducationProgramPage() {
     <DocumentPage
       title="Програма екологично възпитание"
       subtitle="Системна програма за екологично образование на детете"
-      orderInfo="Програма за 2025/2026 година"
-      orderDetails="Комплексна програма за екологичното възпитание на децата в детската градина."
-      approvedBy="Петя Янкова - Директор на ДГ № 202"
+      pageKey="eco-education-program"
       pdfPath="/documents/programa-ekologichno-vazpitanie.pdf"
       icon={Leaf}
       sections={[

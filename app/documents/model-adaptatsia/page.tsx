@@ -12,9 +12,7 @@ export default function ModelAdaptatsiaPage() {
     <DocumentPage
       title="Модел за адаптация на децата"
       subtitle="При първоначално постъпване"
-      orderInfo="Заповед № 29/15.10.2025 г."
-      orderDetails="На основание чл. 259 ал.1 от ЗПУО, Наредба № 5/03.06.2016г. за предучилищно образование и решение на ПС с Протокол № 1 от 10.10.2025г."
-      approvedBy="Петя Янкова - ВрИД Директор на ДГ № 202"
+      pageKey="model-adaptatsia"
       pdfPath="/documents/model-adaptatsia.pdf"
       icon={Baby}
       sections={[

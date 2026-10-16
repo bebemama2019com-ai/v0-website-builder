@@ -12,9 +12,7 @@ export default function BudgetReport2025Page() {
     <DocumentPage
       title="Отчет Бюджет 2025"
       subtitle="Финансов отчет и анализ на разходите за 2025 година"
-      orderInfo="Отчет за периода 01.01.2025 - 31.12.2025"
-      orderDetails="Детайлен преглед на финансовите приходи и разходи на ДГ 202."
-      approvedBy="Петя Янкова - Директор на ДГ № 202"
+      pageKey="budget-report-2025"
       pdfPath="/documents/otchet-byudzhet-2025.pdf"
       icon={Banknote}
       sections={[

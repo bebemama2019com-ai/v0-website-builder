@@ -12,9 +12,7 @@ export default function PravilnikPropuskatelenRezhimPage() {
     <DocumentPage
       title="Правилник за пропускателния режим"
       subtitle="ДГ 202"
-      orderInfo="Заповед № 24/14.10.2025 г."
-      orderDetails="Утвърден от директора на ДГ № 202"
-      approvedBy="Петя Янкова - Директор на ДГ № 202"
+      pageKey="pravilnik-propuskatelen-rezhim"
       pdfPath="/documents/pravilnik-propuskatelen-rezhim.pdf"
       icon={Shield}
       sections={[

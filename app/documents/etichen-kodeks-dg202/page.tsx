@@ -12,9 +12,7 @@ export default function EtichenKodeksDg202Page() {
     <DocumentPage
       title="Етичен Кодекс ДГ 202"
       subtitle="За поведение на общността"
-      orderInfo="Заповед № 17/14.10.2025 г."
-      orderDetails="Етичният кодекс на ДГ № 202 е разработен от директора на ДГ, комисията от педагогически специалисти и представители на обществения съвет към детската градина в съответствие с изискванията на чл. 269, ал.1, т.11 от ЗПУО."
-      approvedBy="Петя Янкова - Директор на ДГ № 202"
+      pageKey="etichen-kodeks-dg202"
       pdfPath="/documents/etichen-kodeks-dg202.pdf"
       icon={Scale}
       sections={[
