@@ -1,68 +1,48 @@
-import { unlink } from "fs/promises"
-import { join } from "path"
 import { NextRequest, NextResponse } from "next/server"
-import { createServerClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/supabase/require-admin"
+import { DOCUMENTS_BUCKET, isUploadedPath } from "@/lib/documents"
 
 export async function POST(request: NextRequest) {
+  const auth = await requireAdmin()
+  if ("error" in auth) return auth.error
+  const { supabase } = auth
+
   try {
     const { documentType } = await request.json()
 
-    if (!documentType) {
-      return NextResponse.json(
-        { error: "Missing documentType" },
-        { status: 400 }
-      )
+    if (typeof documentType !== "string" || !documentType) {
+      return NextResponse.json({ error: "Missing documentType" }, { status: 400 })
     }
 
-    // Get the document from database to find the file path
-    const supabase = await createServerClient()
     const { data: doc, error: fetchError } = await supabase
       .from("documents")
       .select("file_path")
       .eq("document_type", documentType)
-      .single()
+      .maybeSingle()
 
     if (fetchError || !doc) {
-      return NextResponse.json(
-        { error: "Document not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Document not found" }, { status: 404 })
     }
 
-    // Delete the file from disk
-    const docsPath = join(process.cwd(), "public", "documents")
-    const filePath = join(docsPath, doc.file_path)
-
-    try {
-      await unlink(filePath)
-      console.log("[v0] File deleted from disk:", doc.file_path)
-    } catch (err) {
-      console.error("[v0] Error deleting file from disk:", err)
-    }
-
-    // Delete from database
-    const { error: deleteError } = await supabase
-      .from("documents")
-      .delete()
-      .eq("document_type", documentType)
+    const { error: deleteError } = await supabase.from("documents").delete().eq("document_type", documentType)
 
     if (deleteError) {
-      console.error("[v0] Error deleting from database:", deleteError)
-      return NextResponse.json(
-        { error: "Failed to delete document record" },
-        { status: 500 }
-      )
+      console.error("Document record delete failed:", deleteError.message)
+      return NextResponse.json({ error: "Failed to delete document record" }, { status: 500 })
     }
 
-    return NextResponse.json({
-      success: true,
-      message: "Document deleted successfully",
-    })
+    // Uploaded files live in Supabase Storage; the original files in public/ are part of the
+    // deployment and can't be deleted at runtime (removing the row unpublishes them).
+    if (isUploadedPath(doc.file_path)) {
+      const { error: storageError } = await supabase.storage.from(DOCUMENTS_BUCKET).remove([doc.file_path])
+      if (storageError) {
+        console.error("Stored file delete failed:", storageError.message)
+      }
+    }
+
+    return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("[v0] Error deleting document:", error)
-    return NextResponse.json(
-      { error: "Failed to delete document" },
-      { status: 500 }
-    )
+    console.error("Document delete error:", error)
+    return NextResponse.json({ error: "Failed to delete document" }, { status: 500 })
   }
 }

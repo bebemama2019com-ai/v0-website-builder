@@ -5,7 +5,8 @@ import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileText, Download, Trash2, Upload } from "lucide-react"
+import { FileText, Download, Trash2 } from "lucide-react"
+import { getDocumentByType, getDocumentUrl } from "@/lib/documents"
 
 interface DocumentItemProps {
   documentType: string
@@ -21,6 +22,8 @@ interface DocumentItemProps {
 }
 
 export default function DocumentUploadItem({ documentType, displayName, currentFile, onFileUploaded }: DocumentItemProps) {
+  const entry = getDocumentByType(documentType)
+  const downloadUrl = entry && currentFile ? getDocumentUrl(entry, currentFile.file_path) : undefined
   const [uploading, setUploading] = useState(false)
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -28,9 +31,13 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
     if (!file) return
 
     // Validate file type
-    const validExtensions = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
+    const validExtensions = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ]
     if (!validExtensions.includes(file.type)) {
-      alert("Само PDF и DOCX файлове са позволени!")
+      alert("Само PDF, DOC и DOCX файлове са позволени!")
       return
     }
 
@@ -56,11 +63,9 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
         throw new Error(error.error || "Upload failed")
       }
 
-      const result = await response.json()
-      console.log("[v0] File uploaded successfully:", result.path)
       onFileUploaded()
     } catch (error) {
-      console.error("[v0] Error uploading file:", error)
+      console.error("Error uploading file:", error)
       const errorMsg = error instanceof Error ? error.message : String(error)
       alert(`Грешка при зареждане на файл: ${errorMsg}`)
     } finally {
@@ -85,7 +90,7 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
 
       onFileUploaded()
     } catch (error) {
-      console.error("[v0] Error deleting file:", error)
+      console.error("Error deleting file:", error)
       alert("Грешка при изтриване на файл.")
     }
   }
@@ -116,7 +121,7 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
 
             <div className="grid grid-cols-2 gap-2">
               <Button asChild variant="outline" size="sm">
-                <a href={currentFile.file_path.replace(/^documents\//, "")} target="_blank" rel="noopener noreferrer">
+                <a href={downloadUrl} target="_blank" rel="noopener noreferrer">
                   <Download className="mr-2 h-4 w-4" />
                   Изтегли
                 </a>
@@ -134,7 +139,7 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
                   type="file"
                   onChange={handleFileUpload}
                   disabled={uploading}
-                  accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  accept=".pdf,.doc,.docx"
                   className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer"
                 />
               </label>
@@ -148,11 +153,11 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
                 type="file"
                 onChange={handleFileUpload}
                 disabled={uploading}
-                accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                accept=".pdf,.doc,.docx"
                 className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer"
               />
             </label>
-            <p className="text-xs text-muted-foreground text-center">PDF или DOCX • Макс. 50MB</p>
+            <p className="text-xs text-muted-foreground text-center">PDF, DOC или DOCX • Макс. 50MB</p>
           </div>
         )}
 

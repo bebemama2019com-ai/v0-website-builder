@@ -1,159 +1,90 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createServerClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/supabase/require-admin"
+import { DOCUMENTS_BUCKET, UPLOAD_PREFIX, getDocumentByType, getDocumentUrl, isUploadedPath } from "@/lib/documents"
+
+const ALLOWED_TYPES: Record<string, string> = {
+  "application/pdf": "pdf",
+  "application/msword": "doc",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+}
+
+const MAX_SIZE = 50 * 1024 * 1024
 
 export async function POST(request: NextRequest) {
+  const auth = await requireAdmin()
+  if ("error" in auth) return auth.error
+  const { supabase } = auth
+
   try {
     const formData = await request.formData()
-    const file = formData.get("file") as File
-    const documentType = formData.get("documentType") as string
+    const file = formData.get("file")
+    const documentType = formData.get("documentType")
 
-    if (!file || !documentType) {
-      return NextResponse.json(
-        { error: "Missing file or documentType" },
-        { status: 400 }
-      )
+    if (!(file instanceof File) || typeof documentType !== "string") {
+      return NextResponse.json({ error: "Missing file or documentType" }, { status: 400 })
     }
 
-    // Validate file type
-    const allowedTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json(
-        { error: "Only PDF and DOCX files are allowed" },
-        { status: 400 }
-      )
+    const entry = getDocumentByType(documentType)
+    if (!entry) {
+      return NextResponse.json({ error: "Unknown document type" }, { status: 400 })
     }
 
-    // Validate file size (50MB max)
-    if (file.size > 50 * 1024 * 1024) {
-      return NextResponse.json(
-        { error: "File size exceeds 50MB limit" },
-        { status: 400 }
-      )
+    const ext = ALLOWED_TYPES[file.type]
+    if (!ext) {
+      return NextResponse.json({ error: "Only PDF, DOC and DOCX files are allowed" }, { status: 400 })
     }
 
-    // Create filename based on document type
-    const ext = file.name.split(".").pop()
-    
-    // Map document types to consistent filenames
-    const fileNameMap: Record<string, string> = {
-      budget: `otchet-byudzhet-2025.${ext}`,
-      "budget-2026-q1": `otchet-byudzhet-2026-q1.${ext}`,
-      "budget-2026-q2": `otchet-byudzhet-2026-q2.${ext}`,
-      "budget-2026-q3": `otchet-byudzhet-2026-q3.${ext}`,
-      "budget-2026-q4": `otchet-byudzhet-2026-q4.${ext}`,
-      "eco-education": `programa-ekologichno-vazpitanie.${ext}`,
-      "child-protection": `vansni-pravila-za-zaschita.${ext}`,
-      "personal-data": `vansni-pravila-za-zaschita-na-lichni-dani.${ext}`,
-      "godishen-plan": `godishen-plan-2025-2026.${ext}`,
-      "sistema-programa": `programa-sistema.${ext}`,
-      "pravilnik-propuskatelni": `pravilnik-za-propuskatelni-rejim.${ext}`,
-      "pravila-dejstvie-terorizam": `pravila-za-dejstvie-pri-terorizam.${ext}`,
-      "plan-programa-bdp": `plan-programa-bdp.${ext}`,
-      "mehanizam-dete-risk": `mehanizam-za-dete-v-risk.${ext}`,
-      "etichen-kodeks-dete": `etichen-kodeks-za-rabota-s-dete.${ext}`,
-      "etichen-kodeks-dg-202": `etichen-kodeks-dg-202.${ext}`,
-      "model-adaptacija": `model-za-adaptacija.${ext}`,
-    }
-    
-    const fileName = fileNameMap[documentType] || `document-${documentType}.${ext}`
-
-    const supabase = await createServerClient()
-    const buffer = await file.arrayBuffer()
-
-    // Check if user is authenticated
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+    if (file.size > MAX_SIZE) {
+      return NextResponse.json({ error: "File size exceeds 50MB limit" }, { status: 400 })
     }
 
-    console.log("[v0] User uploading document:", user.id)
+    // A new, unique path per upload, so browsers and the CDN never serve a stale copy.
+    const filePath = `${UPLOAD_PREFIX}${documentType}/${Date.now()}.${ext}`
 
-    // Get existing file to delete
-    const { data: existingFile } = await supabase
+    const { data: existing } = await supabase
       .from("documents")
       .select("file_path")
       .eq("document_type", documentType)
-      .single()
+      .maybeSingle()
 
-    // Delete old file from storage if it exists
-    if (existingFile?.file_path) {
-      const oldFileName = existingFile.file_path.split("/").pop()
-      if (oldFileName) {
-        console.log("[v0] Deleting old file:", oldFileName)
-        await supabase.storage.from("documents").remove([oldFileName])
-      }
-    }
-
-    // Upload new file to Supabase Storage
     const { error: uploadError } = await supabase.storage
-      .from("documents")
-      .upload(fileName, buffer, {
-        contentType: file.type,
-        upsert: true,
-      })
+      .from(DOCUMENTS_BUCKET)
+      .upload(filePath, await file.arrayBuffer(), { contentType: file.type, upsert: false })
 
     if (uploadError) {
-      console.error("[v0] Upload error:", uploadError)
-      return NextResponse.json(
-        { error: uploadError.message || "Failed to upload file to storage" },
-        { status: 500 }
-      )
+      console.error("Document upload failed:", uploadError.message)
+      return NextResponse.json({ error: uploadError.message || "Failed to upload file" }, { status: 500 })
     }
 
-    console.log("[v0] Document uploaded to storage successfully:", fileName)
-
-    // Get public URL
-    const { data: publicUrl } = supabase.storage
-      .from("documents")
-      .getPublicUrl(fileName)
-
-    // Save file info to database - just try insert (RLS should be disabled)
-    console.log("[v0] Inserting document:", { documentType, file_name: file.name, file_path: fileName, file_size: file.size })
-    
-    const { error: dbError } = await supabase
-      .from("documents")
-      .insert({
+    const { error: dbError } = await supabase.from("documents").upsert(
+      {
         document_type: documentType,
         file_name: file.name,
-        file_path: fileName,
+        file_path: filePath,
         file_size: file.size,
-      })
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "document_type" },
+    )
 
     if (dbError) {
-      console.error("[v0] Database error details:")
-      console.error("[v0] Message:", dbError.message)
-      console.error("[v0] Code:", dbError.code)
-      console.error("[v0] Hint:", (dbError as any).hint)
-      console.error("[v0] Details:", (dbError as any).details)
-      console.error("[v0] Full error:", JSON.stringify(dbError, null, 2))
-      
-      return NextResponse.json(
-        { 
-          error: dbError.message || "Failed to save document record",
-          code: dbError.code,
-          hint: (dbError as any).hint
-        },
-        { status: 500 }
-      )
+      console.error("Document record save failed:", dbError.message)
+      // Don't leave an orphaned file behind.
+      await supabase.storage.from(DOCUMENTS_BUCKET).remove([filePath])
+      return NextResponse.json({ error: dbError.message || "Failed to save document record" }, { status: 500 })
     }
 
-    console.log("[v0] Document record inserted into database")
+    // Only now that the new file is live, remove the previously uploaded one.
+    if (existing?.file_path && isUploadedPath(existing.file_path)) {
+      await supabase.storage.from(DOCUMENTS_BUCKET).remove([existing.file_path])
+    }
 
-
-
-    return NextResponse.json({
-      success: true,
-      fileName: fileName,
-      path: publicUrl.publicUrl,
-    })
+    return NextResponse.json({ success: true, filePath, url: getDocumentUrl(entry, filePath) })
   } catch (error) {
-    console.error("[v0] Error uploading document:", error)
+    console.error("Document upload error:", error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to upload document" },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

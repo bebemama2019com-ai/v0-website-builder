@@ -1,36 +1,23 @@
-import { createServerClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/supabase/require-admin"
 import { NextResponse } from "next/server"
 
-export const revalidate = 0
+export const dynamic = "force-dynamic"
 
-export async function GET(request: Request) {
+// Full document records for the admin panel.
+export async function GET() {
+  const auth = await requireAdmin()
+  if ("error" in auth) return auth.error
+
   try {
-    const url = new URL(request.url)
-    const minimal = url.searchParams.get("minimal")
+    const { data: documents, error } = await auth.supabase
+      .from("documents")
+      .select("id, document_type, file_name, file_path, file_size, updated_at")
+      .order("document_type", { ascending: true })
 
-    const supabase = await createServerClient()
-
-    if (minimal === "true") {
-      // Lightweight response for file availability checks
-      const { data: documents, error } = await supabase
-        .from("documents")
-        .select("file_path")
-        .order("document_type", { ascending: true })
-
-      if (error) throw error
-      return NextResponse.json(documents || [])
-    } else {
-      // Full response for admin panel with all document details
-      const { data: documents, error } = await supabase
-        .from("documents")
-        .select("id, document_type, file_name, file_path, file_size, updated_at")
-        .order("document_type", { ascending: true })
-
-      if (error) throw error
-      return NextResponse.json(documents || [])
-    }
+    if (error) throw error
+    return NextResponse.json(documents || [])
   } catch (error) {
-    console.error("[v0] Error fetching documents:", error)
+    console.error("Admin documents query failed:", error)
     return NextResponse.json({ error: "Failed to fetch documents" }, { status: 500 })
   }
 }

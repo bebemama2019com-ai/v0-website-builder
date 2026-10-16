@@ -1,23 +1,37 @@
 import { createServerClient } from "@/lib/supabase/server"
+import { getDocumentByType, getDocumentUrl } from "@/lib/documents"
 import { NextResponse } from "next/server"
 
-// Revalidate every 5 seconds for fresh data
-export const revalidate = 5
+export const dynamic = "force-dynamic"
 
+// Public list of published documents with their download URLs.
 export async function GET() {
   try {
     const supabase = await createServerClient()
 
-    const { data, error } = await supabase.from("documents").select("*").order("order_index", { ascending: true })
+    const { data, error } = await supabase.from("documents").select("document_type, file_path, updated_at")
 
     if (error) {
-      console.error("[SERVER][v0] Supabase query error:", error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      console.error("Documents query failed:", error.message)
+      return NextResponse.json({ error: "Failed to fetch documents" }, { status: 500 })
     }
 
-    return NextResponse.json(data || [])
+    const documents = (data || []).flatMap((row) => {
+      const entry = getDocumentByType(row.document_type)
+      if (!entry) return []
+      return [
+        {
+          document_type: row.document_type,
+          file: entry.file,
+          url: getDocumentUrl(entry, row.file_path),
+          updated_at: row.updated_at,
+        },
+      ]
+    })
+
+    return NextResponse.json(documents)
   } catch (error) {
-    console.error("[SERVER][v0] Documents API error:", error)
+    console.error("Documents API error:", error)
     return NextResponse.json({ error: "Failed to fetch documents" }, { status: 500 })
   }
 }

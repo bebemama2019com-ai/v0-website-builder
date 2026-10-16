@@ -1,35 +1,16 @@
 "use client"
 
-import { createServerClient } from "@/lib/supabase/server"
-import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { FileText } from "lucide-react"
 import DocumentUploadItem from "@/components/admin/document-upload-item"
 import { useState, useEffect } from "react"
+import { DOCUMENTS } from "@/lib/documents"
 
-// List of all documents from the screenshot
-const DOCUMENT_TYPES = [
-  { id: "budget", label: "Отчет Бюджет 2025" },
-  { id: "budget-2026-q1", label: "Отчет Бюджет 2026 - Първо тримесечие" },
-  { id: "budget-2026-q2", label: "Отчет Бюджет 2026 - Второ тримесечие" },
-  { id: "budget-2026-q3", label: "Отчет Бюджет 2026 - Трето тримесечие" },
-  { id: "budget-2026-q4", label: "Отчет Бюджет 2026 - Четвърто тримесечие" },
-  { id: "eco-education", label: "Програма екологично възпитание" },
-  { id: "data-protection", label: "Външни правила за защита на личните данни" },
-  { id: "annual-plan", label: "Годишен План 2025/2026" },
-  { id: "program-system", label: "Програмна Система" },
-  { id: "admission-rules", label: "Правилник за пропускателния режим" },
-  { id: "terror-protocol", label: "Правила за действие при тероризм" },
-  { id: "bdp-program", label: "План-Програма БДП" },
-  { id: "risk-mechanism", label: "Механизъм за дете в риск" },
-  { id: "ethics-code-general", label: "Етичен кодекс за работа с деца" },
-  { id: "ethics-code-dg202", label: "Етичен Кодекс ДГ 202" },
-  { id: "adaptation-model", label: "Модел за адаптация" },
-]
+const DOCUMENT_TYPES = DOCUMENTS.map((d) => ({ id: d.type, label: d.label }))
 
 export default function DocumentsManagementPage() {
-  const [documents, setDocuments] = useState({})
+  const [documents, setDocuments] = useState<Record<string, any>>({})
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -43,7 +24,7 @@ export default function DocumentsManagementPage() {
       const data = await response.json()
 
       // Create a map of document_type -> document
-      const docMap = {}
+      const docMap: Record<string, any> = {}
       data.forEach((doc: any) => {
         docMap[doc.document_type] = doc
       })

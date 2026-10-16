@@ -18,9 +18,11 @@ export function ContactForm() {
     email: "",
     phone: "",
     message: "",
+    website: "", // honeypot, hidden from visitors
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -32,24 +34,25 @@ export function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError(null)
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    console.log("[v0] Form submitted:", formData)
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false)
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        message: "",
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       })
-    }, 3000)
+      if (!response.ok) throw new Error(`Request failed: ${response.status}`)
+
+      setIsSubmitted(true)
+      setFormData({ name: "", email: "", phone: "", message: "", website: "" })
+      setTimeout(() => setIsSubmitted(false), 5000)
+    } catch (err) {
+      console.error("Contact form submit failed:", err)
+      setError("Съобщението не можа да бъде изпратено. Моля, опитайте отново или ни пишете на dg202sofia@abv.bg.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (isSubmitted) {
@@ -121,6 +124,26 @@ export function ContactForm() {
               className="rounded-xl"
             />
           </div>
+
+          {/* Honeypot: hidden from people, filled in by spam bots */}
+          <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+            <label htmlFor="website">Website</label>
+            <input
+              id="website"
+              name="website"
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={formData.website}
+              onChange={handleChange}
+            />
+          </div>
+
+          {error && (
+            <p role="alert" className="rounded-xl bg-destructive/10 p-4 text-sm text-destructive">
+              {error}
+            </p>
+          )}
 
           <Button type="submit" disabled={isSubmitting} className="w-full rounded-full" size="lg">
             {isSubmitting ? (
