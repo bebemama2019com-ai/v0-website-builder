@@ -1,3 +1,4 @@
+import { unstable_rethrow } from "next/navigation"
 import { createServerClient } from "@/lib/supabase/server"
 import { getDocumentPage, type DocumentPageHeader } from "@/lib/document-pages"
 
@@ -25,6 +26,7 @@ export async function getDocumentPageHeader(key: string): Promise<DocumentPageHe
       }
     }
   } catch (error) {
+    unstable_rethrow(error) // let Next.js handle its own control-flow errors
     console.error("Loading document page text failed:", error)
   }
 

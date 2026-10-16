@@ -7,6 +7,7 @@ import { createServerClient } from "@/lib/supabase/server"
 import { getDocumentByPath, getDocumentUrl } from "@/lib/documents"
 import { getDocumentPageHeader } from "@/lib/document-page-content"
 import { RichText } from "@/components/rich-text"
+import { unstable_rethrow } from "next/navigation"
 
 interface DocumentSection {
   title: string
@@ -47,6 +48,7 @@ export async function DocumentPage({
         .maybeSingle()
       if (doc) downloadUrl = getDocumentUrl(entry, doc.file_path)
     } catch (error) {
+      unstable_rethrow(error)
       console.error("Error checking document availability:", error)
     }
   }
