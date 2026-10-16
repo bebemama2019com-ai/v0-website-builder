@@ -142,6 +142,16 @@ export const DOCUMENT_PAGES: DocumentPageEntry[] = [
     },
   },
   {
+    key: "pravilnik-vatreshen-trudov-red",
+    title: "Правилник за вътрешния трудов ред",
+    documentTypes: ["internal-labor-rules"],
+    defaults: {
+      orderInfo: "Заповед № 106/21.09.2026 г.",
+      orderDetails: "На основание чл. 259 ал.1 от ЗПУО, Наредба № 5/03.06.2016г. за предучилищно образование и решение на ПС с Протокол № 1 от 10.10.2025г.",
+      approvedBy: "Петя Янкова - ВрИД Директор на ДГ № 202",
+    },
+  },
+  {
     key: "pravilnik-propuskatelen-rezhim",
     title: "Правилник за пропускателния режим",
     documentTypes: ["admission-rules"],

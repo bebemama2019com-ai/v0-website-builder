@@ -67,6 +67,7 @@ export function Header() {
         { name: t.nav.dataProtectionRules, href: "/documents/data-protection-rules" },
         { name: t.nav.godishenPlan, href: "/documents/godishen-plan" },
         { name: t.nav.programnaSistema, href: "/documents/programna-sistema" },
+        { name: t.nav.pravilnikVatreshenTrudovRed, href: "/documents/pravilnik-vatreshen-trudov-red" },
         { name: t.nav.pravilnikPropuskatelen, href: "/documents/pravilnik-propuskatelen-rezhim" },
         { name: t.nav.pravilaTerorizam, href: "/documents/pravila-terorizam" },
         { name: t.nav.planProgramaBdp, href: "/documents/plan-programa-bdp" },

@@ -36,6 +36,11 @@ export const DOCUMENTS: DocumentEntry[] = [
   },
   { type: "annual-plan", label: "Годишен план 2025/2026", file: "godishen-plan-2025-2026.pdf" },
   { type: "program-system", label: "Програмна система", file: "programna-sistema.pdf" },
+  {
+    type: "internal-labor-rules",
+    label: "Правилник за вътрешния трудов ред",
+    file: "pravilnik-vatreshen-trudov-red.pdf",
+  },
   { type: "admission-rules", label: "Правилник за пропускателния режим", file: "pravilnik-propuskatelen-rezhim.pdf" },
   { type: "terror-protocol", label: "Правила за действие при тероризъм", file: "pravila-terorizam.pdf" },
   { type: "bdp-program", label: "План-програма БДП", file: "plan-programa-bdp.pdf" },
