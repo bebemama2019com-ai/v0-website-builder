@@ -60,6 +60,7 @@ export function Header() {
     {
       name: t.nav.documents,
       dropdown: [
+        { name: t.nav.strategiaZaRazvitie, href: "/documents/strategia-za-razvitie" },
         { name: t.nav.budget, href: "/documents/budget" },
         { name: t.nav.budgetReport2025, href: "/documents/budget-report-2025" },
         { name: t.nav.budgetReport2026, href: "/documents/budget-report-2026" },

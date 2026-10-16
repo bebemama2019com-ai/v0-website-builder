@@ -22,6 +22,7 @@ export interface DocumentEntry {
 }
 
 export const DOCUMENTS: DocumentEntry[] = [
+  { type: "development-strategy", label: "Стратегия за развитие 2025-2030", file: "strategia-za-razvitie.pdf" },
   { type: "action-plan", label: "План за действие и финансиране 2025-2026", file: "plan-deystvie-finansirane.pdf" },
   { type: "budget", label: "Отчет Бюджет 2025", file: "otchet-byudzhet-2025.pdf" },
   { type: "budget-2026-q1", label: "Отчет Бюджет 2026 - Първо тримесечие", file: "otchet-byudzhet-2026-q1.pdf" },
