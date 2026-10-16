@@ -4,16 +4,16 @@ import { BookOpen } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Програмна Система - ДГ 202",
-  description: "Програмна система на Детска градина 202 за учебната 2025/2026 година",
+  description: "Програмна система на Детска градина 202 за учебната 2026/2027 година",
 }
 
 export default function ProgramnaSistemaPage() {
   return (
     <DocumentPage
       title="Програмна Система"
-      subtitle="ДГ 202 - Учебна 2025/2026 г."
-      orderInfo="Заповед № 25/14.10.2025 г."
-      orderDetails="На основание чл. 259 ал.1 от ЗПУО, Наредба № 5/03.06.2016г. за предучилищно образование и решение на ПС с Протокол № 1 от 10.10.2025г."
+      subtitle="ДГ 202 - Учебна 2026/2027 г."
+      orderInfo="Заповед № 104/21.09.2026 г."
+      orderDetails="На основание чл. 259 ал.1 от ЗПУО, Наредба № 5/03.06.2016г. за предучилищно образование и решение на ПС с Протокол № 1 от 16.09.2026г."
       approvedBy="Петя Янкова - ВрИД Директор на ДГ № 202"
       pdfPath="/documents/programna-sistema.pdf"
       icon={BookOpen}
