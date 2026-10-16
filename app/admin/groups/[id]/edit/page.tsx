@@ -47,12 +47,12 @@ export default function EditGroupPage() {
     try {
       const { data, error } = await supabase.from("team_members").select("id, name, role, bio").order("name")
       if (error) {
-        console.error("[v0] Error fetching team members:", error)
+        console.error("Error fetching team members:", error)
         return
       }
       setTeamMembers(data || [])
     } catch (error) {
-      console.error("[v0] Exception fetching team members:", error)
+      console.error("Exception fetching team members:", error)
     }
   }
 
@@ -60,14 +60,14 @@ export default function EditGroupPage() {
     try {
       const id = Array.isArray(params.id) ? params.id[0] : params.id
       if (!id) {
-        console.error("[v0] No group ID provided")
+        console.error("No group ID provided")
         return
       }
 
       const { data, error } = await supabase.from("groups").select("*").eq("id", id).single()
 
       if (error) {
-        console.error("[v0] Error fetching group:", error)
+        console.error("Error fetching group:", error)
         return
       }
 
@@ -87,12 +87,12 @@ export default function EditGroupPage() {
 
       // If the error is about missing table (Migration 009 not run yet), just skip it
       if (teachersError && teachersError.message && !teachersError.message.includes("does not exist")) {
-        console.error("[v0] Error fetching group teachers:", teachersError)
+        console.error("Error fetching group teachers:", teachersError)
       } else if (teachersData) {
         setSelectedTeachers(teachersData.map((t) => t.teacher_id))
       }
     } catch (error) {
-      console.error("[v0] Exception fetching group:", error)
+      console.error("Exception fetching group:", error)
     }
   }
 
@@ -124,7 +124,7 @@ export default function EditGroupPage() {
         .eq("id", id)
 
       if (updateError) {
-        console.error("[v0] Error updating group:", updateError)
+        console.error("Error updating group:", updateError)
         throw new Error(`Грешка при актуализация на групата: ${updateError.message}`)
       }
 
@@ -134,7 +134,7 @@ export default function EditGroupPage() {
       
       // If table doesn't exist, skip teacher management (Migration 009 not run yet)
       if (deleteError && deleteError.message && !deleteError.message.includes("does not exist")) {
-        console.error("[v0] Error deleting teachers:", deleteError)
+        console.error("Error deleting teachers:", deleteError)
         throw new Error(`Грешка при изтриване на учители: ${deleteError.message}`)
       }
 
@@ -148,14 +148,14 @@ export default function EditGroupPage() {
 
         const { error: teacherError } = await supabase.from("group_teachers").insert(groupTeachers)
         if (teacherError) {
-          console.error("[v0] Error inserting teachers:", teacherError)
+          console.error("Error inserting teachers:", teacherError)
           throw new Error(`Грешка при добавяне на учители: ${teacherError.message}`)
         }
       }
 
       router.push("/admin/groups")
     } catch (error) {
-      console.error("[v0] Error saving group:", error)
+      console.error("Error saving group:", error)
       const errorMessage = error instanceof Error ? error.message : "Грешка при съхраняване на групата"
       alert(errorMessage)
     } finally {

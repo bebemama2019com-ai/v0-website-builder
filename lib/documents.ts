@@ -1,3 +1,5 @@
+import { SUPABASE_URL } from "@/lib/supabase/config"
+
 // Single source of truth for the administrative documents shown on /documents/*.
 //
 // Each entry ties together:
@@ -9,9 +11,6 @@
 // Its `file_path` is either:
 //   - a path starting with `uploads/` → a file an admin uploaded to the `documents` storage bucket
 //   - anything else                  → the original static file in `public/documents/`
-
-export const SUPABASE_URL =
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://bulrhtnvqxasrhjmihdk.supabase.co"
 
 export const DOCUMENTS_BUCKET = "documents"
 export const UPLOAD_PREFIX = "uploads/"

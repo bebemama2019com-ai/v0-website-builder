@@ -138,10 +138,10 @@ export default function TeamPage() {
       <section className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-accent/20 px-4 py-20 lg:py-32">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-foreground lg:text-5xl">
-            {t?.team?.title || "Екип"}
+            {"Екип"}
           </h1>
           <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground lg:text-xl">
-            {t?.team?.subtitle || "Запознайте се с нашия отдаден екип от професионалисти, които се грижат за вашите деца."}
+            {"Запознайте се с нашия отдаден екип от професионалисти, които се грижат за вашите деца."}
           </p>
         </div>
       </section>
@@ -153,7 +153,7 @@ export default function TeamPage() {
             <div className="flex items-center gap-3 mb-10">
               <Users className="w-8 h-8 text-primary" />
               <h2 className="text-3xl font-bold text-foreground">
-                {t?.team?.pedagogicalStaff || "Педагогически персонал"}
+                {"Педагогически персонал"}
               </h2>
             </div>
             
@@ -173,7 +173,7 @@ export default function TeamPage() {
             <div className="flex items-center gap-3 mb-10">
               <Stethoscope className="w-8 h-8 text-primary" />
               <h2 className="text-3xl font-bold text-foreground">
-                {t?.team?.medicalStaff || "Медицински специалисти"}
+                {"Медицински специалисти"}
               </h2>
             </div>
             
@@ -193,7 +193,7 @@ export default function TeamPage() {
             <div className="flex items-center gap-3 mb-10">
               <Briefcase className="w-8 h-8 text-primary" />
               <h2 className="text-3xl font-bold text-foreground">
-                {t?.team?.otherStaff || "Друг персонал"}
+                {"Друг персонал"}
               </h2>
             </div>
             
@@ -212,7 +212,7 @@ export default function TeamPage() {
           <div className="flex items-center gap-3 mb-10">
             <Shield className="w-8 h-8 text-primary" />
             <h2 className="text-3xl font-bold text-foreground">
-              {t?.team?.security || "Охрана"}
+              {"Охрана"}
             </h2>
           </div>
           
@@ -226,7 +226,7 @@ export default function TeamPage() {
             <Card className="overflow-hidden rounded-2xl border max-w-md">
               <CardContent className="p-6">
                 <h3 className="text-lg font-bold text-foreground">
-                  {t?.team?.securityCompany || 'Охранителна фирма "ГАРД" ЕООД'}
+                  {'Охранителна фирма "ГАРД" ЕООД'}
                 </h3>
               </CardContent>
             </Card>

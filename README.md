@@ -7,7 +7,6 @@ Public website for Детска градина 202 with public information, pare
 - **Framework:** Next.js 15 App Router
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS v4 and shadcn/ui
-- **Content:** Sanity CMS
 - **Backend and storage:** Supabase Auth, database, and Storage
 - **Icons:** Lucide React
 - **Deployment:** Vercel
@@ -20,14 +19,13 @@ Public website for Детска градина 202 with public information, pare
 - Admin dashboard under `/admin`
 - Weekly menu management under `/admin/weekly-menu`
 - Document management under `/admin/documents-new`
-- Gallery and news content powered by Sanity
+- News, gallery, team and groups managed in the admin dashboard (stored in Supabase)
 
 ## Local development
 
 ### Requirements
 
 - Node.js 18+
-- Access to the project's Sanity project
 - Access to the project's Supabase project
 
 ### Install and run
@@ -44,14 +42,14 @@ Open [http://localhost:3000](http://localhost:3000).
 Configure the project variables in the Vercel project or in `.env.local` for local development. The application uses the following integrations:
 
 ```text
-NEXT_PUBLIC_SANITY_PROJECT_ID
-NEXT_PUBLIC_SANITY_DATASET
-NEXT_PUBLIC_SUPABASE_URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY
+NEXT_PUBLIC_SUPABASE_URL        # required
+NEXT_PUBLIC_SUPABASE_ANON_KEY   # required
+RESEND_API_KEY                  # contact form
+CONTACT_TO_EMAIL                # optional, default dg202sofia@abv.bg
+CONTACT_FROM_EMAIL              # optional, sender on a domain verified in Resend
 ```
 
-Do not commit `.env` files or expose the service-role key in client-side code.
+The app refuses to start without the two Supabase variables. Access control is enforced by Supabase row-level security, so the app does not use the service-role key. Do not commit `.env` files.
 
 ## Supabase setup
 
@@ -83,7 +81,7 @@ Use `/admin/documents-new` to upload or replace PDF, DOC, and DOCX files. Files 
 
 ### Content management
 
-Sanity manages the site's editable content, including news, gallery images, team information, and page content. Refer to [`ADMIN_GUIDE.md`](./ADMIN_GUIDE.md) for the content-management workflow.
+News, gallery images, team members, groups and parent information are edited in the admin dashboard (`/admin`) and stored in Supabase. Refer to [`ADMIN_GUIDE.md`](./ADMIN_GUIDE.md) for the content-management workflow.
 
 ## Production deployment
 

@@ -85,7 +85,7 @@ export default function GroupPage() {
         .single()
 
       if (groupError) {
-        console.error('[v0] Error fetching group:', groupError)
+        console.error('Error fetching group:', groupError)
         throw new Error(groupError.message)
       }
 
@@ -112,11 +112,12 @@ export default function GroupPage() {
 
       // If teachers table doesn't exist yet, just show group without teachers
       if (teachersError && !teachersError.message.includes('does not exist')) {
-        console.error('[v0] Error fetching teachers:', teachersError)
+        console.error('Error fetching teachers:', teachersError)
       }
 
       if (teachersData) {
-        const teachersList = teachersData.map((t: GroupTeacher) => t.team_members).filter(Boolean)
+        // teacher_id references one team member, so Supabase returns an object here (its generated type says array)
+        const teachersList = (teachersData as unknown as GroupTeacher[]).map((t) => t.team_members).filter(Boolean)
         setTeachers(teachersList)
       }
 
@@ -130,14 +131,14 @@ export default function GroupPage() {
 
       // If schedules table doesn't exist yet, just continue without it
       if (schedulesError && !schedulesError.message.includes('does not exist')) {
-        console.error('[v0] Error fetching schedules:', schedulesError)
+        console.error('Error fetching schedules:', schedulesError)
       }
 
       if (schedulesData) {
         setSchedules(schedulesData)
       }
     } catch (err) {
-      console.error('[v0] Error loading group:', err)
+      console.error('Error loading group:', err)
       setError(err instanceof Error ? err.message : 'Failed to load group')
     } finally {
       setLoading(false)

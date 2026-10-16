@@ -18,7 +18,7 @@ export async function GET() {
 
     return NextResponse.json(newsPosts || [])
   } catch (error) {
-    console.error("[v0] Admin news GET error:", error)
+    console.error("Admin news GET error:", error)
     return NextResponse.json({ error: "Failed to fetch news posts" }, { status: 500 })
   }
 }
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newPost[0])
   } catch (error) {
-    console.error("[v0] Admin news POST error:", error)
+    console.error("Admin news POST error:", error)
     return NextResponse.json({ error: "Failed to create news post" }, { status: 500 })
   }
 }

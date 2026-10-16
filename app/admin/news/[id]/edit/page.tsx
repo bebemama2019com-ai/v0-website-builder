@@ -2,7 +2,8 @@ import { createServerClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import NewsForm from "@/components/admin/news-form"
 
-export default async function EditNewsPostPage({ params }: { params: { id: string } }) {
+export default async function EditNewsPostPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createServerClient()
 
   const {
@@ -19,7 +20,7 @@ export default async function EditNewsPostPage({ params }: { params: { id: strin
     redirect("/admin/login")
   }
 
-  const { data: post } = await supabase.from("news_posts").select("*").eq("id", params.id).single()
+  const { data: post } = await supabase.from("news_posts").select("*").eq("id", id).single()
 
   if (!post) {
     redirect("/admin/news")

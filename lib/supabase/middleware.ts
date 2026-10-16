@@ -1,91 +1,61 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/supabase/config"
 
+// Refreshes the Supabase session cookie on every request and keeps /admin pages
+// for logged-in admins only.
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  })
+  let supabaseResponse = NextResponse.next({ request })
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://bulrhtnvqxasrhjmihdk.supabase.co"
-  const supabaseAnonKey =
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1bHJodG52cXhhc3Joam1paGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0NTA4MjksImV4cCI6MjA3NjAyNjgyOX0.GAhmN8QbyYfyEjGQhNXgS6OfMQIUq6jtNiK-oOPw89I"
+  const redirectTo = (pathname: string) => {
+    const url = request.nextUrl.clone()
+    url.pathname = pathname
+    return NextResponse.redirect(url)
+  }
 
   try {
-    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       cookies: {
         getAll() {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({
-            request,
-          })
+          supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
         },
       },
     })
 
-    await supabase.auth.getSession()
-
     const {
       data: { user },
     } = await supabase.auth.getUser()
 
-    console.log("[SERVER][MIDDLEWARE] Path:", request.nextUrl.pathname, "User:", user?.id || "none")
+    const path = request.nextUrl.pathname
+    const isLoginPage = path === "/admin/login"
+    const isAdminPage = path.startsWith("/admin") && !path.startsWith("/admin/login")
 
-    if (request.nextUrl.pathname === "/admin/login" && user) {
-      console.log("[SERVER][MIDDLEWARE] User already logged in, redirecting to /admin")
+    if (!isLoginPage && !isAdminPage) return supabaseResponse
 
-      // Verify admin status before redirecting
-      const { data: adminUser } = await supabase.from("admin_users").select("id").eq("id", user.id).single()
+    const isAdmin = user
+      ? Boolean((await supabase.from("admin_users").select("id").eq("id", user.id).maybeSingle()).data)
+      : false
 
-      if (adminUser) {
-        const url = request.nextUrl.clone()
-        url.pathname = "/admin"
-        return NextResponse.redirect(url)
-      }
-    }
+    // Already logged in as an admin: skip the login page.
+    if (isLoginPage) return isAdmin ? redirectTo("/admin") : supabaseResponse
 
-    // Protect admin routes
-    if (request.nextUrl.pathname.startsWith("/admin") && !request.nextUrl.pathname.startsWith("/admin/login")) {
-      if (!user) {
-        console.log("[SERVER][MIDDLEWARE] No user found, redirecting to login")
-        const url = request.nextUrl.clone()
-        url.pathname = "/admin/login"
-        return NextResponse.redirect(url)
-      }
+    if (!user) return redirectTo("/admin/login")
 
-      try {
-        const { data: adminUser, error: adminError } = await supabase
-          .from("admin_users")
-          .select("id")
-          .eq("id", user.id)
-          .single()
-
-        console.log("[SERVER][MIDDLEWARE] Admin check:", { adminUser, adminError })
-
-        if (adminError || !adminUser) {
-          console.log("[SERVER][MIDDLEWARE] Admin check failed, redirecting to login")
-          await supabase.auth.signOut()
-          const url = request.nextUrl.clone()
-          url.pathname = "/admin/login"
-          return NextResponse.redirect(url)
-        }
-
-        console.log("[SERVER][MIDDLEWARE] Admin access granted for user:", user.id)
-      } catch (error) {
-        console.error("[SERVER][MIDDLEWARE] Error checking admin status:", error)
-        const url = request.nextUrl.clone()
-        url.pathname = "/admin/login"
-        return NextResponse.redirect(url)
-      }
+    if (!isAdmin) {
+      await supabase.auth.signOut()
+      return redirectTo("/admin/login")
     }
 
     return supabaseResponse
   } catch (error) {
-    console.error("[SERVER][MIDDLEWARE] Error in updateSession:", error)
-    return supabaseResponse
+    console.error("Session check failed:", error)
+    return request.nextUrl.pathname.startsWith("/admin") && request.nextUrl.pathname !== "/admin/login"
+      ? redirectTo("/admin/login")
+      : supabaseResponse
   }
 }
