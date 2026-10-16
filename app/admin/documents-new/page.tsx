@@ -8,7 +8,8 @@ import { useState, useEffect } from "react"
 import { DOCUMENTS } from "@/lib/documents"
 import type { DocumentPageInfo } from "@/components/admin/document-header-editor"
 
-const DOCUMENT_TYPES = DOCUMENTS.map((d) => ({ id: d.type, label: d.label }))
+// Documents shown on the parent pages are managed on /admin/parents.
+const DOCUMENT_TYPES = DOCUMENTS.filter((d) => !d.section).map((d) => ({ id: d.type, label: d.label }))
 
 export default function DocumentsManagementPage() {
   const [documents, setDocuments] = useState<Record<string, any>>({})
