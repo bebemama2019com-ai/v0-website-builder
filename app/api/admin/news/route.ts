@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { requireAdmin } from "@/lib/supabase/require-admin"
 import { generateSlug } from "@/lib/utils/slug"
 
 export async function GET() {
+  const auth = await requireAdmin()
+  if ("error" in auth) return auth.error
+  const { supabase } = auth
+
   try {
-    const supabase = await createClient()
 
     const { data: newsPosts, error } = await supabase
       .from("news_posts")
@@ -24,8 +27,11 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const auth = await requireAdmin()
+  if ("error" in auth) return auth.error
+  const { supabase } = auth
+
   try {
-    const supabase = await createClient()
     const body = await request.json()
 
     const slug = generateSlug(body.title)

@@ -80,12 +80,15 @@ export default function NewsForm({ post }: NewsFormProps) {
 
     setUploadingFile(true)
     try {
-      const fileName = `news/${post.id}/${Date.now()}-${file.name}`
-      const { data, error } = await supabase.storage.from("files").upload(fileName, file)
+      // Stored in the public "documents" bucket (admin-only writes). The storage key is ASCII-only;
+      // the original name is kept in news_files.file_name for display.
+      const ext = file.name.includes(".") ? file.name.split(".").pop()!.toLowerCase().replace(/[^a-z0-9]/g, "") : "bin"
+      const fileName = `uploads/news/${post.id}/${Date.now()}.${ext || "bin"}`
+      const { error } = await supabase.storage.from("documents").upload(fileName, file, { contentType: file.type })
 
       if (error) throw error
 
-      const { data: publicUrl } = supabase.storage.from("files").getPublicUrl(fileName)
+      const { data: publicUrl } = supabase.storage.from("documents").getPublicUrl(fileName)
 
       const { error: dbError } = await supabase.from("news_files").insert({
         news_id: post.id,
@@ -107,8 +110,14 @@ export default function NewsForm({ post }: NewsFormProps) {
 
   async function deleteFile(fileId: string) {
     try {
+      const file = files.find((f: { id: string }) => f.id === fileId) as { file_url?: string } | undefined
       const { error } = await supabase.from("news_files").delete().eq("id", fileId)
       if (error) throw error
+      const marker = "/documents/uploads/news/"
+      const index = file?.file_url?.indexOf(marker) ?? -1
+      if (file?.file_url && index !== -1) {
+        await supabase.storage.from("documents").remove([file.file_url.slice(index + "/documents/".length)])
+      }
       await fetchNewsFiles()
     } catch (error) {
       console.error("Error deleting file:", error)
