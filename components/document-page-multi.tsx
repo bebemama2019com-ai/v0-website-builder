@@ -5,6 +5,8 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Download, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { RichText } from "@/components/rich-text"
+import type { DocumentPageHeader } from "@/lib/document-pages"
 
 interface DocumentFile {
   name: string
@@ -20,9 +22,8 @@ interface DocumentSection {
 interface DocumentPageMultiProps {
   title: string
   subtitle: string
-  orderInfo: string
-  orderDetails: string
-  approvedBy: string
+  /** Header box text, loaded by the page (admin-editable) */
+  header: DocumentPageHeader
   files: DocumentFile[]
   sections: DocumentSection[]
 }
@@ -30,9 +31,7 @@ interface DocumentPageMultiProps {
 export function DocumentPageMulti({
   title,
   subtitle,
-  orderInfo,
-  orderDetails,
-  approvedBy,
+  header,
   files,
   sections,
 }: DocumentPageMultiProps) {
@@ -103,9 +102,9 @@ export function DocumentPageMulti({
                 <div className="flex items-start gap-3">
                   <FileText className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-lg mb-1">{orderInfo}</p>
-                    <p className="text-muted-foreground">{orderDetails}</p>
-                    <p className="text-sm text-muted-foreground mt-2 italic">{approvedBy}</p>
+                    <p className="font-semibold text-lg mb-1"><RichText text={header.orderInfo} /></p>
+                    <p className="text-muted-foreground"><RichText text={header.orderDetails} /></p>
+                    <p className="text-sm text-muted-foreground mt-2 italic"><RichText text={header.approvedBy} /></p>
                   </div>
                 </div>
               </div>

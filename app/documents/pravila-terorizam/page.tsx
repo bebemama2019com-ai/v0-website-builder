@@ -12,9 +12,7 @@ export default function PravilaTerorizam() {
     <DocumentPage
       title="Правила за действие при тероризъм"
       subtitle="ДГ 202"
-      orderInfo="Правила за действие при злонамерени анонимни телефонни съобщения"
-      orderDetails="На основание на чл. 21 т. 11 от Закона на Министерството на вътрешните работи и чл. 12 от Устройствения правилник на МОН"
-      approvedBy={'ДГ № 202, Столична община - Район "Младост"'}
+      pageKey="pravila-terorizam"
       pdfPath="/documents/pravila-terorizam.pdf"
       icon={AlertTriangle}
       sections={[

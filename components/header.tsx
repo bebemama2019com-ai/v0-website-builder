@@ -60,6 +60,7 @@ export function Header() {
     {
       name: t.nav.documents,
       dropdown: [
+        { name: t.nav.strategiaZaRazvitie, href: "/documents/strategia-za-razvitie" },
         { name: t.nav.budget, href: "/documents/budget" },
         { name: t.nav.budgetReport2025, href: "/documents/budget-report-2025" },
         { name: t.nav.budgetReport2026, href: "/documents/budget-report-2026" },
@@ -67,6 +68,7 @@ export function Header() {
         { name: t.nav.dataProtectionRules, href: "/documents/data-protection-rules" },
         { name: t.nav.godishenPlan, href: "/documents/godishen-plan" },
         { name: t.nav.programnaSistema, href: "/documents/programna-sistema" },
+        { name: t.nav.pravilnikVatreshenTrudovRed, href: "/documents/pravilnik-vatreshen-trudov-red" },
         { name: t.nav.pravilnikPropuskatelen, href: "/documents/pravilnik-propuskatelen-rezhim" },
         { name: t.nav.pravilaTerorizam, href: "/documents/pravila-terorizam" },
         { name: t.nav.planProgramaBdp, href: "/documents/plan-programa-bdp" },

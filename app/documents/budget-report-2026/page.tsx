@@ -1,19 +1,20 @@
 import type { Metadata } from "next"
 import { DocumentPageMulti } from "@/components/document-page-multi"
+import { getDocumentPageHeader } from "@/lib/document-page-content"
 
 export const metadata: Metadata = {
   title: "Отчет Бюджет 2026 - ДГ 202",
   description: "Финансови отчети и анализ на бюджета за 2026 година в ДГ 202",
 }
 
-export default function BudgetReport2026Page() {
+export default async function BudgetReport2026Page() {
+  const header = await getDocumentPageHeader("budget-report-2026")
+
   return (
     <DocumentPageMulti
       title="Отчет Бюджет 2026"
       subtitle="Финансови отчети и анализ на разходите за 2026 година"
-      orderInfo="Отчети по тримесечия за 2026 година"
-      orderDetails="Детайлни преглед на финансовите приходи и разходи на ДГ 202 разделени по тримесечия на 2026 година."
-      approvedBy="Петя Янкова - Директор на ДГ № 202"
+      header={header}
       files={[
         {
           name: "Отчет за първо тримесечие 2026",

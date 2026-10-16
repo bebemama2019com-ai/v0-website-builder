@@ -12,9 +12,7 @@ export default function EtichenKodeksRabotaSDecaPage() {
     <DocumentPage
       title="Етичен кодекс за работа с деца"
       subtitle="ДГ 202"
-      orderInfo="Заповед № 16/15.10.2025 г."
-      orderDetails="Разработен от директора на ДГ, комисията от педагогически специалисти и представители на обществения съвет към детската градина в съответствие с изискванията на чл. 269, ал.1, т.11 от ЗПУО."
-      approvedBy="Петя Янкова - Директор на ДГ № 202"
+      pageKey="etichen-kodeks-rabota-s-detsa"
       pdfPath="/documents/etichen-kodeks-rabota-s-detsa.pdf"
       icon={Heart}
       sections={[

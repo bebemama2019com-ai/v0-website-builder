@@ -22,6 +22,7 @@ export interface DocumentEntry {
 }
 
 export const DOCUMENTS: DocumentEntry[] = [
+  { type: "development-strategy", label: "Стратегия за развитие 2025-2030", file: "strategia-za-razvitie.pdf" },
   { type: "action-plan", label: "План за действие и финансиране 2025-2026", file: "plan-deystvie-finansirane.pdf" },
   { type: "budget", label: "Отчет Бюджет 2025", file: "otchet-byudzhet-2025.pdf" },
   { type: "budget-2026-q1", label: "Отчет Бюджет 2026 - Първо тримесечие", file: "otchet-byudzhet-2026-q1.pdf" },
@@ -36,6 +37,11 @@ export const DOCUMENTS: DocumentEntry[] = [
   },
   { type: "annual-plan", label: "Годишен план 2025/2026", file: "godishen-plan-2025-2026.pdf" },
   { type: "program-system", label: "Програмна система", file: "programna-sistema.pdf" },
+  {
+    type: "internal-labor-rules",
+    label: "Правилник за вътрешния трудов ред",
+    file: "pravilnik-vatreshen-trudov-red.pdf",
+  },
   { type: "admission-rules", label: "Правилник за пропускателния режим", file: "pravilnik-propuskatelen-rezhim.pdf" },
   { type: "terror-protocol", label: "Правила за действие при тероризъм", file: "pravila-terorizam.pdf" },
   { type: "bdp-program", label: "План-програма БДП", file: "plan-programa-bdp.pdf" },

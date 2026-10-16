@@ -12,9 +12,7 @@ export default function PlanProgramaBdpPage() {
     <DocumentPage
       title="План-Програма БДП"
       subtitle="2025-2026 г."
-      orderInfo="План-програма за безопасност на движението по пътищата"
-      orderDetails="Планът е разработен в изпълнение на Националната стратегия за безопасност на движението по пътищата в Република България 2021-2030 г."
-      approvedBy={'ДГ № 202, Столична община - Район "Младост"'}
+      pageKey="plan-programa-bdp"
       pdfPath="/documents/plan-programa-bdp.pdf"
       icon={Car}
       sections={[

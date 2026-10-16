@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText, Download, Trash2 } from "lucide-react"
 import { getDocumentByType, getDocumentUrl } from "@/lib/documents"
+import { DocumentHeaderEditor, type DocumentPageInfo } from "@/components/admin/document-header-editor"
 
 interface DocumentItemProps {
   documentType: string
@@ -19,9 +20,19 @@ interface DocumentItemProps {
     updated_at: string
   }
   onFileUploaded: () => void
+  /** The public page this document appears on, for editing its header text */
+  page?: DocumentPageInfo
+  onPageSaved?: () => void
 }
 
-export default function DocumentUploadItem({ documentType, displayName, currentFile, onFileUploaded }: DocumentItemProps) {
+export default function DocumentUploadItem({
+  documentType,
+  displayName,
+  currentFile,
+  onFileUploaded,
+  page,
+  onPageSaved,
+}: DocumentItemProps) {
   const entry = getDocumentByType(documentType)
   const downloadUrl = entry && currentFile ? getDocumentUrl(entry, currentFile.file_path) : undefined
   const [uploading, setUploading] = useState(false)
@@ -158,6 +169,17 @@ export default function DocumentUploadItem({ documentType, displayName, currentF
               />
             </label>
             <p className="text-xs text-muted-foreground text-center">PDF, DOC или DOCX • Макс. 50MB</p>
+          </div>
+        )}
+
+        {page && (
+          <div className="mt-4 border-t pt-4 space-y-2">
+            <DocumentHeaderEditor page={page} onSaved={onPageSaved ?? (() => {})} />
+            {page.isCustom && page.updatedAt && (
+              <p className="text-xs text-muted-foreground text-center">
+                Текстът е редактиран на {new Date(page.updatedAt).toLocaleDateString("bg-BG")}
+              </p>
+            )}
           </div>
         )}
 

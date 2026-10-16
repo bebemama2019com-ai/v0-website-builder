@@ -13,9 +13,7 @@ export default function BudgetPage() {
     <DocumentPage
       title="План за действие и финансиране 2025-2026"
       subtitle="В изпълнение на Стратегия за развитие на ДГ 202 за периода 2025-2030"
-      orderInfo="Протокол № 1 от 10.10.2025 г."
-      orderDetails="Планът за действие и финансиране е приет на заседание на педагогически съвет."
-      approvedBy="Петя Янкова - Директор на ДГ № 202"
+      pageKey="budget"
       pdfPath="/documents/plan-deystvie-finansirane.pdf"
       icon={Banknote}
       sections={[

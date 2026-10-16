@@ -12,9 +12,7 @@ export default function DataProtectionRulesPage() {
     <DocumentPage
       title="Вътрешни правила за защита на личните данни"
       subtitle="Процедури и политики за обработка на лични данни"
-      orderInfo="Приета от педагогически съвет"
-      orderDetails="Документът определя принципите и процедурите за защита на личните данни в детската градина, в съответствие с GDPR и българското законодателство."
-      approvedBy="Петя Янкова - Директор на ДГ № 202"
+      pageKey="data-protection-rules"
       pdfPath="/documents/vatureshni-pravila-zashtita-lichni-danni.pdf"
       icon={Shield}
       sections={[
