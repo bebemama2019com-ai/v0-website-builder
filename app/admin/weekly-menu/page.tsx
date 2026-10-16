@@ -6,15 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { createClient } from "@/lib/supabase/client"
 import { Upload, Download, Trash2, AlertCircle, CheckCircle } from "lucide-react"
 import Link from "next/link"
+import type { MenuFileRow } from "@/lib/menus"
 
-interface MenuFile {
-  id: string
-  menu_type: string
-  file_name: string
-  file_url: string
-  file_size: number
-  updated_at: string
-}
+type MenuFile = MenuFileRow
 
 const MENU_TYPES = [
   { id: "kindergarten", label: "Детска градина", description: "Възрастова група от 3 до 7 години" },
@@ -110,25 +104,33 @@ export default function AdminWeeklyMenuPage() {
     }
   }
 
-  async function handleDeleteFile(menuType: string, fileUrl: string) {
-    if (!window.confirm("Сигурни ли сте, че искате да изтриете този файл?")) return
+  async function handleDeleteFile(menuType: string, which: "current" | "previous", hasPrevious: boolean) {
+    const question =
+      which === "previous"
+        ? "Сигурни ли сте, че искате да изтриете предишното меню?"
+        : hasPrevious
+          ? "Сигурни ли сте, че искате да изтриете текущото меню? Предишното меню ще стане текущо."
+          : "Сигурни ли сте, че искате да изтриете този файл?"
+    if (!window.confirm(question)) return
 
+    setError(null)
+    setSuccess(null)
     try {
-      // Delete from storage
-      const fileName = fileUrl.split("/").pop()
-      if (fileName) {
-        await supabase.storage.from("menu-files").remove([fileName])
+      const response = await fetch("/api/menu-delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ menuType, which }),
+      })
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}))
+        throw new Error(result.error || "Delete failed")
       }
 
-      // Delete from database
-      const { error: deleteError } = await supabase
-        .from("weekly_menu_files")
-        .delete()
-        .eq("menu_type", menuType)
-
-      if (deleteError) throw deleteError
-
-      setSuccess("Файлът беше успешно изтрит")
+      setSuccess(
+        which === "current" && hasPrevious
+          ? "Текущото меню беше изтрито. Предишното меню отново е текущо."
+          : "Файлът беше успешно изтрит",
+      )
       await fetchFiles()
     } catch (err) {
       setError("Грешка при изтриване на файл")
@@ -186,7 +188,7 @@ export default function AdminWeeklyMenuPage() {
                         <p className="text-xs text-muted-foreground">Текущ файл</p>
                         <p className="font-medium truncate">{file.file_name}</p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {(file.file_size / 1024).toFixed(2)} KB • Обновлено:{" "}
+                          {((file.file_size ?? 0) / 1024).toFixed(2)} KB • Обновлено:{" "}
                           {new Date(file.updated_at).toLocaleDateString("bg-BG")}
                         </p>
                       </div>
@@ -207,7 +209,40 @@ export default function AdminWeeklyMenuPage() {
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() => handleDeleteFile(menuType.id, file.file_url)}
+                          onClick={() => handleDeleteFile(menuType.id, "current", Boolean(file.previous_file_url))}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Previous File */}
+                  {file?.previous_file_url && (
+                    <div className="border border-dashed p-4 rounded-lg space-y-3">
+                      <div>
+                        <p className="text-xs text-muted-foreground">Предишно меню</p>
+                        <p className="font-medium truncate">{file.previous_file_name}</p>
+                        {file.previous_updated_at && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {((file.previous_file_size ?? 0) / 1024).toFixed(2)} KB • Обновлено:{" "}
+                            {new Date(file.previous_updated_at).toLocaleDateString("bg-BG")}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" asChild className="flex-1">
+                          <a href={file.previous_file_url} target="_blank" rel="noopener noreferrer">
+                            <Download className="w-4 h-4 mr-2" />
+                            Изтегли
+                          </a>
+                        </Button>
+
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteFile(menuType.id, "previous", true)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -255,7 +290,9 @@ export default function AdminWeeklyMenuPage() {
           <CardContent className="text-sm text-muted-foreground space-y-2">
             <p>• Се приемат само PDF файлове</p>
             <p>• Максимален размер: 50MB</p>
-            <p>• При качване на нов файл, старият файл ще бъде автоматично изтрит</p>
+            <p>• При качване на нов файл, текущото меню става „Предишно меню“, а по-старото предишно меню се изтрива</p>
+            <p>• Родителите могат да изтеглят и текущото, и предишното меню</p>
+            <p>• Ако изтриете текущото меню, предишното отново става текущо</p>
             <p>• Файловете ще бъдат достъпни за изтегляне от страницата "Седмично меню"</p>
           </CardContent>
         </Card>

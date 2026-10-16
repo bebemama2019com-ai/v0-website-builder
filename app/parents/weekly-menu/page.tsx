@@ -4,7 +4,7 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { FileText, Download, Baby, GraduationCap, Eye } from "lucide-react"
+import { FileText, Download, Baby, GraduationCap, Eye, History } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { useState, useEffect } from "react"
 
@@ -14,6 +14,9 @@ interface MenuFile {
   file_name: string
   file_url: string
   updated_at: string
+  previous_file_name: string | null
+  previous_file_url: string | null
+  previous_updated_at: string | null
 }
 
 export default function WeeklyMenuPage() {
@@ -34,15 +37,16 @@ export default function WeeklyMenuPage() {
     window.open(previewUrl, "_blank")
   }
 
-  async function handleDownload(menuFile: MenuFile) {
+  // `key` identifies the button that shows the "Downloading..." state.
+  async function handleDownload(key: string, fileUrl: string, fileName: string) {
     try {
-      setDownloading(menuFile.menu_type)
-      const response = await fetch(menuFile.file_url)
+      setDownloading(key)
+      const response = await fetch(fileUrl)
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
-      a.download = menuFile.file_name
+      a.download = fileName
       document.body.appendChild(a)
       a.click()
       window.URL.revokeObjectURL(url)
@@ -157,7 +161,7 @@ export default function WeeklyMenuPage() {
                           {language === "bg" ? "Виж меню" : "View Menu"}
                         </Button>
                         <Button 
-                          onClick={() => handleDownload(menuFile)}
+                          onClick={() => handleDownload(menuFile.menu_type, menuFile.file_url, menuFile.file_name)}
                           disabled={downloading === menuFile.menu_type}
                           variant="outline" 
                           className="w-full rounded-xl" 
@@ -168,6 +172,26 @@ export default function WeeklyMenuPage() {
                             ? (language === "bg" ? "Изтеглянето..." : "Downloading...")
                             : (language === "bg" ? "Изтегли меню" : "Download Menu")}
                         </Button>
+                        {menuFile.previous_file_url && (
+                          <Button
+                            onClick={() =>
+                              handleDownload(
+                                `${menuFile.menu_type}-previous`,
+                                menuFile.previous_file_url!,
+                                menuFile.previous_file_name || "predishno-menu.pdf",
+                              )
+                            }
+                            disabled={downloading === `${menuFile.menu_type}-previous`}
+                            variant="ghost"
+                            className="w-full rounded-xl border border-dashed"
+                            size="lg"
+                          >
+                            <History className="mr-2 h-5 w-5" />
+                            {downloading === `${menuFile.menu_type}-previous`
+                              ? (language === "bg" ? "Изтеглянето..." : "Downloading...")
+                              : (language === "bg" ? "Изтегли предишно меню" : "Download Previous Menu")}
+                          </Button>
+                        )}
                       </div>
                     ) : (
                       <Button disabled variant="outline" className="w-full rounded-xl" size="lg">
@@ -179,6 +203,13 @@ export default function WeeklyMenuPage() {
                       <p className="text-xs text-muted-foreground text-center">
                         {language === "bg" ? "Обновлено: " : "Updated: "}
                         {new Date(menuFile.updated_at).toLocaleDateString("bg-BG")}
+                        {menuFile.previous_updated_at && (
+                          <>
+                            {" • "}
+                            {language === "bg" ? "Предишно: " : "Previous: "}
+                            {new Date(menuFile.previous_updated_at).toLocaleDateString("bg-BG")}
+                          </>
+                        )}
                       </p>
                     )}
                   </CardContent>
