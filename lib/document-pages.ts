@@ -22,6 +22,17 @@ export interface DocumentPageEntry {
 
 export const DOCUMENT_PAGES: DocumentPageEntry[] = [
   {
+    // Shown on /parents/daily-schedule
+    key: "daily-schedule",
+    title: "Дневен режим",
+    documentTypes: ["daily-schedule"],
+    defaults: {
+      orderInfo: "Заповед № 18/14.10.2025 г.",
+      orderDetails: "На основание чл. 259 ал.1 от ЗПУО, Наредба № 5/03.06.2016г. за предучилищно образование и решение на ПС с Протокол № 1 от 10.10.2025г.",
+      approvedBy: "Петя Янкова - ВрИД Директор на ДГ № 202",
+    },
+  },
+  {
     key: "strategia-za-razvitie",
     title: "Стратегия за развитие 2025-2030",
     documentTypes: ["development-strategy"],

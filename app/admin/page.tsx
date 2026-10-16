@@ -35,7 +35,10 @@ export default async function AdminDashboard() {
   }
 
   try {
-    const { count: parentCount } = await supabase.from("parent_content").select("*", { count: "exact", head: true })
+    const { count: parentCount } = await supabase
+      .from("parent_content")
+      .select("*", { count: "exact", head: true })
+      .in("category", ["form", "council_document"])
     parentsCount = parentCount || 0
   } catch (error) {
     tablesExist = false
@@ -135,7 +138,7 @@ export default async function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{parentsCount || 0}</div>
-              <p className="text-xs text-muted-foreground">Информация и ресурси за родители</p>
+              <p className="text-xs text-muted-foreground">Бланки и документи за родители</p>
             </CardContent>
           </Card>
 
@@ -226,7 +229,7 @@ export default async function AdminDashboard() {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle>За Родители</CardTitle>
-              <CardDescription>Управление на информация и ресурси за родители</CardDescription>
+              <CardDescription>Дневен режим, бланки и обществен съвет</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/admin/parents">

@@ -19,6 +19,8 @@ export interface DocumentEntry {
   type: string
   label: string
   file: string
+  /** "parents": managed on the parents admin page instead of the documents admin page */
+  section?: "parents"
 }
 
 export const DOCUMENTS: DocumentEntry[] = [
@@ -49,6 +51,7 @@ export const DOCUMENTS: DocumentEntry[] = [
   { type: "ethics-code-general", label: "Етичен кодекс за работа с деца", file: "etichen-kodeks-rabota-s-detsa.pdf" },
   { type: "ethics-code-dg202", label: "Етичен кодекс ДГ 202", file: "etichen-kodeks-dg202.pdf" },
   { type: "adaptation-model", label: "Модел за адаптация", file: "model-adaptatsia.pdf" },
+  { type: "daily-schedule", label: "Дневен режим", file: "dneven-rezhim.pdf", section: "parents" },
 ]
 
 export function getDocumentByType(type: string): DocumentEntry | undefined {
