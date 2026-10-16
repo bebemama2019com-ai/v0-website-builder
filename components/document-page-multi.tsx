@@ -36,37 +36,35 @@ export function DocumentPageMulti({
   files,
   sections,
 }: DocumentPageMultiProps) {
-  const [availableFiles, setAvailableFiles] = useState<Set<string>>(new Set())
+  // Maps a file's public path ("/documents/x.pdf") to its current download URL.
+  const [availableFiles, setAvailableFiles] = useState<Map<string, string>>(new Map())
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     async function checkFilesExist() {
-      const available = new Set<string>()
-      
+      const available = new Map<string, string>()
+
       try {
-        // Fetch available documents from database
-        const response = await fetch("/api/admin/documents?minimal=true")
+        // Published documents with their current download URLs
+        const response = await fetch("/api/documents", { cache: "no-store" })
         if (!response.ok) {
-          console.error("[v0] Failed to fetch documents from database")
+          console.error("Failed to fetch documents")
           setIsLoading(false)
           return
         }
-        
-        const documents: Array<{ file_path: string }> = await response.json()
-        const uploadedFileNames = new Set(documents.map(doc => doc.file_path))
-        
-        // Check which of our expected files are in the database
+
+        const documents: Array<{ file: string; url: string }> = await response.json()
+        const urlByFile = new Map(documents.map((doc) => [doc.file, doc.url]))
+
         for (const file of files) {
-          // Extract filename from path (e.g., "/documents/otchet-byudzhet-2026-q1.pdf" -> "otchet-byudzhet-2026-q1.pdf")
           const fileName = file.path.split("/").pop()
-          if (fileName && uploadedFileNames.has(fileName)) {
-            available.add(file.path)
-          }
+          const url = fileName ? urlByFile.get(fileName) : undefined
+          if (url) available.set(file.path, url)
         }
       } catch (error) {
-        console.error(`[v0] Error checking available files:`, error)
+        console.error("Error checking available files:", error)
       }
-      
+
       setAvailableFiles(available)
       setIsLoading(false)
     }
@@ -149,7 +147,7 @@ export function DocumentPageMulti({
                       </div>
                       <div className="flex-shrink-0">
                         {availableFiles.has(file.path) ? (
-                          <a href={file.path} download>
+                          <a href={availableFiles.get(file.path)} download target="_blank" rel="noopener noreferrer">
                             <Button size="sm" className="gap-2">
                               <Download className="w-4 h-4" />
                               Свали
@@ -205,7 +203,7 @@ export function DocumentPageMulti({
                 <div className="flex flex-wrap gap-3 justify-center">
                   {files.map((file, index) => (
                     availableFiles.has(file.path) ? (
-                      <a key={index} href={file.path} download>
+                      <a key={index} href={availableFiles.get(file.path)} download target="_blank" rel="noopener noreferrer">
                         <Button variant="outline" className="gap-2">
                           <Download className="w-4 h-4" />
                           {file.name}

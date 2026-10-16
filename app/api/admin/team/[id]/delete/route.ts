@@ -1,46 +1,28 @@
 import { NextResponse } from "next/server"
 import { createServerClient } from "@/lib/supabase/server"
-import { redirect } from "next/navigation"
 
-export async function POST(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const supabase = await createServerClient()
+// Called by a plain HTML form on the team admin page, so it answers with redirects.
+// Redirects are built with NextResponse instead of `redirect()`, which throws and
+// was being swallowed by the surrounding try/catch.
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const to = (path: string) => NextResponse.redirect(new URL(path, request.url), 303)
 
-    // Verify user is authenticated
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+  const supabase = await createServerClient()
 
-    if (!user) {
-      redirect("/admin/login")
-    }
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return to("/admin/login")
 
-    // Verify user is admin
-    const { data: adminUser, error: adminError } = await supabase
-      .from("admin_users")
-      .select("id")
-      .eq("id", user.id)
-      .maybeSingle()
+  const { data: adminUser } = await supabase.from("admin_users").select("id").eq("id", user.id).maybeSingle()
+  if (!adminUser) return to("/admin/login")
 
-    if (adminError || !adminUser) {
-      redirect("/admin/login")
-    }
-
-    // Delete the team member
-    const { error: deleteError } = await supabase.from("team_members").delete().eq("id", params.id)
-
-    if (deleteError) {
-      console.error("[v0] Error deleting team member:", deleteError)
-      redirect("/admin/team?error=delete_failed")
-    }
-
-    // Redirect to team admin page
-    redirect("/admin/team")
-  } catch (error) {
-    console.error("[v0] Delete team member error:", error)
-    redirect("/admin/team?error=delete_error")
+  const { error } = await supabase.from("team_members").delete().eq("id", id)
+  if (error) {
+    console.error("Team member delete failed:", error.message)
+    return to("/admin/team?error=delete_failed")
   }
+
+  return to("/admin/team")
 }

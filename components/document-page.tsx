@@ -4,6 +4,7 @@ import { Download, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { LucideIcon } from "lucide-react"
 import { createServerClient } from "@/lib/supabase/server"
+import { getDocumentByPath, getDocumentUrl } from "@/lib/documents"
 
 interface DocumentSection {
   title: string
@@ -31,19 +32,24 @@ export async function DocumentPage({
   icon: Icon,
   sections,
 }: DocumentPageProps) {
-  // Check if file exists server-side
-  let fileAvailable = false
-  try {
-    const supabase = await createServerClient()
-    const fileName = pdfPath.split("/").pop()
-    const { data: documents } = await supabase
-      .from("documents")
-      .select("file_path")
-    
-    fileAvailable = documents?.some(doc => doc.file_path === fileName) ?? false
-  } catch (error) {
-    console.error("[v0] Error checking file availability:", error)
+  // A document is downloadable when it has a row in the `documents` table.
+  // The row decides whether parents get an admin-uploaded file or the original one.
+  let downloadUrl: string | null = null
+  const entry = getDocumentByPath(pdfPath)
+  if (entry) {
+    try {
+      const supabase = await createServerClient()
+      const { data: doc } = await supabase
+        .from("documents")
+        .select("file_path")
+        .eq("document_type", entry.type)
+        .maybeSingle()
+      if (doc) downloadUrl = getDocumentUrl(entry, doc.file_path)
+    } catch (error) {
+      console.error("Error checking document availability:", error)
+    }
   }
+  const fileAvailable = downloadUrl !== null
   return (
     <>
       <Header />
@@ -59,7 +65,7 @@ export async function DocumentPage({
                 {title}
               </h1>
               {fileAvailable ? (
-                <a href={pdfPath} download>
+                <a href={downloadUrl ?? pdfPath} download target="_blank" rel="noopener noreferrer">
                   <Button size="lg" className="gap-2 text-lg px-8 py-6 rounded-xl mt-4">
                     <Download className="w-5 h-5" />
                     Свали PDF документа
@@ -126,7 +132,7 @@ export async function DocumentPage({
                   Свалете официалния PDF документ
                 </p>
                 {fileAvailable ? (
-                  <a href={pdfPath} download>
+                  <a href={downloadUrl ?? pdfPath} download target="_blank" rel="noopener noreferrer">
                     <Button size="lg" className="gap-2 rounded-xl">
                       <Download className="w-5 h-5" />
                       Свали PDF
