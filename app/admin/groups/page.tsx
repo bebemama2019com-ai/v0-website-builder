@@ -47,7 +47,7 @@ export default function GroupsAdminPage() {
       // If the error is about missing relationship (Migration 009 not run yet),
       // fall back to fetching just groups without teachers
       if (error && error.message && error.message.includes("relationship")) {
-        console.warn("[v0] group_teachers table not found, fetching groups without teachers")
+        console.warn("group_teachers table not found, fetching groups without teachers")
         
         const { data: groupsOnly, error: groupsError } = await supabase
           .from("groups")
@@ -69,7 +69,7 @@ export default function GroupsAdminPage() {
         setGroups(data || [])
       }
     } catch (error) {
-      console.error("[v0] Error fetching groups:", error)
+      console.error("Error fetching groups:", error)
       alert("Грешка при зареждане на групи")
     } finally {
       setLoading(false)

@@ -30,7 +30,7 @@ export default function DocumentsManagementPage() {
       })
       setDocuments(docMap)
     } catch (error) {
-      console.error("[v0] Error fetching documents:", error)
+      console.error("Error fetching documents:", error)
     } finally {
       setLoading(false)
     }

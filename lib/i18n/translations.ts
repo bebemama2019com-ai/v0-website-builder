@@ -33,7 +33,6 @@ export const translations = {
       etichenKodeksDg202: "Ethics Code DG 202",
       modelAdaptatsia: "Adaptation Model",
       forParents: "For Parents",
-      news: "News",
       dailySchedule: "Daily Schedule",
       weeklyMenu: "Weekly Menu",
       publicCouncil: "Public Council",
@@ -154,32 +153,6 @@ export const translations = {
         },
       },
       welcome: "Welcome to us!",
-      facilities: {
-        title: "Material and Technical Base",
-        intro1:
-          "With its rich and comfortable material base, Kindergarten 202 is a dream home for your children. We have created conditions for a full childhood, equal start for each child, and targeted preschool preparation for successful implementation in school.",
-        intro2:
-          "The material base provides dynamism in social communication between children, causing a sense of joy from cooperation in various activities. The functions of the environment ensure that children have conditions for diverse activities to meet their needs and interests according to their preferred activity.",
-        subtitle: "The kindergarten is equipped with:",
-        items: [
-          "Music/Gym Hall",
-          "Outdoor Stage",
-          "Psychologist's Office",
-          "Speech Therapy Room",
-          "Resource Teacher's Office",
-          "Early Foreign Language Learning Room - English",
-          "Applied Arts Room",
-          "Video Surveillance",
-          "Security",
-          "Individual Play Areas for Each Group",
-          "Individual Nap Rooms with Separate Cots for Each Child",
-          "Individual Assistant Educator Offices with Washrooms and Appropriate Equipment",
-          "Large Yard for Rest, Play, and Learning, Playgrounds for Each Group",
-          "Health Room",
-          "Own Kitchen Providing Healthy Meals",
-          "Laundry",
-        ],
-      },
       concept: {
         title: "Development Concept",
         goal: {
@@ -623,7 +596,6 @@ export const translations = {
       etichenKodeksDg202: "Етичен Кодекс ДГ 202",
       modelAdaptatsia: "Модел за адаптация",
       forParents: "За Родители",
-      news: "Новини",
       dailySchedule: "Дневен режим",
       weeklyMenu: "Седмично меню",
       publicCouncil: "Обществен съвет",
@@ -745,32 +717,6 @@ export const translations = {
         },
       },
       welcome: "Добре дошли при нас!",
-      facilities: {
-        title: "Материално-техническа база",
-        intro1:
-          "С богатата си и уютна материална база, Детска градина № 202 е приказен дом за вашите деца. Създали сме условия за пълноценно детство, равен старт на всяко дете и целенасочена предучилищна подготовка за успешна реализация в училище.",
-        intro2:
-          "Материално-техническата база осигурява динамичност в социалната комуникация между децата, като поражда чувство за радост от сътрудничество в различни дейности. Функциите на средата позволяват да се осигурят условия за разнообразна дейност на децата, за задоволяване на потребностите и интересите им съобразно предпочетената от тях дейност.",
-        subtitle: "Детското заведение разполага с много добра материална база, обезпечено е с:",
-        items: [
-          "Музикален/физкултурен салон",
-          "Открита сцена",
-          "Кабинет на психолога",
-          "Логопедичен кабинет",
-          "Кабинет на ресурсния учител",
-          "Кабинет за ранно чуждоезиково обучение - английски език",
-          "Кабинет по приложни изкуства",
-          "Видео наблюдение",
-          "Охрана",
-          "Индивидуални занимални на всяка група",
-          "Индивидуални спални помещения със самостоятелни легла за следобеден сън на всяко дете",
-          "Индивидуални офиси за помощник-възпитателя с миялни машини и съответно оборудване",
-          "Просторен двор за отдих, игри и обучение, игрални площадки за всяка група",
-          "Здравен кабинет",
-          "Собствена кухня, осигуряваща здравословно хранене",
-          "Пералня",
-        ],
-      },
       concept: {
         title: "Концепция за развитие",
         goal: {

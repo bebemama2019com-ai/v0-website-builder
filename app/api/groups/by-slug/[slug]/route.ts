@@ -9,11 +9,12 @@ const slugToName: Record<string, string> = {
   dod: "ДОД",
 }
 
-export async function GET(request: Request, { params }: { params: { slug: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   try {
     const supabase = await createClient()
 
-    const groupName = slugToName[params.slug]
+    const groupName = slugToName[slug]
 
     if (!groupName) {
       return NextResponse.json({ error: "Group not found" }, { status: 404 })
@@ -42,14 +43,14 @@ export async function GET(request: Request, { params }: { params: { slug: string
       .select("*")
       .eq("group_id", group.id)
       .order("day_of_week", { ascending: true })
-      .order("time_period", { ascending: true })
+      .order("start_time", { ascending: true })
       .order("order_index", { ascending: true })
 
     if (scheduleError) throw scheduleError
 
     return NextResponse.json({ ...group, schedules })
   } catch (error) {
-    console.error("[v0] Error fetching group:", error)
+    console.error("Error fetching group:", error)
     return NextResponse.json({ error: "Failed to fetch group" }, { status: 500 })
   }
 }

@@ -17,13 +17,13 @@ export async function GET(request: Request) {
     const { data, error } = await query.order("order_index", { ascending: true })
 
     if (error) {
-      console.error("[SERVER][v0] Supabase query error:", error)
+      console.error("Supabase query error:", error)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
     return NextResponse.json(data || [])
   } catch (error) {
-    console.error("[SERVER][v0] Parent content API error:", error)
+    console.error("Parent content API error:", error)
     return NextResponse.json({ error: "Failed to fetch parent content" }, { status: 500 })
   }
 }

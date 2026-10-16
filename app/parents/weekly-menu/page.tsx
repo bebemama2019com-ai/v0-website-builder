@@ -48,7 +48,7 @@ export default function WeeklyMenuPage() {
       window.URL.revokeObjectURL(url)
       document.body.removeChild(a)
     } catch (error) {
-      console.error("[v0] Error downloading file:", error)
+      console.error("Error downloading file:", error)
     } finally {
       setDownloading(null)
     }
@@ -60,7 +60,7 @@ export default function WeeklyMenuPage() {
       const data = await response.json()
       setMenuFiles(data)
     } catch (error) {
-      console.error("[v0] Error fetching menu files:", error)
+      console.error("Error fetching menu files:", error)
     } finally {
       setLoading(false)
     }

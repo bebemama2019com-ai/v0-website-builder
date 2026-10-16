@@ -4,7 +4,7 @@ import { generateSlug } from "@/lib/utils/slug"
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient()
@@ -24,7 +24,7 @@ export async function PUT(
         from_text: body.from_text,
         is_active: body.is_active,
       })
-      .eq("id", params.id)
+      .eq("id", (await params).id)
       .select()
 
     if (error) {
@@ -33,14 +33,14 @@ export async function PUT(
 
     return NextResponse.json(updatedPost[0])
   } catch (error) {
-    console.error("[v0] Admin news PUT error:", error)
+    console.error("Admin news PUT error:", error)
     return NextResponse.json({ error: "Failed to update news post" }, { status: 500 })
   }
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient()
@@ -48,7 +48,7 @@ export async function DELETE(
     const { error } = await supabase
       .from("news_posts")
       .delete()
-      .eq("id", params.id)
+      .eq("id", (await params).id)
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
@@ -56,7 +56,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("[v0] Admin news DELETE error:", error)
+    console.error("Admin news DELETE error:", error)
     return NextResponse.json({ error: "Failed to delete news post" }, { status: 500 })
   }
 }

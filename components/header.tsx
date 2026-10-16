@@ -32,7 +32,7 @@ export function Header() {
         setGroups(data)
       }
     } catch (error) {
-      console.error("[v0] Error fetching groups:", error)
+      console.error("Error fetching groups:", error)
     } finally {
       setGroupsLoading(false)
     }

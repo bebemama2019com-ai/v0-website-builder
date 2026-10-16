@@ -15,7 +15,7 @@ export default async function TeamSection() {
     })
     
     if (!response.ok) {
-      console.log("[v0] Failed to fetch team members:", response.statusText)
+      console.error("Failed to fetch team members:", response.statusText)
       return null
     }
     
@@ -54,7 +54,7 @@ export default async function TeamSection() {
       </section>
     )
   } catch (error) {
-    console.log("[v0] Error fetching team members:", error)
+    console.error("Error fetching team members:", error)
     return null
   }
 }

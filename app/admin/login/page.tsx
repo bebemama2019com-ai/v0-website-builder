@@ -23,7 +23,6 @@ export default function AdminLoginPage() {
     setIsLoading(true)
     setError(null)
 
-    console.log("[v0] Login attempt for:", email)
 
     try {
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
@@ -33,7 +32,6 @@ export default function AdminLoginPage() {
 
       if (signInError) throw signInError
 
-      console.log("[v0] Authentication successful, user ID:", data.user.id)
 
       const { data: adminUser, error: adminError } = await supabase
         .from("admin_users")
@@ -41,7 +39,6 @@ export default function AdminLoginPage() {
         .eq("id", data.user.id)
         .single()
 
-      console.log("[v0] Admin check result:", { adminUser, adminError })
 
       if (adminError || !adminUser) {
         await supabase.auth.signOut()
@@ -50,11 +47,10 @@ export default function AdminLoginPage() {
         )
       }
 
-      console.log("[v0] Admin access confirmed, redirecting to /admin")
 
       window.location.href = "/admin"
     } catch (error: unknown) {
-      console.error("[v0] Login error:", error)
+      console.error("Login error:", error)
       setError(error instanceof Error ? error.message : "Възникна грешка")
     } finally {
       setIsLoading(false)

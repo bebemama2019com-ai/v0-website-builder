@@ -72,7 +72,7 @@ export default function TeamForm({ member }: TeamFormProps) {
       // Force revalidation of team data on frontend
       fetch("/api/team", { cache: "no-store" })
     } catch (error) {
-      console.error("[v0] Грешка при запазване на член на екипа:", error)
+      console.error("Грешка при запазване на член на екипа:", error)
       alert("Грешка при запазване на член на екипа. Моля, опитайте отново.")
     } finally {
       setLoading(false)

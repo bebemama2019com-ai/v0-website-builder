@@ -1,16 +1,13 @@
 import { createServerClient as createSupabaseServerClient } from "@supabase/ssr"
-import { createClient as createSupabaseAdminClient } from "@supabase/supabase-js"
 import { cookies } from "next/headers"
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/supabase/config"
 
-const supabaseUrl = "https://bulrhtnvqxasrhjmihdk.supabase.co"
-const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1bHJodG52cXhhc3Joam1paGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0NTA4MjksImV4cCI6MjA3NjAyNjgyOX0.GAhmN8QbyYfyEjGQhNXgS6OfMQIUq6jtNiK-oOPw89I"
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-
+// Server-side Supabase client acting as the current visitor (or logged-in admin),
+// so the database's row-level security policies apply.
 export async function createServerClient() {
   const cookieStore = await cookies()
 
-  return createSupabaseServerClient(supabaseUrl, supabaseKey, {
+  return createSupabaseServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     cookies: {
       getAll() {
         return cookieStore.getAll()
@@ -19,32 +16,11 @@ export async function createServerClient() {
         try {
           cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
         } catch {
-          // The "setAll" method was called from a Server Component.
+          // Called from a Server Component, where cookies can't be set; the middleware refreshes the session.
         }
       },
     },
   })
 }
 
-export async function createClient() {
-  const cookieStore = await cookies()
-
-  return createSupabaseServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll()
-      },
-      setAll(cookiesToSet) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
-        } catch {
-          // The "setAll" method was called from a Server Component.
-        }
-      },
-    },
-  })
-}
-
-export function createAdminClient() {
-  return createSupabaseAdminClient(supabaseUrl, serviceRoleKey)
-}
+export const createClient = createServerClient

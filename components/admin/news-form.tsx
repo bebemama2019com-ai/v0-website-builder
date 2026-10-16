@@ -60,12 +60,12 @@ export default function NewsForm({ post }: NewsFormProps) {
     try {
       const { data, error } = await supabase.from("team_members").select("id, name").order("name")
       if (error) {
-        console.error("[v0] Error fetching team members:", error)
+        console.error("Error fetching team members:", error)
         return
       }
       setTeamMembers(data || [])
     } catch (error) {
-      console.error("[v0] Exception fetching team members:", error)
+      console.error("Exception fetching team members:", error)
     }
   }
 

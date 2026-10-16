@@ -40,12 +40,12 @@ export default function NewGroupPage() {
     try {
       const { data, error } = await supabase.from("team_members").select("id, name, role, bio").order("name")
       if (error) {
-        console.error("[v0] Error fetching team members:", error)
+        console.error("Error fetching team members:", error)
         return
       }
       setTeamMembers(data || [])
     } catch (error) {
-      console.error("[v0] Exception fetching team members:", error)
+      console.error("Exception fetching team members:", error)
     }
   }
 
@@ -72,7 +72,7 @@ export default function NewGroupPage() {
         .select()
 
       if (groupError) {
-        console.error("[v0] Error creating group:", groupError)
+        console.error("Error creating group:", groupError)
         throw new Error(`Грешка при създаване на групата: ${groupError.message}`)
       }
 
@@ -93,16 +93,16 @@ export default function NewGroupPage() {
         
         // If table doesn't exist, log warning but don't fail - group was created successfully
         if (teacherError && teacherError.message && teacherError.message.includes("does not exist")) {
-          console.warn("[v0] group_teachers table not found - Migration 009 not run yet. Group created but teachers not assigned.")
+          console.warn("group_teachers table not found - Migration 009 not run yet. Group created but teachers not assigned.")
         } else if (teacherError) {
-          console.error("[v0] Error adding teachers to group:", teacherError)
+          console.error("Error adding teachers to group:", teacherError)
           throw new Error(`Грешка при добавяне на учители: ${teacherError.message}`)
         }
       }
 
       router.push("/admin/groups")
     } catch (error) {
-      console.error("[v0] Error saving group:", error)
+      console.error("Error saving group:", error)
       const errorMessage = error instanceof Error ? error.message : "Грешка при съхраняване на групата"
       alert(errorMessage)
     } finally {

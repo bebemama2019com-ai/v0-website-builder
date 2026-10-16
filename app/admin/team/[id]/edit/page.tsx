@@ -3,7 +3,8 @@ import { redirect } from "next/navigation"
 import TeamForm from "@/components/admin/team-form"
 import Link from "next/link"
 
-export default async function EditTeamMemberPage({ params }: { params: { id: string } }) {
+export default async function EditTeamMemberPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createServerClient()
 
   const {
@@ -20,7 +21,7 @@ export default async function EditTeamMemberPage({ params }: { params: { id: str
     redirect("/admin/login")
   }
 
-  const { data: member } = await supabase.from("team_members").select("*").eq("id", params.id).single()
+  const { data: member } = await supabase.from("team_members").select("*").eq("id", id).single()
 
   if (!member) {
     redirect("/admin/team")
