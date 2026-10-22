@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { createServerClient } from "@/lib/supabase/server"
 import { DOCUMENTS_BUCKET } from "@/lib/documents"
-import { teamPhotoStoragePath } from "@/lib/team-photos"
+import { uploadedImagePath } from "@/lib/uploaded-images"
 
 // Called by a plain HTML form on the team admin page, so it answers with redirects.
 // Redirects are built with NextResponse instead of `redirect()`, which throws and
@@ -29,7 +29,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   // Remove the photo too if it was uploaded from the admin panel.
-  const photoPath = teamPhotoStoragePath(member?.image_url)
+  const photoPath = uploadedImagePath(member?.image_url, "team")
   if (photoPath) await supabase.storage.from(DOCUMENTS_BUCKET).remove([photoPath])
 
   return to("/admin/team")

@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/select"
 import { createBrowserClient } from "@/lib/supabase/client"
 import { DOCUMENTS_BUCKET } from "@/lib/documents"
-import { teamPhotoStoragePath } from "@/lib/team-photos"
-import { ImagePlus, Trash2, User } from "lucide-react"
+import { uploadedImagePath } from "@/lib/uploaded-images"
+import { ImageUploadField } from "@/components/admin/image-upload-field"
 
 interface TeamFormProps {
   member?: {
@@ -38,7 +38,6 @@ export default function TeamForm({ member }: TeamFormProps) {
   const supabase = createBrowserClient()
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
-  const [photoError, setPhotoError] = useState<string | null>(null)
   // Photos uploaded in this session but not (or no longer) saved, removed on save/cancel.
   const [pendingUploads, setPendingUploads] = useState<string[]>([])
   const [formData, setFormData] = useState({
@@ -51,35 +50,8 @@ export default function TeamForm({ member }: TeamFormProps) {
   })
 
   const removeStoredPhotos = async (urls: (string | null | undefined)[]) => {
-    const paths = urls.map(teamPhotoStoragePath).filter((p): p is string => Boolean(p))
+    const paths = urls.map((url) => uploadedImagePath(url, "team")).filter((p): p is string => Boolean(p))
     if (paths.length > 0) await supabase.storage.from(DOCUMENTS_BUCKET).remove(paths)
-  }
-
-  const handlePhotoSelected = async (file: File | undefined) => {
-    if (!file) return
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      setPhotoError("Позволени са само JPG, PNG и WebP снимки.")
-      return
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setPhotoError("Снимката е по-голяма от 5MB.")
-      return
-    }
-    setUploading(true)
-    setPhotoError(null)
-    try {
-      const body = new FormData()
-      body.append("file", file)
-      const response = await fetch("/api/admin/team/upload-photo", { method: "POST", body })
-      const result = await response.json().catch(() => ({}))
-      if (!response.ok) throw new Error(result.error || "Грешка при качване")
-      setPendingUploads((prev) => [...prev, result.url])
-      setFormData((prev) => ({ ...prev, image_url: result.url }))
-    } catch (err) {
-      setPhotoError(err instanceof Error ? err.message : String(err))
-    } finally {
-      setUploading(false)
-    }
   }
 
   const handleCancel = async () => {
@@ -181,50 +153,14 @@ export default function TeamForm({ member }: TeamFormProps) {
           />
         </div>
 
-        <div>
-          <Label>Снимка</Label>
-          <div className="mt-2 flex items-center gap-4">
-            <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full border bg-muted">
-              {formData.image_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={formData.image_url} alt={formData.name || "Снимка"} className="h-full w-full object-cover" />
-              ) : (
-                <User className="h-10 w-10 text-muted-foreground" />
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button type="button" variant="outline" disabled={uploading} asChild>
-                <label className="cursor-pointer">
-                  <ImagePlus className="mr-2 h-4 w-4" />
-                  {uploading ? "Качване..." : formData.image_url ? "Смени снимката" : "Качи снимка"}
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    className="hidden"
-                    disabled={uploading}
-                    onChange={(e) => {
-                      handlePhotoSelected(e.target.files?.[0])
-                      e.target.value = ""
-                    }}
-                  />
-                </label>
-              </Button>
-              {formData.image_url && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  disabled={uploading}
-                  onClick={() => setFormData({ ...formData, image_url: "" })}
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Премахни
-                </Button>
-              )}
-            </div>
-          </div>
-          <p className="text-sm text-muted-foreground mt-2">JPG, PNG или WebP, до 5MB. Най-добре квадратна снимка на лицето.</p>
-          {photoError && <p className="text-sm text-destructive mt-1">{photoError}</p>}
-        </div>
+        <ImageUploadField
+          folder="team"
+          value={formData.image_url}
+          onChange={(url) => setFormData((prev) => ({ ...prev, image_url: url }))}
+          onUploaded={(url) => setPendingUploads((prev) => [...prev, url])}
+          onUploadingChange={setUploading}
+          hint="JPG, PNG или WebP, до 5MB. Най-добре квадратна снимка на лицето."
+        />
 
         <div>
           <Label htmlFor="order_index">Ред на показване</Label>

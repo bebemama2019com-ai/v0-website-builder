@@ -22,6 +22,7 @@ interface NewsPost {
   news_hour: string
   from_text: string
   news_files: NewsFile[]
+  image_url: string | null
 }
 
 export default function NewsPage() {
@@ -95,6 +96,19 @@ export default function NewsPage() {
                           </div>
                         )}
                       </div>
+
+                      {/* Image */}
+                      {post.image_url && (
+                        <a href={post.image_url} target="_blank" rel="noopener noreferrer" className="mb-4 block">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={post.image_url}
+                            alt={post.title}
+                            loading="lazy"
+                            className="max-h-[28rem] w-full rounded-lg border bg-muted object-contain"
+                          />
+                        </a>
+                      )}
 
                       {/* Description */}
                       <p className="text-foreground mb-4 leading-relaxed">{post.description}</p>

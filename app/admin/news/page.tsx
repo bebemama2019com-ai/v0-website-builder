@@ -10,6 +10,10 @@ import { Plus, Edit2, Trash2, Save, X, Calendar, Clock, User, Loader2, ArrowLeft
 import { format } from "date-fns"
 import { bg } from "date-fns/locale"
 import Link from "next/link"
+import { ImageUploadField } from "@/components/admin/image-upload-field"
+import { createBrowserClient } from "@/lib/supabase/client"
+import { DOCUMENTS_BUCKET } from "@/lib/documents"
+import { uploadedImagePath } from "@/lib/uploaded-images"
 
 interface NewsPost {
   id: string
@@ -20,6 +24,7 @@ interface NewsPost {
   from_text: string
   category: string
   is_active: boolean
+  image_url: string | null
   created_at: string
   updated_at: string
 }
@@ -38,6 +43,9 @@ export default function AdminNewsPage() {
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
+  // Images uploaded while the form is open; the ones not saved are deleted on save/cancel.
+  const [pendingUploads, setPendingUploads] = useState<string[]>([])
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -46,6 +54,7 @@ export default function AdminNewsPage() {
     from_text: "",
     category: "announcement",
     is_active: true,
+    image_url: "",
   })
 
   useEffect(() => {
@@ -68,6 +77,20 @@ export default function AdminNewsPage() {
     }
   }
 
+  async function removeUnsavedUploads(keep?: string) {
+    const paths = pendingUploads
+      .filter((url) => url !== keep)
+      .map((url) => uploadedImagePath(url, "news"))
+      .filter((p): p is string => Boolean(p))
+    setPendingUploads([])
+    if (paths.length > 0) await createBrowserClient().storage.from(DOCUMENTS_BUCKET).remove(paths)
+  }
+
+  async function handleCancel() {
+    await removeUnsavedUploads()
+    resetForm()
+  }
+
   async function handleSave() {
     try {
       setSaving(true)
@@ -86,6 +109,7 @@ export default function AdminNewsPage() {
         throw new Error(data.error || "Failed to save news")
       }
 
+      await removeUnsavedUploads(formData.image_url)
       await fetchNews()
       resetForm()
     } catch (err) {
@@ -119,7 +143,9 @@ export default function AdminNewsPage() {
       from_text: post.from_text,
       category: post.category,
       is_active: post.is_active,
+      image_url: post.image_url ?? "",
     })
+    setPendingUploads([])
     setEditingId(post.id)
     setIsEditing(true)
     window.scrollTo({ top: 0, behavior: "smooth" })
@@ -134,6 +160,7 @@ export default function AdminNewsPage() {
       from_text: "",
       category: "announcement",
       is_active: true,
+      image_url: "",
     })
     setEditingId(null)
     setIsEditing(false)
@@ -215,6 +242,17 @@ export default function AdminNewsPage() {
               />
             </div>
 
+            {/* Image */}
+            <ImageUploadField
+              folder="news"
+              shape="wide"
+              value={formData.image_url}
+              onChange={(url) => setFormData((prev) => ({ ...prev, image_url: url }))}
+              onUploaded={(url) => setPendingUploads((prev) => [...prev, url])}
+              onUploadingChange={setUploading}
+              hint="По желание. Една снимка на новина – JPG, PNG или WebP, до 5MB. Показва се над текста."
+            />
+
             {/* Date & Time */}
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -265,11 +303,11 @@ export default function AdminNewsPage() {
 
             {/* Buttons */}
             <div className="flex gap-2 justify-end pt-4 border-t">
-              <Button variant="outline" onClick={resetForm} disabled={saving}>
+              <Button variant="outline" onClick={handleCancel} disabled={saving || uploading}>
                 <X className="mr-2 h-4 w-4" />
                 Отмяна
               </Button>
-              <Button onClick={handleSave} disabled={saving}>
+              <Button onClick={handleSave} disabled={saving || uploading}>
                 {saving ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -310,6 +348,14 @@ export default function AdminNewsPage() {
               <Card key={post.id} className={post.is_active ? "" : "opacity-60"}>
                 <CardHeader>
                   <div className="flex items-start justify-between">
+                    {post.image_url && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={post.image_url}
+                        alt=""
+                        className="mr-4 h-20 w-28 shrink-0 rounded-md border object-cover"
+                      />
+                    )}
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <CardTitle className="text-lg">{post.title}</CardTitle>
