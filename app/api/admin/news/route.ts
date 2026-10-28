@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireAdmin } from "@/lib/supabase/require-admin"
-import { generateSlug } from "@/lib/utils/slug"
+import { uniqueSlug } from "@/lib/utils/slug"
 import { cleanNewsImageUrl } from "@/lib/news-images"
 
 export async function GET() {
@@ -35,7 +35,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    const slug = generateSlug(body.title)
+    const slug = await uniqueSlug(body.title ?? "", async (candidate) => {
+      const { data } = await supabase.from("news_posts").select("id").eq("slug", candidate).maybeSingle()
+      return Boolean(data)
+    })
 
     const imageUrl = cleanNewsImageUrl(body.image_url)
     if (imageUrl === undefined) return NextResponse.json({ error: "Невалидна снимка." }, { status: 400 })

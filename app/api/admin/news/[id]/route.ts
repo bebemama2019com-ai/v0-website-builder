@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireAdmin } from "@/lib/supabase/require-admin"
-import { generateSlug } from "@/lib/utils/slug"
+import { uniqueSlug } from "@/lib/utils/slug"
 import { DOCUMENTS_BUCKET } from "@/lib/documents"
 import { uploadedImagePath } from "@/lib/uploaded-images"
 import { cleanNewsImageUrl } from "@/lib/news-images"
@@ -17,13 +17,21 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const imageUrl = cleanNewsImageUrl(body.image_url)
     if (imageUrl === undefined) return NextResponse.json({ error: "Невалидна снимка." }, { status: 400 })
 
-    const { data: existing } = await supabase.from("news_posts").select("image_url").eq("id", id).maybeSingle()
+    const { data: existing } = await supabase.from("news_posts").select("image_url, slug").eq("id", id).maybeSingle()
+
+    // Keep the post's slug stable when editing; only fill it in if it's missing.
+    const slug = existing?.slug
+      ? existing.slug
+      : await uniqueSlug(body.title ?? "", async (candidate) => {
+          const { data } = await supabase.from("news_posts").select("id").eq("slug", candidate).neq("id", id).maybeSingle()
+          return Boolean(data)
+        })
 
     const { data: updatedPost, error } = await supabase
       .from("news_posts")
       .update({
         title: body.title,
-        slug: generateSlug(body.title),
+        slug,
         content: body.content,
         category: body.category || "announcement",
         news_date: body.news_date,
