@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireAdmin } from "@/lib/supabase/require-admin"
-import { generateSlug } from "@/lib/utils/slug"
+import { uniqueSlug } from "@/lib/utils/slug"
 
 export async function PUT(
   request: NextRequest,
@@ -13,7 +13,15 @@ export async function PUT(
   try {
     const body = await request.json()
 
-    const slug = generateSlug(body.title)
+    const { id } = await params
+    // Keep the post's slug stable when editing; only fill it in if it's missing.
+    const { data: existing } = await supabase.from("news_posts").select("slug").eq("id", id).maybeSingle()
+    const slug = existing?.slug
+      ? existing.slug
+      : await uniqueSlug(body.title ?? "", async (candidate) => {
+          const { data } = await supabase.from("news_posts").select("id").eq("slug", candidate).neq("id", id).maybeSingle()
+          return Boolean(data)
+        })
 
     const { data: updatedPost, error } = await supabase
       .from("news_posts")
@@ -27,7 +35,7 @@ export async function PUT(
         from_text: body.from_text,
         is_active: body.is_active,
       })
-      .eq("id", (await params).id)
+      .eq("id", id)
       .select()
 
     if (error) {

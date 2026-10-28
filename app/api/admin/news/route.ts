@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireAdmin } from "@/lib/supabase/require-admin"
-import { generateSlug } from "@/lib/utils/slug"
+import { uniqueSlug } from "@/lib/utils/slug"
 
 export async function GET() {
   const auth = await requireAdmin()
@@ -34,7 +34,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    const slug = generateSlug(body.title)
+    const slug = await uniqueSlug(body.title ?? "", async (candidate) => {
+      const { data } = await supabase.from("news_posts").select("id").eq("slug", candidate).maybeSingle()
+      return Boolean(data)
+    })
 
     const { data: newPost, error } = await supabase
       .from("news_posts")
