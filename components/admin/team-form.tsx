@@ -17,6 +17,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { createBrowserClient } from "@/lib/supabase/client"
+import { DOCUMENTS_BUCKET } from "@/lib/documents"
+import { uploadedImagePath } from "@/lib/uploaded-images"
+import { ImageUploadField } from "@/components/admin/image-upload-field"
 
 interface TeamFormProps {
   member?: {
@@ -34,6 +37,9 @@ export default function TeamForm({ member }: TeamFormProps) {
   const router = useRouter()
   const supabase = createBrowserClient()
   const [loading, setLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  // Photos uploaded in this session but not (or no longer) saved, removed on save/cancel.
+  const [pendingUploads, setPendingUploads] = useState<string[]>([])
   const [formData, setFormData] = useState({
     name: member?.name || "",
     role: member?.role || "",
@@ -42,6 +48,16 @@ export default function TeamForm({ member }: TeamFormProps) {
     order_index: member?.order_index || 0,
     category: member?.category || "other",
   })
+
+  const removeStoredPhotos = async (urls: (string | null | undefined)[]) => {
+    const paths = urls.map((url) => uploadedImagePath(url, "team")).filter((p): p is string => Boolean(p))
+    if (paths.length > 0) await supabase.storage.from(DOCUMENTS_BUCKET).remove(paths)
+  }
+
+  const handleCancel = async () => {
+    await removeStoredPhotos(pendingUploads)
+    router.push("/admin/team")
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -65,6 +81,13 @@ export default function TeamForm({ member }: TeamFormProps) {
         const { error } = await supabase.from("team_members").insert([submitData])
         if (error) throw error
       }
+
+      // Clean up photos that are no longer used: the replaced one and any uploaded but not kept.
+      const previous = member?.image_url
+      await removeStoredPhotos([
+        ...(previous && previous !== formData.image_url ? [previous] : []),
+        ...pendingUploads.filter((url) => url !== formData.image_url),
+      ])
 
       router.push("/admin/team")
       router.refresh()
@@ -130,17 +153,14 @@ export default function TeamForm({ member }: TeamFormProps) {
           />
         </div>
 
-        <div>
-          <Label htmlFor="image_url">URL на снимка</Label>
-          <Input
-            id="image_url"
-            type="url"
-            value={formData.image_url}
-            onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-            placeholder="https://example.com/image.jpg"
-          />
-          <p className="text-sm text-muted-foreground mt-1">Въведете директен URL към снимка</p>
-        </div>
+        <ImageUploadField
+          folder="team"
+          value={formData.image_url}
+          onChange={(url) => setFormData((prev) => ({ ...prev, image_url: url }))}
+          onUploaded={(url) => setPendingUploads((prev) => [...prev, url])}
+          onUploadingChange={setUploading}
+          hint="JPG, PNG или WebP, до 5MB. Най-добре квадратна снимка на лицето."
+        />
 
         <div>
           <Label htmlFor="order_index">Ред на показване</Label>
@@ -154,10 +174,10 @@ export default function TeamForm({ member }: TeamFormProps) {
         </div>
 
         <div className="flex gap-4">
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading || uploading}>
             {loading ? "Запазване..." : member ? "Актуализирай" : "Създай"}
           </Button>
-          <Button type="button" variant="outline" onClick={() => router.push("/admin/team")}>
+          <Button type="button" variant="outline" onClick={handleCancel} disabled={loading}>
             Отказ
           </Button>
         </div>

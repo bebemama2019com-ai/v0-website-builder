@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireAdmin } from "@/lib/supabase/require-admin"
 import { uniqueSlug } from "@/lib/utils/slug"
+import { cleanNewsImageUrl } from "@/lib/news-images"
 
 export async function GET() {
   const auth = await requireAdmin()
@@ -39,6 +40,9 @@ export async function POST(request: NextRequest) {
       return Boolean(data)
     })
 
+    const imageUrl = cleanNewsImageUrl(body.image_url)
+    if (imageUrl === undefined) return NextResponse.json({ error: "Невалидна снимка." }, { status: 400 })
+
     const { data: newPost, error } = await supabase
       .from("news_posts")
       .insert({
@@ -50,6 +54,7 @@ export async function POST(request: NextRequest) {
         news_hour: body.news_hour,
         from_text: body.from_text,
         is_active: body.is_active,
+        image_url: imageUrl,
       })
       .select()
 
